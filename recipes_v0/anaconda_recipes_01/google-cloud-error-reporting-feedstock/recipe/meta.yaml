@@ -1,0 +1,51 @@
+{% set name = "google-cloud-error-reporting" %}
+{% set version = "1.8.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/google-cloud-error-reporting-{{ version }}.tar.gz
+  sha256: 6f09758162eec792c9319212fed2453211ecd4b71a0d509380dae47ba0128812
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - python >=3.7
+    - google-cloud-logging >=1.14.0,<4.0.0dev
+    - google-api-core-grpc >=1.34.0,<3.0.0dev,!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,!=2.10.*
+    - proto-plus >=1.22.0,<2.0.0dev
+    - protobuf >=3.19.5,<5.0.0dev,!=3.20.0,!=3.20.1,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5
+
+test:
+  imports:
+    - google.cloud.client
+    - google.cloud.error_reporting
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/googleapis/python-error-reporting
+  summary: Google Cloud Error Reporting API client library
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  description: "The Stackdriver Error Reporting API counts, analyzes and aggregates the crashes in your running cloud services. A centralized error management interface displays the results with sorting and filtering capabilities. Opt-in to receive email and mobile alerts on new errors.\nSee the [quick start guide](https://googleapis.dev/python/clouderrorreporting/latest/index.html#quick-start)."
+
+  doc_url: https://googleapis.dev/python/clouderrorreporting/latest/index.html
+  dev_url: https://github.com/googleapis/python-error-reporting
+
+extra:
+  recipe-maintainers:
+    - xylar
+    - parthea

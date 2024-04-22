@@ -1,0 +1,44 @@
+{% set name = "Yapsy" %}
+{% set version = "1.12.2" %}
+{% set file_ext = "tar.gz" %}
+{% set hash_type = "sha256" %}
+{% set hash_value = "d8113d9f9c74eacf65b4663c9c037d278c9cb273b5eee5f0e1803baeedb23f8b" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  fn: '{{ name }}-{{ version }}.{{ file_ext }}'
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ file_ext }}
+  '{{ hash_type }}': '{{ hash_value }}'
+
+build:
+  noarch: python
+  number: 0
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - python
+
+test:
+  imports:
+    - yapsy
+
+about:
+  home: http://yapsy.sourceforge.net
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Yet another plugin system
+  description: "Yapsy is a small library implementing the core mechanisms needed to build a plugin system."
+  doc_url: 'http://yapsy.sourceforge.net'
+  dev_url: 'https://github.com/tibonihoo/yapsy'
+
+extra:
+  recipe-maintainers:
+    - ganeshhubale

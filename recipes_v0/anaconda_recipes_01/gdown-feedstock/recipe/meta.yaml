@@ -1,0 +1,61 @@
+{% set name = "gdown" %}
+{% set version = "4.7.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  # Source on pypi is missing files required for tests.
+  url: https://github.com/wkentaro/{{name}}/archive/refs/tags/v{{version}}.tar.gz
+  sha256: 15ba108245126ded919f08cc24550403721c853870dc520e5036366504829cca
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-build-isolation --no-deps -vv
+  entry_points:
+    - gdown = gdown.cli:main
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - filelock
+    - requests
+    - six
+    - tqdm
+    - beautifulsoup4
+
+test:
+  requires:
+    - pip
+    - pytest
+  source_files:
+    - tests
+  imports:
+    - gdown
+  commands:
+    - gdown --help
+    - pip check
+    - pytest tests
+
+about:
+  home: https://github.com/wkentaro/gdown
+  dev_url: https://github.com/wkentaro/gdown
+  doc_url: https://github.com/wkentaro/gdown/blob/main/README.md
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Download a large file from Google Drive.
+  description: |
+    Download a large file from Google Drive.
+    If you use curl/wget, it fails with a large file because of the security
+    warning from Google Drive.
+
+extra:
+  recipe-maintainers:
+    - hmaarrfk

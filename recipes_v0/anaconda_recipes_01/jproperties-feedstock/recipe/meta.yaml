@@ -1,0 +1,58 @@
+{% set name = "jproperties" %}
+{% set version = "2.1.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 40b71124e8d257e8954899a91cd2d5c0f72e0f67f1b72048a5ba264567604f29
+
+build:
+  number: 0
+  entry_points:
+    - propconv = jproperties:main
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - setuptools_scm ~=3.3
+  run:
+    - python
+    - six ~=1.13
+
+test:
+  imports:
+    - jproperties
+  requires:
+    - pip
+    - pytest
+  source_files:
+    - tests
+  commands:
+    - pip check
+    # skip test_simple_utf8_load_write_file because it needs conftest.py
+    # that is not in the tarball for a fixture
+    - pytest -v tests/ -k "not test_simple_utf8_load_write_file"
+
+about:
+  home: https://github.com/Tblue/python-jproperties
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Java Property file parser and writer for Python
+  description: |
+    jProperties is a Java Property file parser and writer for Python.
+    It aims to provide the same functionality as Java's Properties class, 
+    although currently the XML property format is not supported.
+  dev_url: https://github.com/Tblue/python-jproperties
+  doc_url: https://github.com/Tblue/python-jproperties/blob/v{{ version }}/README.rst
+
+extra:
+  recipe-maintainers:
+    - melonhead901

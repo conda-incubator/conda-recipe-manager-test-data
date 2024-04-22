@@ -1,0 +1,81 @@
+{% set version = "0.6.3" %}
+{% set name = "osqp" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 03e460e683ec2ce0f839353ddfa3c4c8ffa509ab8cf6a2b2afbb586fa453e180
+  patches:
+    - patches/0001-Disable-MKL-Tests-on-nonx86.patch     # [not x86_64]
+    - patches/0002-use-ninja-universally.patch
+    - patches/0003-point-to-our-own-builds.patch
+    - patches/0004-do-not-rebuild-libosqp-here.patch
+    - patches/0005-disable-codegen-ABI-is-not-compatible.patch
+
+build:
+  number: 0
+  script:
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - ninja
+    - patch  # [not win]
+    - m2-patch  # [win]
+  host:
+    - python
+    - setuptools_scm
+    - setuptools
+    - pip
+    - wheel
+    - numpy  {{ numpy  }}
+    - libosqp {{ version }}
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+    - numpy >=1.7
+    - qdldl-python
+    - scipy  >=0.13.2
+  run_constrained:
+    # since paradiso directly depends on the SO name, which was changed then
+    - mkl >=2022.0                   # [win]
+
+test:
+  imports:
+    - osqp
+    - osqp.codegen
+    - osqppurepy
+  requires:
+    - pytest
+    - pip
+  commands:
+    - pip check
+    # codegen tests are disabled because they require an incompatible ABI, see patches
+    - python -m pytest --pyargs osqp -k "not codegen"
+
+about:
+  home: https://osqp.org/
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: 'Python interface for OSQP, the Operator Splitting QP Solver'
+  description: |
+    Python interface for OSQP, the Operator Splitting QP Solver.
+    To use the `codegen` interface, install `cmake` and an appropriate
+    compiler version. (We don't install this by default.)
+  doc_url: https://osqp.org/docs/get_started/python.html
+  dev_url: https://github.com/osqp/osqp-python
+
+extra:
+  recipe-maintainers:
+    - djsutherland
+    - h-vetinari
+    - bstellato
+    - gbanjac
+    - jayfurmanek

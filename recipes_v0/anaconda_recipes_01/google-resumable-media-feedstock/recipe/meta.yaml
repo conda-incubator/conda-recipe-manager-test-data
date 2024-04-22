@@ -1,0 +1,59 @@
+{% set name = "google-resumable-media" %}
+{% set version = "2.4.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 8d5518502f92b9ecc84ac46779bd4f09694ecb3ba38a3e7ca737a86d15cbca1f
+
+build:
+  number: 0
+  skip: True  # [py<37]
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - google-crc32c >=1.0,<2.0dev
+  run_constrained:
+    - requests >=2.18.0,<3.0.0dev
+    - aiohttp >=3.6.2,<4.0.0dev
+
+test:
+  requires:
+    - python
+    - pip
+  imports:
+    - google
+    - google.resumable_media
+  commands:
+    - python -m pip check
+
+about:
+  home: https://github.com/googleapis/google-resumable-media-python
+  summary: Utilities for Google Media Downloads and Resumable Uploads
+  description: Utilities for Google Media Downloads and Resumable Uploads
+  doc_url: https://cloud.google.com/python/docs/reference/google-resumable-media/latest
+  dev_url: https://github.com/googleapis/google-resumable-media-python
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
+  license_url: https://github.com/googleapis/google-resumable-media-python/blob/v2.4.0/LICENSE
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - leahecole
+    - parthea
+    - tswast
+  skip-lints:
+    - missing_doc_source_url
+    - invalid_url

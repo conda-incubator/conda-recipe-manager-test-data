@@ -1,0 +1,44 @@
+{% set name = "fakeredis" %}
+{% set version = "1.7.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: c9bd12e430336cbd3e189fae0e91eb99997b93e76dbfdd6ed67fa352dc684c71
+
+build:
+  number: 0
+  noarch: python
+  script: '{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv '
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - redis-py
+    - six >=1.12
+    - sortedcontainers
+  run:
+    - python >=3.6
+    - redis-py
+    - six >=1.12
+    - sortedcontainers
+
+test:
+  imports:
+    - fakeredis
+
+about:
+  home: https://github.com/jamesls/fakeredis
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: COPYING
+  summary: Fake implementation of redis API for testing purposes.
+
+extra:
+  recipe-maintainers:
+    - Bezier89
+    - pg-hbk

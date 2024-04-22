@@ -1,0 +1,50 @@
+{% set name = "ftfy" %}
+{% set version = "5.8" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 51c7767f8c4b47d291fcef30b9625fb5341c06a31e6a3b627039c706c42f3720
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  noarch: python
+  entry_points:
+    - ftfy = ftfy.cli:main
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    # Required for loading package data via `pkg_resources` module.
+    - setuptools
+    - wcwidth
+
+test:
+  requires:
+    - pytest
+  source_files:
+    - tests
+  commands:
+    - py.test --deselect tests/test_cli.py  # [win]
+    # CLI tests fail on windows.
+    - py.test  # [not win]
+
+about:
+  home: https://github.com/LuminosoInsight/python-ftfy/
+  license: MIT
+  license_file: LICENSE.txt
+  summary: Fixes some problems with Unicode text after the fact
+  dev_url: https://github.com/LuminosoInsight/python-ftfy
+  doc_url: http://ftfy.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - rmax

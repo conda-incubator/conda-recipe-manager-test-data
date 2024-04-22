@@ -1,0 +1,81 @@
+{% set version = "4.1.4" %}
+
+package:
+  name: yt
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/y/yt/yt-{{ version }}.tar.gz
+  sha256: c50a4c8ddf32088c57957d364cddb769d284b025bbe26bba85cc598078e8ad78
+  patches:
+    - patches/001_force_cythonize.patch
+
+build:
+  number: 1
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  script_env:  # [linux]
+    # https://github.com/yt-project/yt/issues/4278 Work-around for non-deterministic failures on linux.
+    - MAX_BUILD_CORES=0  # [linux]
+  entry_points:
+    - yt = yt.utilities.command_line:run_main
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - patch  # [unix]
+    - m2-patch  # [win]
+  host:
+    - python
+    - pip
+    - numpy
+    - cython 0.29
+    - setuptools
+    - wheel
+    - packaging 23
+  run:
+    - python
+    - ipython >=2.0.0
+    - ipywidgets >=8.0.0
+    - matplotlib-base !=3.4.2,>=3.1.0
+    - more-itertools >=8.4
+    - numpy >=1.14.5
+    - pillow >=6.2.0
+    - pyparsing >=2.0.2
+    - tomli >=1.2.3  # [py<311]
+    - tomli-w >=0.4.0
+    - tqdm >=3.4.0
+    - unyt >=2.8.0,<3.0
+    - cmyt >=0.2.2
+    - {{ pin_compatible('numpy') }}
+    - importlib-metadata >=1.4.0  # [py<38]
+    - typing-extensions >=4.2.0  # [py<38]
+    - _openmp_mutex  # [linux]
+
+test:
+  imports:
+    - yt
+  commands:
+    - pip check
+    - yt --help
+  requires:
+    - pip
+
+about:
+  home: https://yt-project.org/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: COPYING.txt
+  summary: Analysis and visualization toolkit for volumetric data
+  description: |
+    yt is a community-developed analysis and visualization toolkit for 
+    volumetric data. yt has been applied mostly to astrophysical simulation 
+    data, but it can be applied to many different types of data including 
+    seismology, radio telescope data, weather simulations, and nuclear 
+  dev_url: https://github.com/yt-project/yt/
+  doc_url: https://yt-project.org/docs/dev/
+
+extra:
+  recipe-maintainers:
+    - ngoldbaum
+    - munkm

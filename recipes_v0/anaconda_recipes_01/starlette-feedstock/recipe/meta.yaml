@@ -1,0 +1,81 @@
+{% set name = "starlette" %}
+{% set version = "0.27.0" %}
+
+package:
+  name: {{ name|lower }}-recipe
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 6a6b0d042acb8d469a01eba54e9cda6cbd24ac602c4cd016723117d6a7e73b75
+
+build:
+  number: 0
+  skip: true  # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+    - hatchling
+
+outputs:
+  - name: {{ name }}
+    build:
+      script: python -m pip install . --no-deps --no-build-isolation -vv
+    requirements:
+      host:
+        - python
+        - pip
+        - hatchling
+      run:
+        - python
+        - anyio >=3.4.0,<5
+        - typing_extensions >=3.10.0  # [py<310]
+    test:
+      imports:
+        - starlette
+      requires:
+        - pip
+      commands:
+        - pip check
+
+  - name: {{ name }}-full
+    build:
+      script: echo Nothing to do.
+      # httpx isn't available on s390x
+      skip: true  # [s390x]
+    requirements:
+      host:
+        - python
+        - pip
+      run:
+        - python
+        - {{ pin_subpackage('starlette', exact=True) }}
+        - itsdangerous
+        - jinja2
+        - python-multipart
+        - pyyaml
+        - httpx >=0.22.0
+    test:
+      commands:
+        - python -c "from starlette import *"
+
+about:
+  home: https://www.starlette.io/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.md
+  summary: The little ASGI framework that shines
+  description: |
+    Starlette is a lightweight [ASGI](https://asgi.readthedocs.io/en/latest/) framework/toolkit.
+
+    It is ideal for building high performance asyncio services, and supports
+    both HTTP and WebSockets.
+  doc_url: https://www.starlette.io/
+  dev_url: https://github.com/encode/starlette/
+
+extra:
+  recipe-maintainers:
+    - carlodri
+    - dgasmith

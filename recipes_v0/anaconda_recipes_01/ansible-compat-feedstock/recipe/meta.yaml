@@ -1,0 +1,47 @@
+{% set name = "ansible-compat" %}
+{% set version = "2.2.7" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/ansible-compat-{{ version }}.tar.gz
+  sha256: 08deddcd0a1dc6baabe674b07c6ff882118492c123d281f56f01905271a7ffc4
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - python >=3.8
+    - setuptools_scm >=3.5.0
+    - setuptools_scm_git_archive >=1.0
+  run:
+    - python >=3.8
+    - jsonschema
+    - pyyaml
+    - subprocess-tee
+    - packaging
+
+test:
+  imports:
+    - ansible_compat
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/ansible-community/ansible-compat
+  summary: Ansible compatibility goodies
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - tschoonj

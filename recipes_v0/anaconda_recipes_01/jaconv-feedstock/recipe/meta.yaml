@@ -1,0 +1,42 @@
+{% set version = "0.3.1" %}
+
+package:
+  name: jaconv
+  version: {{ version }}
+
+source:
+  url: https://github.com/ikegami-yukino/jaconv/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 8c3553e9dcc551eb4249c503afd886a5e05d7ae02e2f379723f1121466c71dde
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3
+    - pip
+  run:
+    - python >=3
+
+test:
+  requires:
+    - nose
+  source_files:
+    - test_jaconv.py
+  imports:
+    - jaconv
+  commands:
+    - nosetests test_jaconv
+
+about:
+  home: https://ikegami-yukino.github.io/jaconv/jaconv.html
+  license: MIT
+  license_file: LICENSE
+  summary: Pure-Python Japanese character interconverter for Hiragana, Katakana, Hankaku, and Zenkaku
+  dev_url: https://github.com/ikegami-yukino/jaconv
+
+extra:
+  recipe-maintainers:
+    - h-vetinari

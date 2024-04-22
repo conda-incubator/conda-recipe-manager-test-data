@@ -1,0 +1,61 @@
+{% set name = "autoviz" %}
+{% set version = "0.1.58" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/autoviz-{{ version }}.tar.gz
+  sha256: 73edd50469bd0a5718d267745398566a4580eaa906975c28e393d303b67d6da6
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - bokeh >=2.4.2
+    - emoji
+    - fsspec >=0.8.3
+    - holoviews >=1.14.6
+    - hvplot >=0.7.3
+    - ipython
+    - jupyter
+    - matplotlib-base >=3.3.3
+    - numpy
+    - nltk
+    - pandas
+    - panel ~=0.12.6
+    - pyamg
+    - python >=3.6
+    - scikit-learn
+    - seaborn >=0.11.1
+    - statsmodels
+    - textblob
+    - typing-extensions >=4.1.1
+    - wordcloud
+    - xgboost >=0.82
+    - xlrd
+
+test:
+  commands:
+    - ipython -c "import autoviz"
+    - pip check
+  requires:
+    - ipython
+    - pip
+
+about:
+  home: https://github.com/AutoViML/AutoViz
+  summary: Automatically Visualize any dataset, any size with a single line of code
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - thewchan

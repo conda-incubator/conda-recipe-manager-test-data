@@ -1,0 +1,85 @@
+{% set name = "chainladder" %}
+{% set version = "0.8.18" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/chainladder-{{ version }}.tar.gz
+    sha256: 56eb8bd44d46ca48680122f85d96dba6f33d7a82393a6468786b061f266161dc
+  - git_url: https://github.com/casact/chainladder-python
+    git_rev: v0.8.18
+    folder: github
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  # skip py39 because of missing sparse
+  skip: True  # [py<39 or s390x]
+
+requirements:
+  build:
+    - git  # [not win]
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - joblib
+    - python
+    - numpy >=1.12
+    - pandas >=0.23
+    - scikit-learn >=0.23
+    - scipy
+    - matplotlib-base
+    - numba >0.54
+    - sparse >=0.9
+    - dill
+    - patsy
+
+test:
+  source_files:
+    - github/chainladder/methods/tests
+    - github/chainladder/core/tests
+    - github/chainladder/adjustments/tests
+    - github/chainladder/utils/tests
+    - github/chainladder/workflow/tests
+    - github/chainladder/tails/tests
+    - github/conftest.py
+  imports:
+    - chainladder
+    - chainladder.core
+  commands:
+    - pip check
+    - pytest github/chainladder/methods/tests
+    # skipping test to run in jupyter notebook
+    - pytest github/chainladder/core/tests -k "not test_heatmap_render"
+    - pytest github/chainladder/adjustments/tests
+    - pytest github/chainladder/utils/tests
+    - pytest github/chainladder/workflow/tests
+    - pytest github/chainladder/tails/tests
+  requires:
+    - pip
+    - pytest
+    - lxml
+    - jinja2
+
+about:
+  home: https://github.com/casact/chainladder-python
+  summary: Chainladder Package - P&C Loss Reserving package
+  description: |
+    The chainladder package was built to be able to handle all of your actuarial needs in python. It consists of
+    popular actuarial tools, such as triangle data manipulation, link ratios calculation, and IBNR estimates with both
+    deterministic and stochastic models.
+  license: MPL-2.0
+  license_family: MOZILLA
+  # License file manually packaged. See https://github.com/casact/chainladder-python/pull/102
+  license_file: LICENSE
+  doc_url: https://chainladder-python.readthedocs.io
+  dev_url: https://github.com/casact/chainladder-python
+
+extra:
+  recipe-maintainers:
+    - jbogaardt

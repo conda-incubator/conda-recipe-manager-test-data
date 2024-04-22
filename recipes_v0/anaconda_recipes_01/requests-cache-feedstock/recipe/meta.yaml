@@ -1,0 +1,65 @@
+{% set version = "1.2.0" %}
+
+package:
+  name: requests-cache
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/r/requests-cache/requests_cache-{{ version }}.tar.gz
+  sha256: db1c709ca343cc1cd5b6c8b1a5387298eceed02306a6040760db538c885e3838
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True  # [py<38]
+
+requirements:
+  host:
+    - python
+    - poetry-core
+    - pip
+
+  run:
+    - python
+    - attrs >=21.2
+    - cattrs >=22.2
+    - itsdangerous >=2.0
+    - platformdirs >=2.5
+    - pyyaml >=6.0.1
+    - requests >=2.22
+    - ujson >=5.4
+    - url-normalize >=1.4
+    - urllib3 >=1.25.5
+  run_constrained:
+    - boto3 >=1.15
+    - botocore >=1.18
+    - pymongo >=3
+    - redis >=3
+    - bson >=0.5
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+  imports:
+    - requests_cache
+    - requests_cache.backends
+    - requests_cache.models
+    - requests_cache.serializers
+
+about:
+  home: https://github.com/requests-cache/requests-cache
+  license_file: LICENSE
+  license: BSD-2-Clause
+  license_family: BSD
+  summary: A transparent persistent cache for the requests library
+  description: |
+    requests-cache is a persistent HTTP cache that provides an easy way to get better performance with the python requests library.
+  dev_url: https://github.com/requests-cache/requests-cache
+  doc_url: https://requests-cache.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - jwcook
+    - cj-wright

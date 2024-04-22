@@ -1,0 +1,54 @@
+{% set name = "scalapack" %}
+{% set version = "2.1.0" %}
+{% set sha256 = "61d9216cf81d246944720cfce96255878a3f85dec13b9351f1fa0fd6768220a6" %}
+
+{% set mpi = mpi or 'mpich' %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: http://www.netlib.org/{{ name }}/{{ name }}-{{ version }}.tgz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: true  # [win]
+
+requirements:
+  build:
+    - cmake
+    - {{ compiler('fortran') }}
+    - {{ compiler('c') }}
+    - make
+  host:
+    - libblas
+    - liblapack
+    - {{ mpi }}
+  run:
+    - {{ mpi }}
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libscalapack.dylib  # [osx]
+    - test -f $PREFIX/lib/libscalapack.so  # [linux]
+
+about:
+  home: http://www.netlib.org/scalapack/
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: ScaLAPACK is a library of high-performance linear algebra routines for parallel distributed memory machines
+  description: |
+    ScaLAPACK is a library of high-performance linear algebra routines for parallel distributed
+    memory machines. ScaLAPACK solves dense and banded linear systems, least squares problems,
+    eigenvalue problems, and singular value problems.
+
+extra:
+  recipe-maintainers:
+    - dalcinl
+    - minrk
+    - davidbrochart
+    - SylvainCorlay

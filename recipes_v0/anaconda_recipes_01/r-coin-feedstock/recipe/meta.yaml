@@ -1,0 +1,111 @@
+{% set version = '1.4-3' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-coin
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/coin_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/coin/coin_{{ version }}.tar.gz
+  sha256: 8a6302dbf3ef570cd9f69ce7b6cd3d3b928dc776f840bbd767af132e0080b974
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: xtable, e1071, vcd, TH.data (>= 1.0-7)
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-libcoin >=1.0_9
+    - r-matrixstats >=0.54.0
+    - r-modeltools >=0.2_9
+    - r-multcomp
+    - r-mvtnorm >=1.0_5
+    - r-survival
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-libcoin >=1.0_9
+    - r-matrixstats >=0.54.0
+    - r-modeltools >=0.2_9
+    - r-multcomp
+    - r-mvtnorm >=1.0_5
+    - r-survival
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('coin')"           # [not win]
+    - "\"%R%\" -e \"library('coin')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: http://coin.r-forge.r-project.org
+  license: GPL-2
+  summary: Conditional inference procedures for the general independence problem including two-sample,
+    K-sample (non-parametric ANOVA), correlation, censored, ordered and multivariate
+    problems described in <doi:10.18637/jss.v028.i08>.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: coin
+# Version: 1.4-3
+# Date: 2023-09-26
+# Title: Conditional Inference Procedures in a Permutation Test Framework
+# Authors@R: c(person("Torsten", "Hothorn", role = c("aut", "cre"), email = "Torsten.Hothorn@R-project.org", comment = c(ORCID = "0000-0001-8301-0471")), person("Henric", "Winell", role = "aut", comment = c(ORCID = "0000-0001-7995-3047")), person("Kurt", "Hornik", role = "aut", comment = c(ORCID = "0000-0003-4198-9911")), person(c("Mark", "A."), "van de Wiel", role = "aut", comment = c(ORCID = "0000-0003-4780-8472")), person("Achim", "Zeileis", role = "aut", comment = c(ORCID = "0000-0003-0918-3766")))
+# Description: Conditional inference procedures for the general independence problem including two-sample, K-sample (non-parametric ANOVA), correlation, censored, ordered and multivariate problems described in <doi:10.18637/jss.v028.i08>.
+# Depends: R (>= 3.6.0), survival
+# Imports: methods, parallel, stats, stats4, utils, libcoin (>= 1.0-9), matrixStats (>= 0.54.0), modeltools (>= 0.2-9), mvtnorm (>= 1.0-5), multcomp
+# Suggests: xtable, e1071, vcd, TH.data (>= 1.0-7)
+# LinkingTo: libcoin (>= 1.0-9)
+# LazyData: yes
+# NeedsCompilation: yes
+# ByteCompile: yes
+# Encoding: UTF-8
+# License: GPL-2
+# URL: http://coin.r-forge.r-project.org
+# Packaged: 2023-09-27 09:53:17 UTC; hothorn
+# Author: Torsten Hothorn [aut, cre] (<https://orcid.org/0000-0001-8301-0471>), Henric Winell [aut] (<https://orcid.org/0000-0001-7995-3047>), Kurt Hornik [aut] (<https://orcid.org/0000-0003-4198-9911>), Mark A. van de Wiel [aut] (<https://orcid.org/0000-0003-4780-8472>), Achim Zeileis [aut] (<https://orcid.org/0000-0003-0918-3766>)
+# Maintainer: Torsten Hothorn <Torsten.Hothorn@R-project.org>
+# Repository: CRAN
+# Date/Publication: 2023-09-27 16:10:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

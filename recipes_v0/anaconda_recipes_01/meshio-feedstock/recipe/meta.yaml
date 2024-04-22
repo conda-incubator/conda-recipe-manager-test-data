@@ -1,0 +1,57 @@
+{% set name = "meshio" %}
+{% set version = "5.3.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e240692d7ff279c12b13c6e5d7b403629a86ad2b44e9230958b3f00c1ec369f0
+
+build:
+  noarch: python
+  number: 0
+  entry_points:
+    - meshio = meshio._cli:main
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3
+    - pip
+    - setuptools
+  run:
+    - python >=3.7
+    - importlib_metadata
+    - numpy
+    - netCDF4
+    - rich
+    - h5py
+
+test:
+  requires:
+    - pytest
+    - netCDF4
+    - h5py
+  source_files:
+    - README.md
+    - tests
+  imports:
+    - meshio
+  commands:
+    - meshio --help
+    - python -m pytest
+
+about:
+  home: https://github.com/nschloe/meshio
+  license: MIT
+  license_file: LICENSE.txt
+  license_family: MIT
+  summary: I/O for various mesh formats
+
+extra:
+  recipe-maintainers:
+    - nschloe
+    - MuellerSeb
+    - banesullivan

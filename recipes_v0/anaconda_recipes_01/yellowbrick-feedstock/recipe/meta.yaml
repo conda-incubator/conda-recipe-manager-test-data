@@ -1,0 +1,66 @@
+{% set name = "yellowbrick" %}
+{% set version = "1.5" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 99a6336dd2e7ce586a8cde67966b79c51b479d3759f3c083d7e19ffe949f6076
+
+build:
+  number: 0
+  skip: true  # [py<36]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - cycler >=0.10.0
+    - matplotlib-base >=2.0.2,!=3.0.0
+    - numpy >=1.16.0
+    - scikit-learn >=1.0.0
+    - scipy >=1.0.0
+
+test:
+  imports:
+    - yellowbrick
+    - yellowbrick.classifier
+    - yellowbrick.cluster
+    - yellowbrick.contrib
+    - yellowbrick.contrib.classifier
+    - yellowbrick.contrib.missing
+    - yellowbrick.contrib.statsmodels
+    - yellowbrick.datasets
+    - yellowbrick.features
+    - yellowbrick.gridsearch
+    - yellowbrick.model_selection
+    - yellowbrick.regressor
+    - yellowbrick.style
+    - yellowbrick.target
+    - yellowbrick.text
+    - yellowbrick.utils
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://www.scikit-yb.org
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE.txt
+  summary: A suite of visual analysis and diagnostic tools for machine learning.
+  description: A suite of visual analysis and diagnostic tools for machine learning.
+  doc_url: https://www.scikit-yb.org
+  dev_url: https://github.com/DistrictDataLabs/yellowbrick
+
+extra:
+  recipe-maintainers:
+    - melonhead901

@@ -1,0 +1,51 @@
+{% set name = "astral" %}
+{% set version = "3.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/astral-{{ version }}.tar.gz
+  sha256: 9b7c3b412e9e69d172cfb24be0e6addcc9f1bd01a28db8bebe66d75ccc533d88
+
+build:
+  skip: true  # [py>=400 or py2k]
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 1
+
+requirements:
+  host:
+    - python
+    - pip
+    - poetry-core
+  run:
+    - python
+    - dataclasses  # [py<37]
+    - backports.zoneinfo  # [py<39]
+    - tzdata  # [not win]
+
+test:
+  imports:
+    - astral
+  commands:
+    - pip check  # [not win]
+  requires:
+    - pip
+
+about:
+  home: https://github.com/sffjunkie/astral
+  summary: Calculations for the position of the sun and moon.
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+
+  description: |
+    Astral is a python module for calculating the times of various aspects of the sun and moon.
+  doc_url: https://astral.readthedocs.io/en/stable/index.html
+  dev_url: http://github.com/sffjunkie/astral
+
+extra:
+  recipe-maintainers:
+    - hajapy
+    - jan-janssen

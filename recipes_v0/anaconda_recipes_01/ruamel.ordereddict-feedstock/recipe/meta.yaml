@@ -1,0 +1,41 @@
+{% set version = "0.4.14" %}
+
+package:
+  name: ruamel.ordereddict
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/r/ruamel.ordereddict/ruamel.ordereddict-{{ version }}.tar.gz
+  sha256: 281051d26eb2b18ef3d920e1e260716a52bd058a6b1a2f324102fc6a15cb8d4a
+
+build:
+  number: 0
+  skip: True  # [py3k]
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - ruamel
+  run:
+    - python
+    - ruamel
+
+test:
+  imports:
+    - ruamel.ordereddict
+
+about:
+  home: https://bitbucket.org/ruamel/ordereddict
+  license: MIT
+  license_file: LICENSE
+  summary: "a version of dict that keeps keys in insertion resp. sorted order"
+
+extra:
+  recipe-maintainers:
+    - pelson
+    - mwcraig
+    - ocefpaf

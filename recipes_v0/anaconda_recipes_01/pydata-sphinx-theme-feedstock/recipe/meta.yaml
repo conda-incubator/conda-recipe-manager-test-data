@@ -1,0 +1,73 @@
+{% set version = "0.12.0" %}
+{% set cov_fail_under = "82" %}
+{% set min_sphinx = "4.2" %}
+
+package:
+  name: pydata-sphinx-theme
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/py3/p/pydata-sphinx-theme/pydata_sphinx_theme-{{ version }}-py3-none-any.whl
+    sha256: c17dbab67a3774f06f34f6378e896fcd0668cc8b5da1c1ba017e65cf1df0af58
+  - folder: src
+    url: https://github.com/pydata/pydata-sphinx-theme/archive/refs/tags/v{{ version }}.tar.gz
+    sha256: 1759e12524b440d136228086206fbd23c3cf8007a64d3cecd7eda492f85617d3
+
+build:
+  number: 0
+  noarch: python
+  script:
+    - {{ PYTHON }} -m pip install --find-links . --no-index --ignore-installed --no-deps pydata-sphinx-theme
+    - cd {{ RECIPE_DIR }} && {{ PYTHON }} collect_licenses.py
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - beautifulsoup4
+    - docutils !=0.17.0
+    - packaging
+    - pygments >=2.7
+    - python >=3.7
+    - sphinx >={{ min_sphinx }}
+
+test:
+  source_files:
+    - src/tests
+  imports:
+    - pydata_sphinx_theme
+  commands:
+    - pip check
+    - cd src/tests
+    - pytest -vv --cov=pydata_sphinx_theme --cov-branch --cov-report=term-missing:skip-covered --no-cov-on-fail --cov-fail-under={{ cov_fail_under }}
+  requires:
+    # probably _compatible_ with older versions of sphinx, but would fail tests
+    # see https://github.com/pydata/pydata-sphinx-theme/issues/446
+    - sphinx {{ min_sphinx }}.*
+    - jupyter_sphinx
+    - numpydoc
+    - pandas
+    - pip
+    - plotly
+    - pytest-cov
+    - pytest-regressions
+    - recommonmark
+    - sphinx-thebe
+    - xarray
+
+about:
+  home: https://github.com/pydata/pydata-sphinx-theme
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file:
+    - src/LICENSE
+    - third-party-licenses/font-awesome-LICENSE.txt
+  summary: Bootstrap-based Sphinx theme from the PyData community
+  doc_url: https://pydata-sphinx-theme.readthedocs.io/
+  dev_url: https://github.com/pydata/pydata-sphinx-theme
+
+extra:
+  recipe-maintainers:
+    - jorisvandenbossche
+    - bollwyvl

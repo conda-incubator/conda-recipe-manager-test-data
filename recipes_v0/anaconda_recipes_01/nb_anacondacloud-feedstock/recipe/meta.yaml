@@ -1,0 +1,45 @@
+{% set version = "1.4.0" %}
+{% set gh_org = "Anaconda-Platform" %}
+{% set gh_repo = "nb_anacondacloud" %}
+
+package:
+  name: {{ gh_repo }}
+  version: {{ version }}
+
+source:
+  fn: {{ gh_repo }}-{{ version }}.tar.gz
+  url: https://github.com/{{ gh_org }}/{{ gh_repo }}/archive/refs/tags/{{ version }}.tar.gz
+  sha256: 3f6ab7c466d073281e05fc40937d65631c966d5ae50446ae847dd361f16bef48
+
+build:
+  number: 0
+  script:
+    - python setup.py install --single-version-externally-managed --record=record.txt
+    - jupyter nbextension install nb_anacondacloud --py --sys-prefix --overwrite
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - notebook >=4.3.1
+    - anaconda-client
+
+  run:
+    - python
+    - notebook >=4.3.1
+    - nb_conda_kernels >=2.0.0
+    - anaconda-client
+
+test:
+  imports:
+    - nb_anacondacloud
+
+about:
+  home: https://github.com/{{ gh_org }}/{{ gh_repo }}
+  license: BSD-3-Clause
+  summary: Interact with Anaconda Cloud
+
+extra:
+  recipe-maintainers:
+    - bollwyvl
+    - damianavila

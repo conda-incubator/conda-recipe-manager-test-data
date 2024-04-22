@@ -1,0 +1,47 @@
+{% set name = "dlfcn-win32" %}
+{% set version = "1.4.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/dlfcn-win32/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: 30a9f72bdf674857899eb7e553df1f0d362c5da2a576ae51f886e1171fbdb399
+
+build:
+  number: 0
+  skip: true  # [not win]
+  run_exports:
+    - {{ pin_subpackage('dlfcn-win32', max_pin='x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+
+test:
+  commands:
+    - if not exist %PREFIX%\\Library\\share\\dlfcn-win32\\dlfcn-win32-config.cmake exit 1
+    - if not exist %LIBRARY_BIN%\\dl.dll exit 1
+    - if not exist %LIBRARY_INC%\\dlfcn.h exit 1
+
+about:
+  home: https://github.com/dlfcn-win32/dlfcn-win32
+  license: MIT
+  license_file: COPYING
+  license_family: MIT
+  summary: dlfcn-win32 is an implementation of dlfcn for Windows.
+  description: |
+    dlfcn is a set of functions that allows runtime dynamic library loading. It is standardized in the POSIX. Windows
+    also provide similar routines, but not in a POSIX-compatible way. This library attempts to implement a wrapper
+    around the Windows functions to make programs written for POSIX that use dlfcn work in Windows without any
+    modifications.
+  doc_url: https://github.com/dlfcn-win32/dlfcn-win32
+  dev_url: https://github.com/dlfcn-win32/dlfcn-win32
+
+extra:
+  recipe-maintainers:
+    - seanyen
+    - traversaro

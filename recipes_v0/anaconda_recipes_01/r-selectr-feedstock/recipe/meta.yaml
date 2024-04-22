@@ -1,0 +1,97 @@
+{% set version = '0.4-2' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-selectr
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/selectr_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/selectr/selectr_{{ version }}.tar.gz
+  sha256: 5588aed05f3f5ee63c0d29953ef53da5dac7afccfdd04b7b22ef24e1e3b0c127
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: testthat, XML, xml2
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-r6
+    - r-stringr
+
+  run:
+    - r-base
+    - r-r6
+    - r-stringr
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('selectr')"           # [not win]
+    - "\"%R%\" -e \"library('selectr')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://sjp.co.nz/projects/selectr
+  license: BSD_3_clause
+  summary: Translates a CSS3 selector into an equivalent XPath expression. This allows us to
+    use CSS selectors when working with the XML package as it can only evaluate XPath
+    expressions. Also provided are convenience functions useful for using CSS selectors
+    on XML nodes. This package is a port of the Python package 'cssselect' (<https://cssselect.readthedocs.io/>).
+  license_family: BSD
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/BSD_3_clause'
+    - LICENCE
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: selectr
+# Type: Package
+# Title: Translate CSS Selectors to XPath Expressions
+# Version: 0.4-2
+# Date: 2019-11-20
+# Authors@R: c(person("Simon", "Potter", role = c("aut", "trl", "cre"), email = "simon@sjp.co.nz"), person("Simon", "Sapin", role = "aut"), person("Ian", "Bicking", role = "aut"))
+# License: BSD_3_clause + file LICENCE
+# Depends: R (>= 3.0)
+# Imports: methods, stringr, R6
+# Suggests: testthat, XML, xml2
+# URL: https://sjp.co.nz/projects/selectr
+# BugReports: https://github.com/sjp/selectr/issues
+# Description: Translates a CSS3 selector into an equivalent XPath expression. This allows us to use CSS selectors when working with the XML package as it can only evaluate XPath expressions. Also provided are convenience functions useful for using CSS selectors on XML nodes. This package is a port of the Python package 'cssselect' (<https://cssselect.readthedocs.io/>).
+# NeedsCompilation: no
+# Packaged: 2019-11-20 06:04:49 UTC; simon
+# Author: Simon Potter [aut, trl, cre], Simon Sapin [aut], Ian Bicking [aut]
+# Maintainer: Simon Potter <simon@sjp.co.nz>
+# Repository: CRAN
+# Date/Publication: 2019-11-20 07:30:03 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

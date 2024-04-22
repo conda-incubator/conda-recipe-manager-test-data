@@ -1,0 +1,56 @@
+{% set name = "setuptools-rust" %}
+{% set version = "1.9.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/s/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 704df0948f2e4cc60c2596ad6e840ea679f4f43e58ed4ad0c1857807240eab96
+
+build:
+  number: 0
+  skip: True # [py<38]
+  script: {{ PYTHON }} -m pip install --no-deps . -vv --no-build-isolation
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools >=62.4
+    - setuptools_scm
+    - wheel
+  run:
+    - python
+    - semantic_version >=2.8.2,<3
+    - setuptools >=62.4
+    - tomli >=1.2.1  # [py<311]
+
+test:
+  imports:
+    - setuptools_rust
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/PyO3/setuptools-rust
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Setuptools rust extension plugin
+  description: |
+    setuptools-rust is a plugin for setuptools to build Rust Python extensions implemented with PyO3 or rust-cpython.
+    Compile and distribute Python extensions written in Rust as easily as if they were written in C.
+  dev_url: https://github.com/PyO3/setuptools-rust
+  doc_url: https://setuptools-rust.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - davidhewitt
+    - nicoddemus
+  # setuptools is a run requirement
+  skip-lints:
+    - uses_setuptools

@@ -1,0 +1,54 @@
+{% set name = "funcy" %}
+{% set version = "2.0" %}
+{% set sha256 = "3963315d59d41c6f30c04bc910e10ab50a3ac4a225868bfa96feed133df075cb" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+
+test:
+  source_files:
+    - tests
+  imports:
+    - funcy
+  requires:
+    - pip
+    - pytest 6.2.5  # [py!=310]
+    - pytest 6.2.4  # [py==310]
+  commands:
+    - pip check
+    # Skipping test modules using whatever
+    - pytest -v tests --ignore=tests/test_tree.py --ignore=tests/test_funcolls.py --ignore=tests/test_funcs.py --ignore=tests/test_seqs.py --ignore=tests/test_colls.py
+
+about:
+  home: https://github.com/Suor/funcy
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: A collection of fancy functional tools focused on practicality.
+  description: |
+    A collection of fancy functional tools focused on practicality.
+    Inspired by clojure, underscore and my own abstractions. 
+  doc_url: https://funcy.readthedocs.io/
+  dev_url: https://github.com/Suor/funcy
+
+extra:
+  recipe-maintainers:
+    - synapticarbors

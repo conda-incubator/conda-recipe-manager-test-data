@@ -1,0 +1,98 @@
+{% set version = '2.0-3' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-pcapp
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/pcaPP_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/pcaPP/pcaPP_{{ version }}.tar.gz
+  sha256: 1aac554f039753bf9d026090e47d66b82bf3f1f75479ed0adefa3f7bbb55d603
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: robustbase
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-mvtnorm
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-mvtnorm
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('pcaPP')"           # [not win]
+    - "\"%R%\" -e \"library('pcaPP')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://github.com/valentint/pcaPP
+  license: GPL-3
+  summary: Provides functions for robust PCA by projection pursuit. The methods are described
+    in Croux et al. (2006) <doi:10.2139/ssrn.968376>, Croux et al. (2013) <doi:10.1080/00401706.2012.727746>,
+    Todorov and Filzmoser (2013) <doi:10.1007/978-3-642-33042-1_31>.
+  license_family: GPL3
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: pcaPP
+# Version: 2.0-3
+# VersionNote: Released 2.0-2 on 2022-07-08 on CRAN
+# Title: Robust PCA by Projection Pursuit
+# Author: Peter Filzmoser, Heinrich Fritz, Klaudius Kalcher
+# Maintainer: Valentin Todorov <valentin.todorov@chello.at>
+# Imports: mvtnorm, methods
+# Suggests: robustbase
+# Description: Provides functions for robust PCA by projection pursuit. The methods are described in Croux et al. (2006) <doi:10.2139/ssrn.968376>, Croux et al. (2013) <doi:10.1080/00401706.2012.727746>, Todorov and Filzmoser (2013) <doi:10.1007/978-3-642-33042-1_31>.
+# License: GPL (>= 3)
+# URL: https://github.com/valentint/pcaPP
+# BugReports: https://github.com/valentint/pcaPP/issues
+# NeedsCompilation: yes
+# Repository: CRAN
+# Packaged: 2022-10-23 18:19:00 UTC; valen
+# Date/Publication: 2022-10-24 07:02:47 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

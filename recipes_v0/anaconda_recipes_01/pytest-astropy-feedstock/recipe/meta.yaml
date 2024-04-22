@@ -1,0 +1,70 @@
+{% set name = "pytest-astropy" %}
+{% set version = "0.10.0" %}
+{% set git_url = "https://github.com/astropy/pytest-astropy" %}
+{% set sha256 = "85e3c66ceede4ce668f473b3cf377fcb2aa3c48e24f28aaa377ae86004cce211" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  skip: True  # [py<37]
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools >=30.3.0
+    - setuptools_scm
+    - wheel
+  run:
+    - python
+    - pytest >=4.6
+    - pytest-doctestplus >=0.11.0
+    - pytest-remotedata >=0.3.1
+    - pytest-openfiles >=0.3.1
+    - pytest-astropy-header >=0.1.2
+    - pytest-arraydiff >=0.1
+    - pytest-filter-subpackage >=0.1
+    - pytest-cov >=2.3.1
+    - pytest-mock >=2.0
+    - attrs >=19.2.0
+    - hypothesis >=5.1
+
+test:
+  imports:
+    - pytest_remotedata
+    - pytest_doctestplus
+    - pytest_openfiles
+    - pytest_arraydiff
+  requires:
+    - pip
+  commands:
+    - pip check || true    # [not win]
+    - pip check || exit 0  # [win]
+
+about:
+  home: {{ git_url }}
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.rst
+  summary: Meta-package containing dependencies for testing Astropy
+  description: |
+    This is a meta-package that pulls in the dependencies that are used by
+    astropy and some affiliated packages for testing. It can also be used for
+    testing packages that are not affiliated with the Astropy project.
+  doc_url: {{ git_url }}
+  dev_url: {{ git_url }}
+
+extra:
+  recipe-maintainers:
+    - astrofrog-conda-forge
+    - drdavella
+    - mwcraig

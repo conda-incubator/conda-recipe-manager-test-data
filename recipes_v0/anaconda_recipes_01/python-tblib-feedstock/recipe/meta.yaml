@@ -1,0 +1,57 @@
+{% set name = "python-tblib" %}
+{% set version = "1.7.1" %}
+
+package:
+  name: "{{ name }}"
+  version: "{{ version }}"
+
+source:
+  url: https://github.com/hoodmane/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: fc9db2b1384db9b446560e2d26ec29d829eae494df368ffff46389b2f147a527
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True  # [py<37]
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - tblib
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/hoodmane/python-tblib/
+  dev_url: https://github.com/hoodmane/python-tblib/
+  doc_url: https://github.com/hoodmane/python-tblib/tree/master#readme
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Serialization library for Exceptions and Tracebacks.
+  description: |
+    It allows you to:
+      * Pickle tracebacks and raise exceptions with pickled tracebacks in different processes.
+        This allows better error handling when running code over multiple processes
+        (imagine multiprocessing, billiard, futures, celery etc).
+      * Create traceback objects from strings (the from_string method). No pickling is used.
+      * Serialize tracebacks to/from plain dicts (the from_dict and to_dict methods). No pickling is used.
+      * Raise the tracebacks created from the aforementioned sources.
+      * Pickle an Exception together with its traceback and exception chain (raise ... from ...) (Python 3 only)
+    Again, note that using the pickle support is completely optional.
+    You are solely responsible for security problems should you decide to use the pickle support.
+
+extra:
+  recipe-maintainers:
+    - katietz
+    - jrice1317

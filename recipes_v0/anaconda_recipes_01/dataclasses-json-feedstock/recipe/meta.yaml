@@ -1,0 +1,54 @@
+{% set name = "dataclasses-json" %}
+{% set version = "0.5.7" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: c2c11bc8214fbf709ffc369d11446ff6945254a7f09128154a7620613d8fda90
+
+build:
+  number: 0
+  skip: True # [py<36]
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - wheel
+    - python
+    - setuptools 66.0
+  run:
+    - python
+    - marshmallow >=3.3.0,<4.0.0
+    - marshmallow-enum >=1.5.1,<2.0.0
+    - typing_inspect >=0.4.0
+
+test:
+  imports:
+    - dataclasses_json
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/lidatong/dataclasses-json
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Easily serialize dataclasses to and from JSON
+  description: |
+    This library provides a simple API for encoding and decoding dataclasses to and from JSON.
+    It is recursive, and supports arbitrary collections, datetime, UUID, and decimal objects.
+  doc_url: https://lidatong.github.io/dataclasses-json/
+  dev_url: https://github.com/lidatong/dataclasses-json
+
+extra:
+  recipe-maintainers:
+    - oblute
+    - rluria14
+    - ndmaxar
+    - mxr-conda

@@ -1,0 +1,68 @@
+{% set name = "pyerfa" %}
+{% set version = "2.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: f904231e1a570f94440e06140799590895107f942847b52a753ce81c9609162d
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools >=42
+    - setuptools_scm >=3.4
+    - jinja2 >=2.10.3
+    - numpy
+    - packaging
+    - toml
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+
+test:
+  requires:
+    - pytest-doctestplus
+    - pip
+  imports:
+    - erfa
+  commands:
+    - pip check
+
+about:
+  home: https://pyerfa.readthedocs.io/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.rst
+  summary: Python bindings for ERFA routines
+  description: |
+    PyERFA is the Python wrapper for the ERFA library (Essential Routines for
+    Fundamental Astronomy), a C library containing key algorithms for astronomy,
+    which is based on the SOFA library published by the International
+    Astronomical Union (IAU). All C routines are wrapped as Numpy universal
+    functions, so that they can be called with scalar or array inputs.
+
+    The project is a split of astropy._erfa module, developed in the context of
+    Astropy project, into a standalone package. It contains the ERFA C source
+    code as a git submodule. The wrapping is done with help of the Jinja2
+    template engine.
+  doc_url: https://pyerfa.readthedocs.io/
+  dev_url: https://github.com/liberfa/pyerfa
+
+extra:
+  recipe-maintainers:
+    - mwcraig
+    - astrofrog-conda-forge
+    - avalentino

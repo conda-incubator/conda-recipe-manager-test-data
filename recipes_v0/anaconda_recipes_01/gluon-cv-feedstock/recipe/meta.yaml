@@ -1,0 +1,65 @@
+{% set name = "gluon-cv" %}
+{% set version = "0.10.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://github.com/dmlc/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 2a76fd362e614122b0ff7e6b92844c465947f8cbbb6fa967fdc59dde3e7c7897
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+    - numpy
+    - tqdm
+    - requests
+    - matplotlib
+    - portalocker
+    - pillow
+    - scipy
+    - yacs
+    - pandas
+    - pyyaml
+    - autocfg
+
+test:
+  requires:
+    - pip
+    - mxnet
+    - pytest
+  imports:
+    - gluoncv
+  commands:
+    - cd test && pytest
+    #- pip check
+
+about:
+  home: https://github.com/dmlc/gluon-cv
+  license: Apache 2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: |
+    GluonCV provides implementations of the state-of-the-art (SOTA) deep learning 
+    models in computer vision.
+  description: |
+    GluonCV provides implementations of state-of-the-art (SOTA) deep learning algorithms in computer vision. It aims to help engineers, researchers, and students quickly prototype products, validate new ideas and learn computer vision.
+  doc_url: https://cv.gluon.ai/api/index.html
+  dev_url: https://github.com/dmlc/gluon-cv
+
+extra:
+  recipe-maintainers:
+    - dkomisar
+

@@ -1,0 +1,68 @@
+{% set version = "2.3.0" %}
+# commit for 2.3.0 tag
+{% set commit = "dc504af4a2445e9db836d3af9781ccc76c3856f2" %}
+
+package:
+  name: libhdfs3
+  version: {{ version }}
+
+source:
+  git_url: https://github.com/ContinuumIO/libhdfs3-downstream.git
+  git_tag: {{ commit }}
+  patches:
+    - CMakeLists.txt.diff
+    - 84ebda7d.patch
+    - cmake-minimum-req-version.patch
+    - missing-namespace-string-npos.patch
+
+build:
+  number: 5
+  # This package is a dependency of hdfs3, which is primarily used with HDFS on Linux.
+  # There isn't libgsasl > 1.8 on s390x
+  skip: True  # [win or osx or s390x]
+  run_exports:
+    # unknown.  Leaving defaults.
+    - {{ pin_subpackage('libhdfs3') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake >=3.3
+    - git
+    - make   # [linux]
+    - patch  # [not win]
+  host:
+    - libprotobuf  # libprotobuf pins itself to x.x via run_exports
+    - libgsasl 1.10 
+    - libntlm
+    - libuuid
+    - libxml2 {{ libxml2 }}
+    - krb5 1.20.1
+    - libboost  {{ boost }}
+    - openssl {{ openssl }}
+    - libcurl
+  run:
+    - {{ pin_compatible('libboost') }}
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libhdfs3.so
+    - conda inspect linkages -p $PREFIX libhdfs3
+
+about:
+  # The original GitHub repo at https://github.com/PivotalRD/libhdfs3 is not
+  # available anymore.
+  home: https://github.com/ContinuumIO/libhdfs3-downstream
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: A Native C/C++ HDFS Client
+  doc_url: https://github.com/ContinuumIO/libhdfs3-downstream/blob/master/libhdfs3/README.md
+  dev_url: https://github.com/ContinuumIO/libhdfs3-downstream
+
+extra:
+  recipe-maintainers:
+    - koverholt
+    - martindurant
+    - mrocklin

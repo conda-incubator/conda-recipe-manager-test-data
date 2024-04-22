@@ -1,0 +1,95 @@
+{% set version = '3.0.12' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-kohonen
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/kohonen_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/kohonen/kohonen_{{ version }}.tar.gz
+  sha256: 40944b916aa228d90862301beb9d93a521e6d98ba23c147d1bd9dded04ef0ca1
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-rcpp >=0.12.12
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-rcpp >=0.12.12
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('kohonen')"           # [not win]
+    - "\"%R%\" -e \"library('kohonen')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://CRAN.R-project.org/package=kohonen
+  license: GPL-2
+  summary: Functions to train self-organising maps (SOMs). Also interrogation of the maps and
+    prediction using trained maps are supported. The name of the package refers to Teuvo
+    Kohonen, the inventor of the SOM.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: kohonen
+# Version: 3.0.12
+# Title: Supervised and Unsupervised Self-Organising Maps
+# Author: Ron Wehrens and Johannes Kruisselbrink
+# Maintainer: Ron Wehrens <ron.wehrens@gmail.com>
+# Description: Functions to train self-organising maps (SOMs). Also interrogation of the maps and prediction using trained maps are supported. The name of the package refers to Teuvo Kohonen, the inventor of the SOM.
+# License: GPL (>= 2)
+# Depends: R (>= 2.10)
+# Imports: Rcpp (>= 0.12.12)
+# LinkingTo: Rcpp
+# NeedsCompilation: yes
+# Packaged: 2023-06-09 07:22:08 UTC; ron
+# Repository: CRAN
+# Date/Publication: 2023-06-09 08:40:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

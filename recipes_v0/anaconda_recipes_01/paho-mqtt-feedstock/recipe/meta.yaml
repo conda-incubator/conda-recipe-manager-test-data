@@ -1,0 +1,46 @@
+{% set name = "paho-mqtt" %}
+{% set version = "1.6.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 2a8291c81623aec00372b5a85558a372c747cbca8e9934dfe218638b8eefc26f
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} setup.py install --old-and-unmanageable
+
+requirements:
+  host:
+    - python >=3.6
+    - setuptools
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - paho
+    - paho.mqtt
+  requires:
+    - mock
+    - pylama
+    - pytest
+    - six
+
+about:
+  home: http://eclipse.org/paho
+  license: EPL-2.0 AND BSD-3-Clause
+  license_family: OTHER
+  license_file: LICENSE.txt
+  summary: MQTT version 3.1.1 client class
+  description: Eclipse Paho MQTT Python Client
+
+extra:
+  recipe-maintainers:
+    - ilanschnell
+    - nerohmot

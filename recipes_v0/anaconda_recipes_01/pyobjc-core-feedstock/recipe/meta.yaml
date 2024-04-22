@@ -1,0 +1,68 @@
+{% set name = "pyobjc-core" %}
+{% set version = "10.1" %}
+{% set sha256 = "1844f1c8e282839e6fdcb9a9722396c1c12fb1e9331eb68828a26f28a3b2b2b1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+  # Required to prevent an error "code will never be executed" 
+  # in Modules/objc/class-builder.m:1999:17
+    - fix_for_conda_build.diff
+
+build:
+  number: 0
+  skip: true  # [not osx or py<38]
+  script: 
+    # force pyobjc to use conda-forge's chosen SDK
+    - export CFLAGS="${CFLAGS} -isysroot ${SDKROOT:-$CONDA_BUILD_SYSROOT}"
+    # force ignoring invalid compiler flag (-Wl,-export-dynamic)
+    - export CFLAGS="${CFLAGS} -Wno-unused-command-line-argument"  # [py==38]
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - patch
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+    - libffi 3.4
+  run:
+    - python
+    - libffi >=3.4,<3.5
+
+test:
+  imports:
+    - PyObjCTools
+    - objc
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/ronaldoussoren/pyobjc
+  license: MIT
+  summary: 'Python<->ObjC Interoperability Module'
+  description: |
+    The PyObjC package provides the glue needed to interface the Python interpreter
+    with the Objective-C language. At its core is the `objc` module makes
+    Objective-C objects and classes available as first-class Python citizens. It is
+    not only possible to use Objective-C objects but you can also subclass
+    Objective-C classes.
+  license_family: MIT
+  license_file: License.txt
+  dev_url: https://github.com/ronaldoussoren/pyobjc/tree/master/pyobjc-core
+  doc_url: https://github.com/ronaldoussoren/pyobjc/blob/master/pyobjc-core/README.txt
+
+extra:
+  recipe-maintainers:
+    - kastman

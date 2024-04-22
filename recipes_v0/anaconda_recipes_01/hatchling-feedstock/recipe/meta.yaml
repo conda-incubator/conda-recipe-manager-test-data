@@ -1,0 +1,64 @@
+{% set name = "hatchling" %}
+{% set version = "1.21.1" %}
+{% set build = "0" %}
+{% set checksum = "bba440453a224e7d4478457fa2e8d8c3633765bafa02975a6b53b9bf917980bc" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/hatchling-{{ version }}.tar.gz
+  sha256: {{ checksum }}
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: {{ build }}
+  skip: True  # [py<38]
+  entry_points:
+    - hatchling = hatchling.cli:hatchling
+
+requirements:
+  host:
+    - pip
+    - python
+    # bootstrapping
+    - editables >=0.3
+    - packaging >=21.3
+    - pathspec >=0.10.1
+    - pluggy >=1.0.0
+    - tomli >=1.2.2  # [py<311]
+    - trove-classifiers
+  run:
+    - editables >=0.3
+    - packaging >=21.3
+    - pathspec >=0.10.1
+    - pluggy >=1.0.0
+    - python
+    - tomli >=1.2.2  # [py<311]
+    - trove-classifiers
+
+test:
+  imports:
+    - hatchling
+  commands:
+    - pip check
+    - hatchling --help
+  requires:
+    - pip
+
+about:
+  home: https://hatch.pypa.io/latest/
+  summary: Modern, extensible Python build backend
+  description: Modern, extensible Python build backend
+  dev_url: https://github.com/pypa/hatch/tree/master/backend
+  doc_url: https://hatch.pypa.io/latest/plugins/about/#hatchling
+  license: MIT
+  license_file: LICENSE.txt
+  license_family: MIT
+
+extra:
+  recipe-maintainers:
+    - ofek
+  skip-lints:
+    - missing_wheel

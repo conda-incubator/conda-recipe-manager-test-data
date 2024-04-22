@@ -1,0 +1,85 @@
+{% set version = '1.0-0.4' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-perm
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/perm_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/perm/perm_{{ version }}.tar.gz
+  sha256: 561e01793a9032b6a3676a7819fe24175eeb9e96a5314bd78b9c48d46e627be9
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: coin
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+
+  run:
+    - r-base
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('perm')"           # [not win]
+    - "\"%R%\" -e \"library('perm')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://CRAN.R-project.org/package=perm
+  license: GPL-3
+  summary: Perform Exact or Asymptotic permutation tests [see Fay and Shaw <doi:10.18637/jss.v036.i02>].
+  license_family: GPL3
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: perm
+# Type: Package
+# Title: Exact or Asymptotic Permutation Tests
+# Version: 1.0-0.4
+# Date: 2023-08-24
+# Author: Michael Fay
+# Maintainer: Michael P. Fay <mfay@niaid.nih.gov>
+# Depends: R (>= 2.2.1), stats
+# Suggests: coin
+# Description: Perform Exact or Asymptotic permutation tests [see Fay and Shaw <doi:10.18637/jss.v036.i02>].
+# License: GPL
+# NeedsCompilation: no
+# Packaged: 2023-08-24 19:53:14 UTC; faym
+# Repository: CRAN
+# Date/Publication: 2023-08-24 21:00:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

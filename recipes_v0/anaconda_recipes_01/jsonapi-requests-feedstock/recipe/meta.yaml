@@ -1,0 +1,49 @@
+{% set name = "jsonapi-requests" %}
+{% set version = "0.6.2" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/jsonapi-requests-{{ version }}.tar.gz
+  sha256: ce83161f0e1d5007ec55a4083563f5e726e052e382fd05c42e6c0115bd9dc650
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3
+    - pip
+    - pytest-runner
+  run:
+    - python >=3
+    - requests
+    - tenacity
+
+test:
+  imports:
+    - jsonapi_requests
+    - jsonapi_requests.orm
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/socialwifi/jsonapi-requests
+  summary: Python client implementation for json api. http://jsonapi.org/
+  license: BSD-3-Clause
+  license_file: LICENSE
+  license_family: BSD
+
+  doc_url: https://github.com/socialwifi/jsonapi-requests/wiki
+  dev_url: https://github.com/socialwifi/jsonapi-requests
+
+extra:
+  recipe-maintainers:
+    - sodre

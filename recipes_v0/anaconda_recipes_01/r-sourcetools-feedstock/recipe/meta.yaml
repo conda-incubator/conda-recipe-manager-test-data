@@ -1,0 +1,97 @@
+{% set version = '0.1.7-1' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-sourcetools
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/sourcetools_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/sourcetools/sourcetools_{{ version }}.tar.gz
+  sha256: 96812bdb7a0dd99690d84e4b0a3def91389e4290f53f01919ef28a50554e31d1
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: testthat
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('sourcetools')"           # [not win]
+    - "\"%R%\" -e \"library('sourcetools')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://CRAN.R-project.org/package=sourcetools
+  license: MIT
+  summary: Tools for the reading and tokenization of R code. The 'sourcetools' package provides
+    both an R and C++ interface for the tokenization of R code, and helpers for interacting
+    with the tokenized representation of R code.
+  license_family: MIT
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/MIT'
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - croth1
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: sourcetools
+# Type: Package
+# Title: Tools for Reading, Tokenizing and Parsing R Code
+# Version: 0.1.7-1
+# Author: Kevin Ushey
+# Maintainer: Kevin Ushey <kevinushey@gmail.com>
+# Description: Tools for the reading and tokenization of R code. The 'sourcetools' package provides both an R and C++ interface for the tokenization of R code, and helpers for interacting with the tokenized representation of R code.
+# License: MIT + file LICENSE
+# Depends: R (>= 3.0.2)
+# Suggests: testthat
+# RoxygenNote: 5.0.1
+# BugReports: https://github.com/kevinushey/sourcetools/issues
+# Encoding: UTF-8
+# NeedsCompilation: yes
+# Packaged: 2023-01-31 18:03:04 UTC; kevin
+# Repository: CRAN
+# Date/Publication: 2023-02-01 10:10:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

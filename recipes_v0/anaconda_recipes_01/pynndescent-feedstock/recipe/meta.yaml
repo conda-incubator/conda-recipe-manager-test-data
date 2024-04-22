@@ -1,0 +1,58 @@
+{% set name = "pynndescent" %}
+{% set version = "0.5.10" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 5d5dc683c03ef55fe3ddf693859720ca18f85c6e6e5bb0b4f14870278d5288ad
+
+build:
+  number: 0
+  # numba and llvmlite aren't available on s390x
+  skip: true  # [py<37 or s390x]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - importlib-metadata >=4.8.1  # [py<38]
+    - joblib >=0.11
+    - llvmlite >=0.34
+    - numba >=0.51.2
+    - numpy >=1.17
+    - scikit-learn >=0.18
+    - scipy >=1.0
+
+test:
+  imports:
+    - pynndescent
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/lmcinnes/pynndescent
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Simple fast approximate nearest neighbor search
+  description: |
+    A Python nearest neighbor descent for approximate nearest neighbors. 
+    This is a relatively straightforward python implementation of 
+    Nearest Neighbor Descent for k-neighbor-graph construction and 
+    approximate nearest neighbor search.
+  dev_url: https://github.com/lmcinnes/pynndescent
+  doc_url: https://pynndescent.readthedocs.io/en/latest/
+
+extra:
+  recipe-maintainers:
+    - lmcinnes

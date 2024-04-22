@@ -1,0 +1,74 @@
+{% set version = "1.1.10" %}
+{% set sha256 = "49d831bffcc5f3d01482340fe5af59852ca2fe76c3e05df0e67203ebbe0f1d90" %}
+
+package:
+  name: snappy
+  version: {{ version }}
+
+source:
+  - url: https://github.com/google/snappy/archive/{{ version }}.tar.gz
+    sha256: {{ sha256 }}
+    patches:
+      # - Add_inline.patch
+      - fix_win_exports.patch  # [win]  Ensure `snappy_test_support.lib` is built.
+      - 0001-Omit-Werror-during-compilation.patch
+      - 0002-Debundle-gtest-and-gmock.patch
+
+build:
+  number: 1
+  run_exports:
+    # other than a fluke at 1.1.5, it's stable
+    #   https://abi-laboratory.pro/tracker/timeline/snappy/
+    - {{ pin_subpackage('snappy', max_pin='x') }}
+  ignore_run_exports:
+    - gtest
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - make  # [unix]
+    - cmake
+    - git  # [not win]
+    - m2-patch  # [win]
+    - patch  # [not win]
+  host:
+    - msinttypes  # [win and vc<14]
+    - gtest  # We run the tests during the build, so we need gtest
+
+test:
+  commands:
+    - test -e $PREFIX/include/snappy.h               # [unix]
+    - test -e $PREFIX/include/snappy-stubs-public.h  # [unix]
+    - test -e $PREFIX/lib/libsnappy$SHLIB_EXT        # [unix]
+    - test -e $PREFIX/lib/libsnappy.a                # [unix]
+    - if not exist %LIBRARY_INC%\snappy.h exit 1               # [win]
+    - if not exist %LIBRARY_INC%\snappy-stubs-public.h exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\snappy.lib exit 1             # [win]
+    - if not exist %LIBRARY_BIN%\snappy.dll exit 1             # [win]
+    - if not exist %LIBRARY_LIB%\snappy_static.lib exit 1      # [win]
+
+about:
+  home: https://github.com/google/snappy
+  license: BSD-3-clause AND CC-BY-3.0 AND MIT AND CC-BY AND Public Domain
+  license_file: COPYING
+  license_family: BSD
+  summary: A fast compressor/decompressor
+  description: |
+    Snappy is a compression/decompression library. It does not aim for maximum
+    compression, or compatibility with any other compression library; instead, it
+    aims for very high speeds and reasonable compression. For instance, compared to
+    the fastest mode of zlib, Snappy is an order of magnitude faster for most
+    inputs, but the resulting compressed files are anywhere from 20% to 100%
+    bigger.
+  dev_url: https://github.com/google/snappy
+  doc_url: https://github.com/google/snappy/tree/master/docs
+
+extra:
+  recipe-maintainers:
+    - groutr
+    - jakirkham
+    - wesm
+    - xhochy
+    - dougalsutherland
+    - MaxRis

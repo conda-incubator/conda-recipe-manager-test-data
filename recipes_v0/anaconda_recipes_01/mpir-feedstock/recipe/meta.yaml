@@ -1,0 +1,64 @@
+{% set version = "3.0.0" %}
+
+package:
+  name: mpir
+  version: {{ version }}
+
+source:
+  url: http://mpir.org/mpir-{{ version }}.tar.bz2
+  sha256: 52f63459cf3f9478859de29e00357f004050ead70b45913f2c2269d9708675bb
+
+build:
+  number: 1
+
+requirements:
+  host:
+    - msinttypes      # [win and vc<14]
+  build:
+    - m4              # [unix]
+    - yasm            # [unix]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+
+test:
+  requires:
+    - {{ compiler('c') }}
+  files:
+    - test.c
+  commands:
+    - if not exist %LIBRARY_INC%\\mpir.h exit 1                # [win]
+    - if not exist %LIBRARY_INC%\\mpirxx.h exit 1              # [win]
+    - if not exist %LIBRARY_INC%\\gmp.h exit 1                 # [win]
+    - if not exist %LIBRARY_INC%\\gmpxx.h exit 1               # [win]
+
+    - if not exist %LIBRARY_LIB%\\mpir.lib exit 1              # [win]
+    - if not exist %LIBRARY_LIB%\\gmp.lib exit 1               # [win]
+    - if not exist %LIBRARY_BIN%\\mpir.dll exit 1              # [win]
+    - if not exist %LIBRARY_BIN%\\gmp.dll exit 1               # [win]
+
+    - if not exist %LIBRARY_LIB%\\mpir_static.lib exit 1       # [win]
+    - if not exist %LIBRARY_LIB%\\mpirxx_static.lib exit 1     # [win]
+    - if not exist %LIBRARY_LIB%\\gmp_static.lib exit 1        # [win]
+    - if not exist %LIBRARY_LIB%\\gmpxx_static.lib exit 1      # [win]
+
+    - test -f $PREFIX/include/mpir.h                           # [unix]
+    - test -f $PREFIX/include/mpirxx.h                         # [unix]
+    - test -f $PREFIX/lib/libmpir.a                            # [unix]
+    - test -f $PREFIX/lib/libmpirxx.a                          # [unix]
+
+    - test -f $PREFIX/lib/libmpir.so                           # [linux]
+    - test -f $PREFIX/lib/libmpirxx.so                         # [linux]
+
+    - test -f $PREFIX/lib/libmpir.dylib                        # [osx]
+    - test -f $PREFIX/lib/libmpirxx.dylib                      # [osx]
+
+about:
+  home: http://mpir.org/
+  license: LGPL 3
+  license_file: COPYING.LIB
+  summary: Multiple Precision Integers and Rationals.
+
+extra:
+  recipe-maintainers:
+    - isuruf
+    - jakirkham

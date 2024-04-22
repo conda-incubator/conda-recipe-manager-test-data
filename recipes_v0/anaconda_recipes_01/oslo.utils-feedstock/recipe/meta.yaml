@@ -1,0 +1,63 @@
+{% set name = "oslo.utils" %}
+{% set version = "6.1.0" %}
+{% set bundle = "tar.gz" %}
+{% set hash = "76bc0108d50aca972b68fec8298e791b5fbcbeb9a51a27c6986b41b0a6a62eeb" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.{{ bundle }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  sha256: {{ hash }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  noarch: python
+
+requirements:
+  host:
+    - python >=3.8
+    - setuptools
+    - pbr !=2.1.0,>=2.0.0
+
+  run:
+    - python >=3.8
+    - iso8601 >=0.1.11
+    - oslo.i18n >=3.15.3
+    - pytz >=2013.6
+    - netaddr >=0.7.18
+    - netifaces >=0.10.4
+    - debtcollector >=1.2.0
+    - pyparsing >=2.1.0
+    - packaging >=20.4
+    - pyyaml
+
+test:
+  imports:
+    - oslo_utils
+    - oslo_utils.encodeutils
+    - oslo_utils.eventletutils
+    - oslo_utils.excutils
+    - oslo_utils.fileutils
+    - oslo_utils.importutils
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://docs.openstack.org/developer/oslo.utils/
+  license_file: LICENSE
+  license: Apache-2.0
+  license_family: Apache
+  summary: Support for common utility type functions, such as encoding, exception handling, string manipulation, and time handling.
+  doc_url: https://docs.openstack.org/developer/oslo.utils/
+  dev_url: https://git.openstack.org/cgit/openstack/oslo.utils
+
+extra:
+  recipe-maintainers:
+    - anguslees
+    - tschoonj

@@ -1,0 +1,51 @@
+{% set version = "0.6.2" %}
+
+package:
+  name: parse_type
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/parse_type/parse_type-{{ version }}.tar.gz
+  sha256: 79b1f2497060d0928bc46016793f1fca1057c4aacdf15ef876aa48d75a73a355
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - pip
+    - wheel
+  run:
+    - python
+    - parse >=1.18.0
+    - six >=1.15
+
+test:
+  imports:
+    - parse_type
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/jenisys/parse_type
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Simplifies to build parse types based on the parse module
+  description: |
+    parse_type extends the parse module (opposite of string.format()) with the following features:
+      * build type converters for common use cases (enum/mapping, choice)
+      * build a type converter with a cardinality constraint (0..1, 0..*, 1..*) from the type converter with cardinality=1.
+      * compose a type converter from other type converters
+      * an extended parser that supports the CardinalityField naming schema and creates missing type variants (0..1, 0..*, 1..*) from the primary type converter
+  dev_url: https://github.com/jenisys/parse_type
+  doc_url: https://github.com/jenisys/parse_type#parse_type
+
+extra:
+  recipe-maintainers:
+    - stuertz

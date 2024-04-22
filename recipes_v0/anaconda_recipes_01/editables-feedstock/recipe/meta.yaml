@@ -1,0 +1,37 @@
+{% set name = "editables" %}
+{% set version = "0.3" %}
+{% set checksum = "167524e377358ed1f1374e61c268f0d7a4bf7dbd046c656f7b410cde16161b1a" %}
+{% set build = "0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  sha256: {{ checksum }}
+
+build:
+  number: {{ build }}
+  script: "{{ PYTHON }} -m pip install . -vv"
+  skip: True  # [py<37]
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - python
+
+about:
+  home: https://github.com/pfmoore/editables
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: A Python library for creating "editable wheels"
+  doc_url: https://pypi.org/project/editables/
+  dev_url: https://github.com/pfmoore/editables
+
+extra:
+  recipe-maintainers:
+    - dholth

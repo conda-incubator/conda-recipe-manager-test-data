@@ -1,0 +1,46 @@
+{% set version = "2.4.0" %}
+{% set sha256 = "c7dfa8b2b7c46bff92babaf4453f6c73f2ef1b7622a8b030f68838791ef3643a" %}
+
+package:
+  name: pythreejs
+  version: {{ version }}
+
+source:
+  fn: pythreejs-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/p/pythreejs/pythreejs-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+    - setuptools
+    - nodejs
+    - jupyterlab >=3,<4
+  run:
+    - python >=3.7
+    - ipydatawidgets
+    - ipywidgets >=7,<9
+    - numpy
+    - traitlets
+
+test:
+  imports:
+    - pythreejs
+
+about:
+  home: https://github.com/jupyter-widgets/pythreejs
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: A Python / ThreeJS bridge utilizing the Jupyter widget infrastructure.
+
+extra:
+  recipe-maintainers:
+    - SylvainCorlay
+    - jasongrout
+    - vidartf

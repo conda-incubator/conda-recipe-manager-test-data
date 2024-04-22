@@ -1,0 +1,123 @@
+{% set version = "1.11.1" %}
+{% set name = "geoviews" %}
+
+package:
+  name: {{ name }}-split
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 6c65e2122c8b62ee7985bb956369d05953c7704081f90b686a0fdfaf20933d2b
+
+build:
+  number: 0
+  #skip s390x as lack of nodejs and cartopy dependencies
+  skip: True  # [py<39 or s390x]
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+outputs:
+  - name: {{ name }}-core
+    script: build_base.sh # [not win]
+    script: build_base.bat # [win]
+    build:
+      skip: True  # [py<39 or s390x]
+      entry_points:
+        - geoviews = geoviews.__main__:main
+    requirements:
+      run_constrained:
+        - {{ name }} {{ version }}
+      host:
+        - python
+        - pip
+        - setuptools
+        - wheel
+        - packaging
+        - param =1.9
+        - pyct 0.5.0
+        - bokeh >=3.3.0,<3.4
+        - nodejs 18.16
+        - pyviz_comms >=0.6.0
+      run:
+        - python
+        - bokeh >=3.2.0,<3.4
+        - cartopy >=0.18.0
+        - holoviews >=1.16.0
+        - numpy >=1.0
+        - param >=1.9.0,<3.0
+        - panel >=1.0.0
+        - pyproj
+        - packaging
+        - shapely
+        - xyzservices
+    test:
+      requires:
+        - pip
+      commands:
+        - pip check
+      imports:
+        - {{ name }}
+
+  - name: {{ name }}
+    build:
+      skip: True  # [py<39 or s390x]
+    requirements:
+      host:
+        - python
+        - pip
+        - setuptools
+        - wheel
+      run:
+        - python
+        - {{ pin_subpackage('geoviews-core', exact=True) }}
+        - datashader
+        - geopandas-base
+        - netcdf4
+        - pandas
+        - pyct
+        - xarray
+        - scipy
+        - pooch
+    test:
+      imports:
+        - {{ name }}
+      requires:
+        - pip
+      commands:
+        - pip check
+    about:
+      home: https://geoviews.org
+      license: BSD-3-Clause
+      license_family: BSD
+      license_file: LICENSE
+      summary: GeoViews is a Python library that makes it easy to explore and visualize geographical, meteorological, and oceanographic datasets, such as those used in weather, climate, and remote sensing research.
+      description: |
+        GeoViews is built on the HoloViews library for building flexible visualizations of multidimensional data. 
+        GeoViews adds a family of geographic plot types based on the Cartopy library, 
+        plotted using either the Matplotlib or Bokeh packages.
+      doc_url: https://geoviews.org
+      dev_url: https://github.com/holoviz/geoviews
+
+about:
+  home: https://geoviews.org
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: GeoViews is a Python library that makes it easy to explore and visualize geographical, meteorological, and oceanographic datasets, such as those used in weather, climate, and remote sensing research.
+  description: |
+    GeoViews is built on the HoloViews library for building flexible visualizations of multidimensional data. 
+    GeoViews adds a family of geographic plot types based on the Cartopy library, 
+    plotted using either the Matplotlib or Bokeh packages.
+  doc_url: https://geoviews.org
+  dev_url: https://github.com/holoviz/geoviews
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - philippjfr
+    - maximlt
+    - Hoxbro
+  skip-lints:
+    - host_section_needs_exact_pinnings

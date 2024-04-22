@@ -1,0 +1,46 @@
+{% set name = "typish" %}
+{% set version = "1.9.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/ramonhagenaars/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: 16f8ff022b7009a91529e363d0484465be57797b9cc34a193ca7e3c4c597e4bc
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - typish
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/ramonhagenaars/typish
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: For more control over your types.
+
+  description: |
+    For more control over your types.
+  doc_url: https://github.com/ramonhagenaars/typish
+  dev_url: https://github.com/ramonhagenaars/typish
+
+extra:
+  recipe-maintainers:
+    - jan-janssen

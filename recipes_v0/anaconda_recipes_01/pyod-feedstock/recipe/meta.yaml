@@ -1,0 +1,57 @@
+{% set name = "pyod" %}
+{% set version = "1.0.9" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 1d213b98a8d56bef483eac46e2a53171ffa2f90e4ea489ecd6771bfa022ba447
+
+build:
+  number: 0
+  # numba isn't available on s390x
+  skip: true  # [s390x]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - joblib
+    - matplotlib-base
+    - numba >=0.51
+    - numpy >=1.19
+    - scikit-learn >=0.20.0
+    - scipy >=1.5.1
+    - six
+
+test:
+  imports:
+    - pyod
+    - pyod.models
+    - pyod.utils
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/yzhao062/pyod
+  dev_url: https://github.com/yzhao062/pyod
+  doc_url: https://pyod.readthedocs.io
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: A Python Toolkit for Scalable Outlier Detection (Anomaly Detection)
+  description: A Python Toolkit for Scalable Outlier Detection (Anomaly Detection)
+
+extra:
+  recipe-maintainers:
+    - yzhao062
+    - apcamargo

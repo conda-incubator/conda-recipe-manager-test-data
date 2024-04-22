@@ -1,0 +1,75 @@
+{% set name = "datasets" %}
+{% set version = "2.12.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: faf164c18a41bea51df3f369e872f8be5b84c12ea5f6393c3896f56038af1ea3
+
+build:
+  # s390x is missing pyarrow atm 
+  skip: true  # [py<37 or s390x] 
+  entry_points:
+    - datasets-cli=datasets.commands.datasets_cli:main
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - numpy >=1.17
+    - pyarrow >=8.0.0
+    - dill >=0.3.0,<0.3.7
+    - pandas
+    - requests >=2.19.0
+    - tqdm >=4.62.1
+    - python-xxhash
+    - multiprocess
+    - importlib-metadata  # [py<38]
+    - fsspec >=2021.11.1
+    - aiohttp
+    - huggingface_hub >=0.11.0,<1.0.0
+    - packaging
+    - responses <0.19
+    - pyyaml >=5.1
+
+test:
+  imports:
+    - datasets
+    - datasets.commands
+    - datasets.utils
+  commands:
+    - pip check
+    - datasets-cli --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/huggingface/datasets
+  summary: HuggingFace community-driven open-source library of datasets
+  description: |
+    Datasets is a lightweight library providing two main features:
+
+    - one-line dataloaders for many public datasets: one-liners to download and pre-process any of the number of datasets major public datasets (text datasets in 467 languages and dialects, image datasets, audio datasets, etc.) provided on the HuggingFace Datasets Hub. With a simple command like squad_dataset = load_dataset("squad"), get any of these datasets ready to use in a dataloader for training/evaluating a ML model (Numpy/Pandas/PyTorch/TensorFlow/JAX),
+    - efficient data pre-processing: simple, fast and reproducible data pre-processing for the above public datasets as well as your own local datasets in CSV/JSON/text/PNG/JPEG/etc. With simple commands like `processed_dataset = dataset.map(process_example)`, efficiently prepare the dataset for inspection and ML model evaluation and training.
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE  
+  doc_url: https://huggingface.co/docs/datasets/index
+  dev_url: https://github.com/huggingface/datasets
+
+extra:
+  recipe-maintainers:
+    - oblute
+    - Tata17
+    - thewchan
+    - mxr-conda
+    - wietsedv

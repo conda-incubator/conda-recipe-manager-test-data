@@ -1,0 +1,71 @@
+{% set name = "llvmlite" %}
+{% set version = "0.42.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/llvmlite-{{ version }}.tar.gz
+  sha256: f92b09243c0cc3f457da8b983f67bd8e1295d0f5b3746c7a1861d7a99403854a
+
+build:
+  number: 0
+  skip: true  # [py<39 or s390x]
+  script_env:
+    - PY_VCRUNTIME_REDIST
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - make                   # [unix]
+  host:
+    - python
+    - setuptools
+    - pip
+    - wheel
+    - llvmdev 14.*
+    - llvm 14.*
+    # zlib on win because our llvmdev is not built with LLVM_ENABLE_ZLIB=OFF
+    - zlib {{ zlib }} # [win]
+  run:
+    - python
+    - zlib # [win] through run_exports
+
+test:
+  requires:
+    - pip
+  imports:
+    - llvmlite
+    - llvmlite.binding
+    - llvmlite.ir
+    - llvmlite.tests
+  commands:
+    - pip check
+    - export LLVMLITE_DIST_TEST=''  # [unix]
+    - set LLVMLITE_DIST_TEST=""     # [win]
+    - python -m llvmlite.tests
+
+    
+
+about:
+  home: https://llvmlite.readthedocs.io
+  license: BSD-2-Clause
+  license_file: LICENSE
+  license_family: BSD
+  summary: A lightweight LLVM python binding for writing JIT compilers.
+  description: llvmlite provides a Python binding to LLVM for use in Numba. Numba previously relied on llvmpy.
+  doc_url: https://llvmlite.pydata.org
+  dev_url: https://github.com/numba/llvmlite
+
+extra:
+  skip-lints:
+    # llvmlite is a LLVM python binding, which is why it uses llvm directly in host
+    - should_use_compilers
+  recipe-maintainers:
+    - jakirkham
+    - souravsingh
+    - marcelotrevisani
+    - xhochy
+    - mbargull

@@ -1,0 +1,34 @@
+{% set name = "jom" %}
+{% set version = "1.1.3" %}
+{% set sha256 = "128fdd846fe24f8594eed37d1d8929a0ea78df563537c0c1b1861a635013fff8" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: http://download.qt.io/official_releases/jom/jom_{{ version.replace('.', '_') }}.zip
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [not win]
+  script:
+    - cp *.bat %LIBRARY_BIN%\
+    - cp *.exe %LIBRARY_BIN%\
+    - cp *.xml %LIBRARY_BIN%\
+
+test:
+  commands:
+    - jom /VERSION
+
+about:
+  home: https://wiki.qt.io/Jom
+  license: GPLv3
+  license_family: GPL
+  license_file: {{ RECIPE_DIR }}/LICENSE
+  summary: 'jom is a clone of nmake to support the execution of multiple independent commands in parallel'
+
+extra:
+  recipe-maintainers:
+    - isuruf

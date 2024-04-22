@@ -1,0 +1,69 @@
+{% set name = "connexion" %}
+{% set version = "2.14.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/connexion-{{ version }}.tar.gz
+  sha256: ed6f9c97ca5281257935c5530570b2a2394a689ece1b171c18d855cf751adbb4
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - connexion = connexion.cli:main
+  skip: True  # [py<36]
+  # inflection >=0.3.1 and <0.6 is not present on s390x
+  skip: True  # [linux and s390x]
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - mccabe >=0.6.0,<0.7.0
+    - flake8
+    - importlib-metadata <4.3
+
+  run:
+    - python
+    - clickclick >=1.2,<21
+    # from upstream only for py<38, but let's keep it noarch: python
+    - importlib-metadata >=1
+    - inflection >=0.3.1,<0.6
+    - jsonschema >=2.5.1,<5
+    - packaging >=20
+    - pyyaml >=5.1,<7
+    - requests >=2.9.1,<3
+    - werkzeug >=1.0,<3.0
+    # note: install_requires includes flask_require:
+    - flask >=1.0.4,<3
+    - itsdangerous >=0.24
+
+test:
+  requires:
+    - pip
+  imports:
+    - connexion
+    - connexion.apis
+    - connexion.apps
+    - connexion.decorators
+  commands:
+    - connexion --version
+    - pip check
+
+about:
+  home: https://github.com/zalando/connexion
+  license: Apache-2.0
+  summary: Swagger/OpenAPI First framework for Python on top of Flask with automatic endpoint validation & OAuth2 support
+  license_family: APACHE
+  license_file: LICENSE.txt
+  dev_url: https://github.com/zalando/connexion
+  doc_url: https://connexion.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - rvalieris
+    - xylar

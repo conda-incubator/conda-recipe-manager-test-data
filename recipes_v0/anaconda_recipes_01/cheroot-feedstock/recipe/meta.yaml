@@ -1,0 +1,51 @@
+{% set name = "Cheroot" %}
+{% set version = "8.5.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0]|lower }}/{{ name|lower }}/{{ name|lower }}-{{ version }}.tar.gz
+  sha256: f137d03fd5155b1364bea557a7c98168665c239f6c8cedd8f80e81cdfac01567
+
+build:
+  number: 1
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - cheroot = cheroot.cli:main
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools_scm >=1.15.0
+    - setuptools-scm-git-archive >=1.0
+  run:
+    - python
+    - six >=1.11.0
+    - selectors2  # [py<34]
+    - more-itertools >=2.6
+    - backports.functools_lru_cache  # [py<33]
+    - jaraco.functools
+
+test:
+  imports:
+    - cheroot
+    - cheroot.test
+  commands:
+    - cheroot -h
+
+about:
+  home: http://www.cherrypy.org
+  license: BSD 3-Clause
+  license_family: BSD
+  license_file: LICENSE.md
+  summary: Highly-optimized, pure-python HTTP server
+  dev_url: https://github.com/cherrypy/cheroot
+  doc_url: https://cheroot.readthedocs.io/en/latest/
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - carlodri

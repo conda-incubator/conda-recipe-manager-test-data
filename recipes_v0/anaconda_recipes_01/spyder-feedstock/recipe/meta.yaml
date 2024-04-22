@@ -1,0 +1,126 @@
+{% set version = "5.5.1" %}
+
+package:
+  name: spyder
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/s/spyder/spyder-{{ version }}.tar.gz
+  sha256: fb3f098f4780fe6607d6bf19414c98505324ee1d660718e84c3e58664d1c1f49
+
+build:
+  number: 0
+  skip: true  # [s390x or py<38]
+  entry_points:
+    - spyder = spyder.app.start:main
+  osx_is_app: true
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+   - python
+   - applaunchservices >=0.3.0  # [osx]
+   - atomicwrites >=1.2.0
+   - chardet >=2.0.0
+   - cloudpickle >=0.5.0
+   - cookiecutter >=1.6.0
+   - diff-match-patch >=20181111
+   - intervaltree >=3.0.2
+   - ipython >=8.12.2,<8.13.0  # [py==38]
+   - ipython >=8.13.0,<9.0.0,!=8.17.1  # [py>38]
+   - jedi >=0.17.2,<0.20.0
+   - jellyfish >=0.7
+   - jsonschema >=3.2.0
+   - keyring >=17.0.0
+   - nbconvert >=4.0
+   - numpydoc >=0.6.0
+   - paramiko >=2.4.0  # [win]
+   - parso >=0.7.0,<0.9.0
+   - pexpect >=4.4.0
+   - pickleshare >=0.4
+   # This is here to work around a bug in mamba
+   - ptyprocess >=0.5  # [win]
+   - psutil >=5.3
+   - pygments >=2.0
+   - pylint >=2.5.0,<3.1
+   - pylint-venv >=3.0.2
+   - python-lsp-black >=2.0.0,<3.0.0
+   - pyls-spyder >=0.4.0
+   - pyqt >=5.10,<5.16
+   - pyqtwebengine >=5.10,<5.16
+   - python.app  # [osx]
+   - python-lsp-server >=1.10.0,<1.11.0
+   - pyxdg >=0.26  # [linux]
+   - pyzmq >=22.1.0
+   - qdarkstyle >=3.2.0,<3.3.0
+   - qstylizer >=0.2.2
+   - qtawesome >=1.2.1
+   - qtconsole >=5.5.1,<5.6.0
+   - qtpy >=2.1.0
+   - rtree >=0.9.7
+   - setuptools >=49.6.0
+   - sphinx >=0.6.6
+   - spyder-kernels >=2.5.0,<2.6.0
+   - textdistance >=4.2.0
+   - three-merge >=0.1.1
+   - watchdog >=0.10.3
+  run_constrained:
+    - menuinst >=1.4.17 
+
+test:
+  # NOTE: Since this is a GUI application, built packages should be uploaded to
+  # a staging channel and manual testing performed before releasing to
+  # defaults; at the very least, you should ensure the application start,
+  # editing more or less works, and the iPython console works.
+  requires:
+    - pip
+  commands:
+    - pip check
+    # on linux we don't have working X11 on builder
+    - USER=test spyder -h || true # [unix]
+    - spyder -h                   # [win]
+{% if target_platform != "linux-aarch64" and target_platform != "linux-64"%}
+  imports:
+    - spyder
+{% endif %}
+
+app:
+  entry: spyder
+  icon: logo.png
+  summary: The Scientific Python Development Environment
+  type: desk
+
+about:
+  home: https://www.spyder-ide.org/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: The Scientific Python Development Environment
+  description: |
+    Spyder is a powerful scientific environment written in Python, for Python,
+    and designed by and for scientists, engineers and data analysts.
+    It features a unique combination of the advanced editing, analysis,
+    debugging and profiling functionality of a comprehensive development tool
+    with the data exploration, interactive execution, deep inspection and
+    beautiful visualization capabilities of a scientific package.\n
+    Furthermore, Spyder offers built-in integration with many popular
+    scientific packages, including NumPy, SciPy, Pandas, IPython, QtConsole,
+    Matplotlib, SymPy, and more.\n
+    Beyond its many built-in features, Spyder can be extended even further via
+    third-party plugins.\n
+    Spyder can also be used as a PyQt5 extension library, allowing you to build
+    upon its functionality and embed its components, such as the interactive
+    console or advanced editor, in your own software.
+  doc_url: https://docs.spyder-ide.org/
+  dev_url: https://github.com/spyder-ide/spyder
+
+extra:
+  recipe-maintainers:
+    - ccordoba12
+    - dalthviz
+    - andfoy
+    - steff456

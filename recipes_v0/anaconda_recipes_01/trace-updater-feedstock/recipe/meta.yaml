@@ -1,0 +1,51 @@
+{% set name = "trace-updater" %}
+{% set version = "0.0.9.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/trace_updater-{{ version }}.tar.gz
+  sha256: 04960a062addf58131da39df9f5755a1d8f5fff9b5fbabd0839801e2431d9a20
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - dash 
+    - python
+
+test:
+  requires:
+    - pip
+  imports:
+    - trace_updater
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/predict-idlab/trace-updater
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Dash component which allows updating a dcc.Graph its traces.
+  description: |
+    TraceUpdater is dash component which allows updating a dcc.Graph its traces. This component is data efficient as it:  
+    sends only the to-be-updated traces (and not the whole figure) from the back-end to the client-side; updates only the 
+    traces that have changed (and does not redraw the whole figure)
+  dev_url: https://github.com/predict-idlab/trace-updater
+  doc_url: https://github.com/predict-idlab/trace-updater/blob/master/CONTRIBUTING.md
+
+
+extra:
+  recipe-maintainers:
+    - thewchan

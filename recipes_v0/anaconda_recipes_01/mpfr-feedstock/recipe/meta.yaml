@@ -1,0 +1,57 @@
+{% set version = "4.0.2" %}
+
+package:
+  name: mpfr
+  version: {{ version }}
+
+source:
+  fn: mpfr-{{ version }}.tar.bz2
+  url: http://ftp.gnu.org/gnu/mpfr/mpfr-{{ version }}.tar.gz
+  sha256: ae26cace63a498f07047a784cd3b0e4d010b44d2b193bab82af693de57a19a78
+  patches:
+  - patches/build-vc14.patch
+  - patches/corei5.patch
+
+build:
+  number: 1
+  skip: True  # [win and vc<14]
+  run_exports:
+    - {{ pin_subpackage("mpfr") }}
+
+requirements:
+  build:
+    - libtool         # [unix]
+    - m4              # [unix]
+    - make            # [unix]
+    - {{ compiler('c') }}
+    - patch       # [not win]
+    - m2-patch    # [win]
+  host:
+    - gmp             # [unix]
+    - mpir            # [win]
+
+test:
+  requires:
+    - {{ compiler('c') }}
+    - libtool         # [unix]
+    - m4              # [unix]
+
+  commands:
+    - if not exist %LIBRARY_INC%\\mpfr.h exit 1                # [win]
+    - if not exist %LIBRARY_LIB%\\mpfr.lib exit 1              # [win]
+    - if not exist %LIBRARY_BIN%\\mpfr.dll exit 1              # [win]
+    - if not exist %LIBRARY_LIB%\\mpfr_static.lib exit 1       # [win]
+    - test -f ${PREFIX}/lib/libmpfr.a                          # [unix]
+    - test -f ${PREFIX}/lib/libmpfr${SHLIB_EXT}                # [unix]
+
+about:
+  home: http://www.mpfr.org/
+  license: LGPL-3.0-only
+  license_file: {{ SRC_DIR }}/COPYING.LESSER
+  summary: The MPFR library is a C library for multiple-precision floating-point computations with correct rounding.
+
+extra:
+  recipe-maintainers:
+    - isuruf
+    - jakirkham
+    - marcelotrevisani

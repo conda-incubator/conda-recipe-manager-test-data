@@ -1,0 +1,55 @@
+{% set name = "python-utils" %}
+{% set version = "3.3.3" %}
+{% set sha256 = "3b1c8b706e40e91280eec5fa72ea730880a166cee99afa5555b863d55664478d" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: true # [py<36]
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  requires:
+    - pip
+  imports:
+    - python_utils
+    - python_utils.converters
+    - python_utils.formatters
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/WoLpH/python-utils
+  license: BSD-3-Clause
+  license_family: BSD
+  summary: 'Python Utils is a collection of small Python functions and classes which make common patterns shorter and easier.'
+  description: |
+    Python Utils is a collection of small Python functions and classes which make common patterns shorter
+    and easier. It is by no means a complete collection but it has served me quite a bit in the past and
+    I will keep extending it. One of the libraries using Python Utils is Django Utils.
+  doc_url: https://python-utils.readthedocs.io/
+  doc_source_url: https://github.com/WoLpH/python-utils/tree/develop/docs
+  dev_url: https://github.com/WoLpH/python-utils
+
+extra:
+  recipe-maintainers:
+    - maartenbreddels
+    - WoLpH
+    - stuertz

@@ -1,0 +1,42 @@
+{% set name = "pysolr" %}
+{% set version = "3.9.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 6ef05feb87c614894243eddc62e9b0a6134a889c159ae868655cf6cd749545e6
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools_scm
+  run:
+    - python
+    - requests >=2.9.1
+    - setuptools
+
+test:
+  imports:
+    - pysolr
+
+about:
+  home: https://github.com/django-haystack/pysolr/
+  license: BSD-3-clause
+  summary: Lightweight python wrapper for Apache Solr.
+  license_family: BSD
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - cehbrecht
+    - synapticarbors

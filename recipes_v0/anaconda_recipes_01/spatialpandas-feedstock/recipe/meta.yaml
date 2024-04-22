@@ -1,0 +1,62 @@
+{% set name = "spatialpandas" %}
+{% set version = "0.4.10" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 032e24ebb40f75c5c79cb79d7c281f2990e69ba382c0b24acb53da7bba60851c
+
+build:
+  number: 0
+  skip: True  #[py<39 or s390x]
+  # skipping s390x as it is not available for numba or pyarrow
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - param
+    - wheel
+    - pyct
+    - setuptools
+  run:
+    - dask-core
+    - fsspec
+    - numba
+    - pandas
+    - param
+    - pyarrow >=1.0
+    - python
+    - retrying
+
+test:
+  imports:
+    - spatialpandas
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/holoviz/spatialpandas
+  description: |
+    Spatialpandas provides Pandas and Dask extensions for vectorized
+    spatial and geometric operations, such as fast, spatially indexed
+    rendering of large collections of polygons, lines, or points.
+  summary: Pandas extension arrays for spatial/geometric operations
+  license: BSD-2-Clause
+  license_file: LICENSE
+  license_family: BSD
+  dev_url: https://pypi.org/project/spatialpandas/
+  doc_url: https://github.com/holoviz/spatialpandas/blob/main/README.md
+
+extra:
+  recipe-maintainers:
+    - andrewannex
+    - ianthomas23
+    - maximlt
+    - philippjfr

@@ -1,0 +1,43 @@
+{% set name = "mo-kwargs" %}
+{% set version = "7.310.22362" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/mo-kwargs-{{ version }}.tar.gz
+  sha256: cde8bd32f372ba843140eda390e396d8e8f3611f40e454922b8d17b50da9aab1
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=2.7
+  run:
+    - python >=2.7
+    - mo-dots ==9.300.22349
+    - mo-future ==7.298.22349
+
+test:
+  imports:
+    - mo_kwargs
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/klahnakoski/mo-kwargs
+  summary: More KWARGS! Let call parameters override kwargs
+  license: MPL-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - xhochy

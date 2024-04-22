@@ -1,0 +1,45 @@
+{% set name = "bayesian-optimization" %}
+{% set version = "1.4.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 4e4e98cd0f0fb716202ea4c3b9e7c4c530270e69aa26f0eaf6ef715328f89c04
+
+build:
+  number: 1
+  noarch: python
+  script: '{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv '
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - numpy >=1.9.0
+    - python >=3.6
+    - scikit-learn >=0.18.0
+    - scipy >=0.14.0
+    - colorama >=0.4.6
+
+test:
+  imports:
+    - bayes_opt
+
+about:
+  home: https://github.com/fmfn/BayesianOptimization
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Pure Python implementation of bayesian global optimization with gaussian processes.
+  doc_url: https://github.com/fmfn/BayesianOptimization
+  dev_url: https://github.com/fmfn/BayesianOptimization
+
+extra:
+  recipe-maintainers:
+    - bwheelz36
+    - till-m
+    - volpatto

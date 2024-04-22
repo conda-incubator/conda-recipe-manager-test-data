@@ -1,0 +1,60 @@
+{% set version = "1.29.0" %}
+
+package:
+  name: yamllint
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/y/yamllint/yamllint-{{ version }}.tar.gz
+  sha256: 66a755d5fbcbb8831f1a9568676329b5bac82c37995bcc9afd048b6459f9fa48
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed .
+  entry_points:
+    - yamllint = yamllint.cli:run
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - pathspec >=0.5.3
+    - python >=3.7
+    - pyyaml
+    - setuptools
+
+test:
+  source_files:
+    - tests
+  requires:
+    - pip
+    - pytest
+    - pytest-cov
+  imports:
+    - yamllint
+  commands:
+    - python -m pip check
+    - yamllint --help
+    - yamllint --version
+    - pytest --cov yamllint --cov-fail-under 97 .
+
+about:
+  home: https://github.com/adrienverge/yamllint
+  license: GPL-3.0-only
+  license_family: GPL
+  license_file: LICENSE
+  summary: A linter for YAML files.
+  doc_url: https://yamllint.readthedocs.io
+  doc_source_url: |
+    https://github.com/adrienverge/yamllint/blob/master/docs/index.rst
+  description: |
+    yamllint does not only check for syntax validity, but for weirdnesses like
+    key repetition and cosmetic problems such as lines length, trailing spaces,
+    indentation, etc.
+
+extra:
+  recipe-maintainers:
+    - proinsias
+    - bollwyvl

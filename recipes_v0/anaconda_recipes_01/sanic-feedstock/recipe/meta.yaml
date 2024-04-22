@@ -1,0 +1,55 @@
+{% set name = "sanic" %}
+{% set version = "22.12.0" %}
+
+package:
+  name: sanic
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e5f81115f838956957046b6c52e7a08c1bd6e8ff530ee1376471eaf1579bfffa
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  entry_points:
+    - sanic = sanic.__main__:main
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools <60.0
+  run:
+    - aiofiles >=0.6.0
+    - httptools >=0.0.10
+    - multidict >=5.0,<7.0
+    - python
+    - sanic-routing >=22.8.0
+    - ujson >=1.35  # [not win]
+    - uvloop >=0.5.3  # [not win]
+    - websockets >=10.0
+
+test:
+  imports:
+    - sanic
+    - sanic.mixins
+  commands:
+    - pip check
+    - sanic --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/channelcat/sanic
+  summary: Async Python 3.5+ web server that's written to go fast
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - ahopkins
+    - kszucs
+    - nicoddemus
+    - thewchan

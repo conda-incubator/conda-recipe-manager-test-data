@@ -1,0 +1,47 @@
+{% set name = "tapi" %}
+{% set version = "1100.0.11" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://github.com/tpoechtrager/apple-libtapi/archive/bce16c61862464b3544b5b1b55103315ca2fa64f.tar.gz
+    sha256: 673ab783a1b14613abc58dca5bf3fcb05f0ddabd35c587c949661f8c499b8523
+
+build:
+  number: 1
+  skip: True  # [win or (linux and s390x)]
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - cmake
+    - ninja
+  host:
+    - libcxx                  # [osx]
+{% if cxx_compiler_version is defined %}
+  run:
+    - libcxx >={{ cxx_compiler_version }}.0.0.a0  # [osx]
+{% endif %}
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libtapi${SHLIB_EXT}
+    - test -f $PREFIX/include/tapi/tapi.h
+
+about:
+  home: https://opensource.apple.com/source/tapi
+  license: NCSA
+  license_family: MIT
+  license_file:
+    - LICENSE.APPLE-LIBTAPI.txt
+    - LICENSE.LLVM.txt
+  summary: 'TAPI is a Text-based Application Programming Interface'
+  doc_url: https://opensource.apple.com/source/tapi/tapi-{{ version }}/Readme.md
+  dev_url: https://github.com/ributzka/tapi
+
+extra:
+  recipe-maintainers:
+    - isuruf
+    - katietz

@@ -1,0 +1,133 @@
+{% set version = "1.2.6" %}
+
+{% set build_number = 0 %}
+
+package:
+  name: formulas-split
+  version: {{ version }}
+
+source:
+  url: https://github.com/vinci1it2000/formulas/archive/v{{ version }}.tar.gz
+  sha256: a73cbeac3a65433f4a47bb9fe4bab10190d3098eefc1614ee4b2c7c4df7ce65e
+
+build:
+  noarch: python
+  number: {{ build_number }}
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - python >=3.6
+
+test:
+  commands:
+    - echo "tests in subpackages"
+
+outputs:
+  - name: formulas
+    build:
+      noarch: python
+      number: {{ build_number }}
+      script: {{ PYTHON }} -m pip install . --no-deps -vv
+    requirements:
+      host:
+        - pip
+        - python >=3.6
+      run:
+        - numpy >=1.15
+        - numpy-financial
+        - python >=3.6
+        - python-dateutil
+        - regex
+        - schedula >=1.4.1
+    test:
+      requires:
+        - pip
+      imports:
+        - formulas
+      commands:
+        - pip check
+
+  - name: formulas-excel
+    build:
+      noarch: python
+      number: {{ build_number }}
+    requirements:
+      host:
+        - pip
+        - python >=3.6
+      run:
+        - {{ pin_subpackage('formulas', max_pin='x.x.x') }}
+        - openpyxl
+        - python >=3.6
+    test:
+      requires:
+        - pip
+      imports:
+        - formulas.excel
+      commands:
+        - pip check
+
+  - name: formulas-plot
+    build:
+      noarch: python
+      number: {{ build_number }}
+    requirements:
+      host:
+        - pip
+        - python >=3.6
+      run:
+        - {{ pin_subpackage('formulas', max_pin='x.x.x') }}
+        - docutils
+        - flask
+        - jinja2
+        - pygments
+        - python >=3.6
+        - python-graphviz
+    test:
+      requires:
+        - pip
+      commands:
+        - pip check
+
+  - name: formulas-all
+    build:
+      noarch: python
+      number: {{ build_number }}
+    requirements:
+      host:
+        - pip
+        - python >=3.6
+      run:
+        - {{ pin_subpackage('formulas-excel', max_pin='x.x.x') }}
+        - {{ pin_subpackage('formulas-plot', max_pin='x.x.x') }}
+        - python >=3.6
+    test:
+      source_files:
+        - test
+        - setup.cfg
+      requires:
+        - ddt
+        - dill
+        - nose >=1.0
+        - pip
+      commands:
+        - pip check
+        - rm test/test_readme.py test/test_setup.py  # [unix]
+        - del test\test_readme.py test\test_setup.py  # [win]
+        - nosetests
+
+about:
+  home: https://github.com/vinci1it2000/formulas
+  license: EUPL-1.1
+  license_family: OTHER
+  license_file: LICENSE.txt
+  summary: Parse and compile Excel formulas and workbooks in python code.
+  doc_url: https://formulas.readthedocs.io
+
+extra:
+  feedstock-name: formulas
+  recipe-maintainers:
+    - bollwyvl

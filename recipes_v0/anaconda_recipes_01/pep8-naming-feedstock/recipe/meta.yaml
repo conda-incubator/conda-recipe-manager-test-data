@@ -1,0 +1,53 @@
+{% set name = "pep8-naming" %}
+{% set version = "0.12.1" %}
+{% set sha256 = "bb2455947757d162aa4cad55dba4ce029005cd1692f2899a21d51d8630ca7841" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  script: python -m pip install --no-deps --ignore-installed .
+  number: 0
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - flake8 >=3.9.1
+    - flake8-polyfill >=1.0.2,<2
+
+test:
+  imports:
+    - pep8ext_naming
+  requires:
+    - python <3.10
+    - pip
+  commands:
+    - pip check
+    - "flake8 --version | grep naming:"  # [not win]
+
+about:
+  home: https://github.com/PyCQA/pep8-naming
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Plug-in for flake 8 to check the PEP-8 naming conventions'
+  dev_url: https://github.com/PyCQA/pep8-naming
+  doc_url: https://pypi.org/project/pep8-naming/
+
+extra:
+  recipe-maintainers:
+    - dopplershift
+    - jakirkham
+    - sigmavirus24

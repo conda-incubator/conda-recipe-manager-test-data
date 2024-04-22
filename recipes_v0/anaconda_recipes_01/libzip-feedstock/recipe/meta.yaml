@@ -1,0 +1,72 @@
+{% set name = "libzip" %}
+{% set version = "1.8.0" %}
+{% set sha256 = "30ee55868c0a698d3c600492f2bea4eb62c53849bcf696d21af5eb65f3f3839e" %}
+{% set build_number = "1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://libzip.org/download/libzip-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  # skip py35 since py36 is built and uses same vc14
+  number: {{ build_number }}
+  missing_dso_whitelist:
+    - "*/libzip.5.dylib"   # [osx]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - cmake
+    - ninja
+    - perl  # [not win]
+    # regression test dependencies - m2-perl is needed in win to prevent paths # from breaking for perl when calling diff
+    - m2-perl  # [win]
+    - m2-diffutils  # [win]
+  host:
+    - zlib {{ zlib }}
+    - bzip2 {{ bzip2 }}
+    - openssl {{ openssl }}
+    - xz {{ xz }}
+    - zstd {{ zstd }}
+  run:
+    - openssl 3.*
+# run dependencies should be handled by run_exports
+
+test:
+  commands:
+    - zipmerge -h   # [unix]
+    - zipcmp -h     # [unix]
+    - ziptool -h    # [unix]
+    - test -f ${PREFIX}/bin/ziptool  # [linux or osx]
+    - test -f ${PREFIX}/lib/libzip.so  # [linux]
+    - test -f ${PREFIX}/lib/libzip.dylib  # [osx]
+    - if not exist %LIBRARY_BIN%\\ziptool.exe exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\zip.lib exit 1  # [win]
+    - test -f ${PREFIX}/include/zip.h  # [linux or osx]
+    - test -f ${PREFIX}/include/zipconf.h  # [linux or osx]
+    - if not exist %LIBRARY_INC%\\zip.h exit 1  # [win]
+    - if not exist %LIBRARY_INC%\\zipconf.h exit 1  # [win]
+
+about:
+  home: https://libzip.org/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: 'A C library for reading, creating, and modifying zip archives.'
+  description: |
+      libzip is a C library for reading, creating, and modifying zip archives.
+      Files can be added from data buffers, files, or compressed data copied
+      directly from other zip archives. Changes made without closing the
+      archive can be reverted. The API is documented by man pages.
+  doc_url: https://libzip.org/documentation/
+  dev_url: https://github.com/nih-at/libzip
+
+extra:
+  recipe-maintainers:
+    - ceholden
+    - katietz

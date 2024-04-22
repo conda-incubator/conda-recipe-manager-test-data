@@ -1,0 +1,50 @@
+{% set name = "cli_helpers" %}
+{% set version = "2.3.0" %}
+{% set sha256 = "e7174d003a2b58fd3e31a73fbbc45d5aa513de62cbd42d437f78b9658bd5f967" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - configobj >=5.0.5
+    - pygments >=1.6
+    - tabulate >=0.8.2
+
+test:
+  imports:
+    - cli_helpers
+    - cli_helpers.tabular_output
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: http://cli-helpers.rtfd.io
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Python helpers for common CLI tasks
+  doc_url: http://cli-helpers.rtfd.io
+  dev_url: https://github.com/dbcli/cli_helpers
+
+extra:
+  recipe-maintainers:
+    - dhirschfeld
+    - mariusvniekerk

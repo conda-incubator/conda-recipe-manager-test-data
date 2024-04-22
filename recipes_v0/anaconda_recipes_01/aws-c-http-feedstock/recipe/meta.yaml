@@ -1,0 +1,49 @@
+{% set version = "0.6.25" %}
+
+package:
+  name: aws-c-http
+  version: {{ version }}
+
+source:
+  url: https://github.com/awslabs/aws-c-http/archive/v{{ version }}.tar.gz
+  sha256: 8c4b4dcf49ef1abec48cfa6748983e352b490d557fa06e0565107c826d589fb0
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage("aws-c-http", max_pin="x.x.x") }}
+
+requirements:
+  build:
+    - cmake
+    - {{ compiler('c') }}
+    - ninja-base
+  host:
+    - aws-c-cal 0.5.20
+    - aws-c-common 0.8.5
+    - aws-c-compression 0.2.16
+    - aws-c-io 0.13.10
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libaws-c-http${SHLIB_EXT}  # [unix]
+    - test -f $PREFIX/include/aws/http/http.h  # [unix]
+    - if not exist %LIBRARY_INC%\\aws\\http\\http.h exit 1          # [win]
+    - if not exist %PREFIX%\\Library\\bin\\aws-c-http.dll exit 1  # [win]
+
+about:
+  home: https://github.com/awslabs/aws-c-http
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: C99 implementation of the HTTP protocol
+  description: |
+    C99 implementation of the HTTP/1.1 and HTTP/2 specifications
+  doc_url: https://github.com/awslabs/aws-c-http
+  dev_url: https://github.com/awslabs/aws-c-http
+  
+
+extra:
+  recipe-maintainers:
+    - xhochy
+    - conda-forge/aws-sdk-cpp

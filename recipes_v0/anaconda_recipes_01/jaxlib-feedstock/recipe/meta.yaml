@@ -1,0 +1,72 @@
+{% set version = "0.4.23" %}
+{% set name = "jaxlib" %}
+
+package:
+  name: jaxlib
+  version: {{ version }}
+
+source:
+  url: https://github.com/google/jax/archive/{{ name }}-v{{ version }}.tar.gz
+  sha256: e4c06d62ba54becffd91abc862627b8b11b79c5a77366af8843b819665b6d568
+
+build:
+  number: 0
+  # s390x is missing bazel. Win not supported by jaxlib.
+  skip: true  # [s390x or win or py<39]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - python
+    # https://github.com/google/jax/blob/jaxlib-v0.4.23/build/build.py#L207
+    # https://github.com/google/jax/blob/jaxlib-v0.4.23/build/build.py#L98
+    - bazel >=5.1.1,<7
+    - bazel-toolchain >=0.1.9
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+    - numpy 1.22.*  # [py<311]
+    - numpy 1.23.*  # [py==311]
+    - numpy 1.26.*  # [py==312]
+    - python-build
+
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+    - scipy >=1.9     # [py<312]
+    - scipy >=1.11.1  # [py>=312]
+    - ml_dtypes >=0.2.0
+  run_constrained:
+    - jax >={{ version }}
+
+test:
+  files:
+    - test_jaxlib.py
+  requires:
+    - pip
+    - python
+  commands:
+    - pip check
+    - python test_jaxlib.py
+  imports:
+    - jaxlib
+    - jaxlib.xla_client
+
+about:
+  home: https://github.com/google/jax
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  summary: 'Composable transformations of Python+NumPy programs: differentiate, vectorize, JIT to GPU/TPU, and more'
+  description: |
+    jaxlib is the support library for JAX. While JAX itself is a pure Python package, jaxlib contains the binary (C/C++) parts of the library, including Python bindings, the XLA compiler, the PJRT runtime, and a handful of handwritten kernels.
+  dev_url: https://github.com/google/jax
+  doc_url: https://jax.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - ericmjl
+    - xhochy

@@ -1,0 +1,50 @@
+{% set name = "apache-airflow-providers-ssh" %}
+{% set version = "3.4.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/apache-airflow-providers-ssh-{{ version }}.tar.gz
+  sha256: d5045ac849db82be585ca191cd84daf8f69886b826f5b1ad04c77dba3e090523
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - setuptools
+    - pip
+  run:
+    - python >=3.7
+    - apache-airflow >=2.3.0
+    - paramiko >=2.6.0
+    - sshtunnel >=0.3.2
+
+test:
+  imports:
+    - airflow.providers.ssh
+    - airflow.providers.ssh.hooks
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://airflow.apache.org/
+  summary: Provider for Apache Airflow. Implements apache-airflow-providers-ssh package
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - NOTICE
+  license_family: Apache
+  doc_url: https://airflow.apache.org/docs/apache-airflow-providers-ssh/stable/index.html
+  dev_url: https://github.com/apache/airflow/
+
+extra:
+  recipe-maintainers:
+    - xylar

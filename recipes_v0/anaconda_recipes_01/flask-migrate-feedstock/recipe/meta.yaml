@@ -1,0 +1,48 @@
+{% set name = "Flask-Migrate" %}
+{% set version = "4.0.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 73293d40b10ac17736e715b377e7b7bde474cb8105165d77474df4c3619b10b3
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools
+
+  run:
+    - python >=3.6
+    - flask >=0.9
+    - flask-sqlalchemy >=1.0
+    - alembic >=0.6
+
+test:
+  imports:
+    - flask_migrate
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/miguelgrinberg/flask-migrate/
+  license_file: LICENSE
+  license: MIT
+  license_family: MIT
+  summary: SQLAlchemy database migrations for Flask applications using Alembic
+  dev_url: https://github.com/miguelgrinberg/flask-migrate/
+  doc_url: https://flask-migrate.readthedocs.io/en/latest/
+
+extra:
+  recipe-maintainers:
+    - jan-janssen

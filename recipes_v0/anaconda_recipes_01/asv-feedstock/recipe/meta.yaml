@@ -1,0 +1,64 @@
+{% set name = "asv" %}
+{% set version = "0.5.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 805fc3cc46c0bcf3e7baeaa16a12e4b92f1276c25490db4cb80fc541afa52bfc
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - asv = asv.main:main
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - six >=1.4
+
+test:
+  imports:
+    - asv
+    - asv.commands
+    - asv.plugins
+    - asv.extern
+  requires: 
+    - pip
+  commands: 
+    - pip check
+
+about:
+  home: https://github.com/airspeed-velocity/asv
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.rst
+  summary: A simple Python benchmarking tool with web-based reporting
+  description: |
+    It is primarily designed to benchmark a single project over its lifetime
+    using a given suite of benchmarks. The results are displayed in an
+    interactive web frontend that requires only a basic static webserver to
+    host.
+  doc_url: https://asv.readthedocs.io/en/latest/index.html
+  dev_url: https://github.com/airspeed-velocity/asv
+
+extra:
+  recipe-maintainers:
+    - CJ-Wright
+    - saraedum
+    - xhochy
+    - mlondschien
+    - mattip
+    - jbrockmendel
+    - datapythonista

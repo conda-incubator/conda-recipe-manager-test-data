@@ -1,0 +1,43 @@
+{% set name = "PySmbClient" %}
+{% set version = "0.1.5" %}
+{% set hash_type = "sha256" %}
+{% set hash = "dc528959ffe3fae5cdd2053c0d68b6dfca706d8f4ea78b9b3e741daedc87aed4" %}
+{% set build = 1 %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  {{ hash_type }}: {{ hash }}
+
+build:
+  noarch: python
+  number: {{ build }}
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - python
+
+  run:
+    - python
+
+test:
+  imports:
+    - smbclient
+
+about:
+  home: https://bitbucket.org/nosklo/pysmbclient
+  license_file: {{ RECIPE_DIR }}/LICENSE
+  license: GPL 3.0
+  license_family: GPL
+  summary: 'A convenient smbclient wrapper'
+  dev_url: https://bitbucket.org/nosklo/pysmbclient
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr

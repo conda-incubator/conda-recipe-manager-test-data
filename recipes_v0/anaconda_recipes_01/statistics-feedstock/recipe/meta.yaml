@@ -1,0 +1,46 @@
+{% set name = "statistics" %}
+{% set version = "1.0.3.5" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 2dc379b80b07bf2ddd5488cad06b2b9531da4dd31edb04dc9ec0dc226486c138
+
+build:
+  number: 1002
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  build:
+    - python <3
+    - pip
+  run:
+    - python <3
+    - docutils >=0.3
+
+test:
+  imports:
+    - statistics
+
+about:
+  home: https://pypi.python.org/pypi/statistics
+  license: Python-2.0
+  license_family: PSF
+  license_file: LICENSE
+  summary: 'A Python 2.* port of 3.4 Statistics Module'
+  description: |
+    A port of Python 3.4 statistics module to Python 2.*, initially
+    done through the 3to2 tool.
+
+    This module provides functions for calculating mathematical
+    statistics of numeric (Real-valued) data.
+  doc_url: https://docs.python.org/3/library/statistics.html
+  dev_url: https://github.com/digitalemagine/py-statistics
+
+extra:
+  recipe-maintainers:
+    - danring

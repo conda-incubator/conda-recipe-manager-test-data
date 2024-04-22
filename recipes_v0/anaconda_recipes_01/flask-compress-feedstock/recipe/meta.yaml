@@ -1,0 +1,58 @@
+{% set name = "Flask-Compress" %}
+{% set version = "1.13" %}
+{% set sha256 = "ee96f18bf9b00f2deb4e3406ca4a05093aa80e2ef0578525a3b4d32ecdff129d" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  skip: True # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - setuptools_scm
+    - toml
+    - wheel
+  run:
+    - python
+    - flask
+    - brotli-python
+
+test:
+  source_files:
+    - tests
+  imports:
+    - flask_compress
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+    - pytest tests
+
+about:
+  home: https://github.com/colour-science/flask-compress
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Compress responses in your Flask app with gzip.
+  description: |
+    Flask-Compress allows you to easily compress your Flask application's responses with gzip.
+  dev_url: https://github.com/colour-science/flask-compress
+  doc_url: https://github.com/colour-science/flask-compress/blob/master/README.md
+
+extra:
+  recipe-maintainers:
+    - synapticarbors
+    - mariusvniekerk

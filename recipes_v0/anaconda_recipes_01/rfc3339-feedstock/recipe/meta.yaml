@@ -1,0 +1,46 @@
+{% set name = "rfc3339" %}
+{% set version = "6.2" %}
+{% set sha256 = "d53c3b5eefaef892b7240ba2a91fef012e86faa4d0a0ca782359c490e00ad4d0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+  run:
+    - python
+
+test:
+  source_files:
+    - rfc3339.py
+  commands:
+    - python rfc3339.py
+  imports:
+    - rfc3339
+
+about:
+  home: https://bitbucket.org/henry/rfc3339
+  license: ISCL
+  license_family: BSD
+  # License file not included in the source distribution
+  # license_file: LICENSE
+  summary: 'Format dates according to the RFC 3339'
+  dev_url: https://bitbucket.org/henry/rfc3339
+
+extra:
+  recipe-maintainers:
+    - kynan

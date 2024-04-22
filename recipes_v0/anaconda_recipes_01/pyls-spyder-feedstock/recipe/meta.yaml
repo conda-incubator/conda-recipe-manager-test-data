@@ -1,0 +1,48 @@
+{% set name = "pyls-spyder" %}
+{% set version = "0.4.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 45a321c83f64267d82907492c55199fccabda45bc872dd23bf1efd08edac1b0b
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - python-lsp-server >=1.0.1
+
+test:
+  imports:
+    - pyls_spyder
+    - pyls_spyder.plugin
+
+about:
+  home: https://github.com/spyder-ide/pyls-spyder
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Spyder extensions for the python-lsp-server
+
+  description: |
+    Spyder extensions for the python-lsp-server.
+    This package provides Spyder-specific extras for the
+    Language Server Protocol (LSP) on Python, such as
+    document symbol searching and others.
+
+  dev_url: https://github.com/spyder-ide/pyls-spyder
+
+extra:
+  recipe-maintainers:
+    - andfoy
+    - ccordoba12

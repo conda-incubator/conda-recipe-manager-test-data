@@ -1,0 +1,50 @@
+{% set name = "pylint-venv" %}
+{% set version = "3.0.3" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/pylint_venv/pylint_venv-{{ version }}.tar.gz
+  sha256: df12a17fca39a94acc1c9a0f1dcf68141e90fe685569d78c046695c67c4e55fa
+
+build:
+  number: 0
+  skip: True # [py<37]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - pip
+    - python
+    - poetry-core >=1.0.0
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - pylint_venv
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/jgosmann/pylint-venv/
+  summary: pylint-venv provides a Pylint init-hook to use the same Pylint installation with different virtual environments.
+  description: |
+      Pylint does not respect the currently activated virtualenv if it is not installed in every virtual environment individually.
+      This module provides a Pylint init-hook to use the same Pylint installation with different virtual environments.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  doc_url: https://github.com/jgosmann/pylint-venv/blob/main/README.rst
+  dev_url: https://github.com/jgosmann/pylint-venv/
+
+extra:
+  recipe-maintainers:
+    - mwawra

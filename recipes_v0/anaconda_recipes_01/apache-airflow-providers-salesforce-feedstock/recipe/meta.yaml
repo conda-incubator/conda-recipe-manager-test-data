@@ -1,0 +1,50 @@
+{% set name = "apache-airflow-providers-salesforce" %}
+{% set version = "5.3.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/apache-airflow-providers-salesforce-{{ version }}.tar.gz
+  sha256: a8fd6777729aea998218476c3dd989a99ee0dc4aac2049ee4864ddc9fb6ae0d5
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - setuptools
+  run:
+    - python >=3.7
+    - apache-airflow >=2.3.0
+    - pandas >=0.17.1
+    - simple-salesforce >=1.0.0
+
+test:
+  imports:
+    - airflow.providers.salesforce
+    - airflow.providers.salesforce.hooks
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://airflow.apache.org/
+  summary: Provider for Apache Airflow. Implements apache-airflow-providers-salesforce package
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - NOTICE
+  license_family: Apache
+  doc_url: https://airflow.apache.org/docs/apache-airflow-providers-salesforce/stable/index.html
+  dev_url: https://github.com/apache/airflow/
+
+extra:
+  recipe-maintainers:
+    - xylar

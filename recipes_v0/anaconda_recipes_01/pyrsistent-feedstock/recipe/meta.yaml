@@ -1,0 +1,50 @@
+{% set version = "0.20.0" %}
+
+package:
+  name: pyrsistent
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pyrsistent/pyrsistent-{{ version }}.tar.gz
+  sha256: 4c48f78f62ab596c679086084d0dd13254ae4f3d6c72a83ffdf5ebdef8f265a4
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - pyrsistent
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/tobgu/pyrsistent
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.mit
+  summary: Persistent/Functional/Immutable data structures
+  description: |
+    Pyrsistent is a number of persistent collections (by some referred to as functional data structures). Persistent in
+    the sense that they are immutable.
+    All methods on a data structure that would normally mutate it instead return a new copy of the structure containing
+    the requested updates.
+  dev_url: https://github.com/tobgu/pyrsistent
+  doc_url: https://pyrsistent.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

@@ -1,0 +1,58 @@
+{% set name = "nbstripout" %}
+{% set version = "0.6.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 9065bcdd1488b386e4f3c081ffc1d48f4513a2f8d8bf4d0d9a28208c5dafe9d3
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  entry_points:
+    - nbstripout = nbstripout:main
+
+requirements:
+  host:
+    - pip
+    - python >=3.5
+    - setuptools
+    - pytest-runner
+  run:
+    - python >=3.5
+    - nbformat
+
+test:
+  requires:
+    - nbformat
+  imports:
+    - nbstripout
+  commands:
+    - nbstripout --help
+
+about:
+  home: https://github.com/kynan/nbstripout
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: strip output from Jupyter and IPython notebooks
+  description: |
+    Opens a notebook, strips its output, and writes the outputless version to the
+    original file.
+
+    Useful mainly as a git filter or pre-commit hook for users who don't want to
+    track output in VCS.
+
+    This does mostly the same thing as the `Clear All Output` command in the
+    notebook UI.
+  doc_url: https://pypi.org/project/nbstripout/
+  dev_url: https://github.com/kynan/nbstripout
+
+extra:
+  recipe-maintainers:
+    - kynan

@@ -1,0 +1,49 @@
+{% set name = "apache-airflow-providers-pagerduty" %}
+{% set version = "3.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/apache-airflow-providers-pagerduty-{{ version }}.tar.gz
+  sha256: 66d60b85e58f0855c83e73446889439260709011a0a2b066d819bb0e5fccbd35
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - setuptools
+  run:
+    - python >=3.7
+    - apache-airflow >=2.3.0
+    - pdpyras >=4.1.2
+
+test:
+  imports:
+    - airflow.providers.pagerduty
+    - airflow.providers.pagerduty.hooks
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://airflow.apache.org/
+  summary: Provider for Apache Airflow. Implements apache-airflow-providers-pagerduty package
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - NOTICE
+  license_family: Apache
+  doc_url: https://airflow.apache.org/docs/apache-airflow-providers-pagerduty/stable/index.html
+  dev_url: https://github.com/apache/airflow/
+
+extra:
+  recipe-maintainers:
+    - xylar

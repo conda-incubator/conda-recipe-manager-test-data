@@ -1,0 +1,57 @@
+{% set name = "python-rapidjson" %}
+{% set version = "1.5" %}
+{% set sha256 = "04323e63cf57f7ed927fd9bcb1861ef5ecb0d4d7213f2755969d4a1ac3c2de6f" %}
+{% set rapidjson_version = "1.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  # This package isn't included in the SOW Packages.
+  # Also there isn't rapidjson==1.1.0 on s390x
+  skip: True  # [py36 or s390x]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+    - rapidjson =={{ rapidjson_version }}
+  run:
+    - python
+
+test:
+  imports:
+    - rapidjson
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/python-rapidjson/python-rapidjson
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Python wrapper around rapidjson'
+  description: |
+    Python wrapper around RapidJSON. RapidJSON is an extremely fast C++ json serialization library.
+    We do not support legacy python versions, you will need to upgrade to Python 3 to use this library.
+  doc_url: https://python-rapidjson.readthedocs.io
+  dev_url: https://github.com/python-rapidjson/python-rapidjson
+
+extra:
+  recipe-maintainers:
+    - SylvainCorlay
+    - hajapy

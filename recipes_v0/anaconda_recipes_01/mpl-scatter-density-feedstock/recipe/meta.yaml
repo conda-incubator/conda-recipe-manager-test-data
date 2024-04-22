@@ -1,0 +1,50 @@
+{% set name = "mpl-scatter-density" %}
+{% set version = "0.7" %}
+{% set sha256 = "cace750887916d3881b3a42ab5805769cc8d7eb70ef610938cbb57c967277620" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools
+    - setuptools_scm
+    - numpy >=1.11
+    - matplotlib-base >=3.0
+    - fast-histogram >=0.3
+  run:
+    - python >=3.6
+    - numpy >=1.11
+    - matplotlib-base >=3.0
+    - fast-histogram >=0.3
+
+test:
+  imports:
+    - mpl_scatter_density
+
+about:
+  home: http://github.com/astrofrog/mpl-scatter-density
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Matplotlib helpers to make density scatter plots
+  description: Matplotlib helpers to make density scatter plots
+  doc_url: http://github.com/astrofrog/mpl-scatter-density
+  dev_url: http://github.com/astrofrog/mpl-scatter-density
+
+extra:
+  recipe-maintainers:
+    - astrofrog-conda-forge

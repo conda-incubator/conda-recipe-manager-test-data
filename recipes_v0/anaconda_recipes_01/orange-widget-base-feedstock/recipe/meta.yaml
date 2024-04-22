@@ -1,0 +1,88 @@
+{% set name = "orange-widget-base" %}
+{% set version = "4.22.0" %}
+
+# on our linux builders there is no X11 installed and therefore import
+# test will fail
+{% if target_platform != "linux-aarch64" and target_platform != "linux-64"%}
+{% set enable_testingui = true %}
+{% else %}
+{% set enable_testingui = false %}
+{% endif %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 9d5d9a04f6739fb2be4040ad095a0b2e1e6c986df5cc4d86f631532a5c61f6a3
+  patches:
+    - patches/0001-setup.py-Replace-use-of-imp-module.patch
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: True  # [py<36]
+  skip: True  # [linux and (s390x or ppc64le)]
+
+requirements:
+  build:
+    - patch     # [not win]
+    - m2-patch  # [win]
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - matplotlib-base
+    - pyqtgraph
+    - anyqt >=0.1.0
+    - orange-canvas-core >=0.1.30,<0.2a
+    - typing_extensions >=3.7.4.3
+    - appnope  # [osx]
+
+test:
+  imports:
+    - orangewidget.widget
+{% if enable_testingui %}
+    - orangewidget.gui
+{% else %}
+    - orangewidget.io
+{% endif %}
+{% if enable_testingui %}
+  source_files:
+    - orangewidget/tests
+{% endif %}
+  command:
+{% if enable_testingui %}
+    - pytest orangewidget/tests
+{% endif %}
+    - pip check
+  requires:
+{% if enable_testingui %}
+    - pytest
+{% endif %}
+    - pip
+
+about:
+  home: https://orangedatamining.com/
+  license: GPL-3.0-only
+  license_family: GPL
+  license_file: LICENSE
+  summary: Base Widget for Orange Canvas
+
+  description: |
+    This project implements the base OWBaseWidget class and utilities for use
+    in Orange Canvas workflows.
+
+  doc_url: https://orange-widget-base.readthedocs.io/
+  dev_url: https://github.com/biolab/orange-widget-base/
+
+extra:
+  recipe-maintainers:
+    - ales-erjavec
+    - lanzagar
+    - markotoplak
+    - primozgodec

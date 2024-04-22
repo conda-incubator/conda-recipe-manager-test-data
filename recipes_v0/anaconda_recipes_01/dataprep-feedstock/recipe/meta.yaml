@@ -1,0 +1,86 @@
+{% set name = "dataprep" %}
+{% set version = "0.4.5" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.8
+    - poetry >=1
+  run:
+    - python >=3.8
+    
+    - bokeh >=2.0,<3
+    - dask >=2021.11
+    - nltk >=3.6.7,<4.0
+    - numpy >=1.21,<2
+    - pandas >=1.1,<2
+    - pydot >=1.4.2,<2
+    - scipy >=1,<2
+    - wordcloud >=1.8,<2.0
+    - sqlalchemy >=1.4.32
+
+    - cloudpickle >=0.2.2
+    - fsspec >=0.6.0
+    - toolz >=0.8.2
+    - partd >=0.3.10
+    - pyyaml
+    - toolz >=0.8.2
+
+    - aiohttp >=3.6,<4.0.0
+    - ipywidgets >=7.5,<8.0
+    - jinja2 >=3,<4.0
+    - jsonpath-ng >=1.5,<2.0
+    - pydantic >=1.6,<2.0
+    - tqdm >=4.48,<5.0
+
+    - flask >=2,<3
+    - flask_cors >=3,<4
+    - metaphone >=0.6
+    - python-stdnum >=1.16
+    - regex >=2021.8.3
+    - varname >=0.8.1
+    - python-crfsuite >=0.9.8,<1
+    - rapidfuzz >=2.1.2,<3.0
+test:
+  imports:
+    - dataprep
+    - dataprep.assets
+    - dataprep.clean
+    - dataprep.connector
+    - dataprep.connector.generator
+    - dataprep.connector.schema
+    - dataprep.datasets
+    - dataprep.eda
+    - dataprep.eda.correlation
+    - dataprep.eda.create_diff_report
+    - dataprep.eda.create_report
+    - dataprep.eda.diff
+    - dataprep.eda.distribution
+    - dataprep.eda.missing
+    - dataprep.eda.outlier
+
+
+about:
+  home: https://github.com/sfu-db/dataprep
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Dataprep: Data Preparation in Python'
+  doc_url: https://sfu-db.github.io/dataprep/
+  dev_url: https://github.com/sfu-db/dataprep
+
+extra:
+  recipe-maintainers:
+    - dovahcrow

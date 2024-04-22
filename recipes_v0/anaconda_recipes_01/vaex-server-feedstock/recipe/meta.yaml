@@ -1,0 +1,46 @@
+{% set name = "vaex-server" %}
+{% set version = "0.8.1" %}
+{% set sha256 = "655e7702df77efdda3ba9527bc423a43c87d584407478af0dec8608398723934" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - setuptools
+    - pip
+  run:
+    - python >=3.6
+    - vaex-core >=4.7.0,<5.0.0
+    - tornado >4.1
+    - cachetools
+    - fastapi
+    - requests
+
+test:
+  imports:
+    - vaex.server
+
+about:
+  home: https://www.github.com/maartenbreddels/vaex
+  doc_url: https://docs.vaex.io/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Webserver and client for vaex for a remote dataset
+
+extra:
+  recipe-maintainers:
+    - maartenbreddels

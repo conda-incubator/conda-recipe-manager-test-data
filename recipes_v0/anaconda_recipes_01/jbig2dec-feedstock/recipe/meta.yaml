@@ -1,0 +1,50 @@
+{% set name = "jbig2dec" %}
+{% set version = "0.18" %}
+{% set ghostscript_tag = "gs952" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/{{ ghostscript_tag }}/jbig2dec-{{ version }}.tar.gz
+  sha256: 9e19775237350e299c422b7b91b0c045e90ffa4ba66abf28c8fb5eb005772f5e
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage('jbig2dec', max_pin='x.x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - cmake  # [win]
+    - make
+    - libtool  # [unix]
+    - autoconf  # [unix]
+    - automake  # [unix]
+    - pkg-config
+  host:
+    - zlib
+    - libpng
+
+test:
+  commands:
+    - jbig2dec --help
+
+about:
+  home: https://jbig2dec.com/
+  license: AGPL-3.0-only
+  license_family: AGPL
+  license_file: COPYING
+  summary: 'A decoder implementation of the JBIG2 image compression format'
+  description: |
+    JBIG2 is designed for lossy or lossless encoding of 'bilevel'
+    (1-bit monochrome) images at moderately high resolution, and
+    in particular, scanned paper documents. In this domain it can
+    be very efficient, offering compression ratios on the order of
+    100:1
+
+extra:
+  recipe-maintainers:
+    - scopatz

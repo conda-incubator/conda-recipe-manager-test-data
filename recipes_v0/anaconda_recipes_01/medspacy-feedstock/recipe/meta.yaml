@@ -1,0 +1,59 @@
+{% set name = "medspacy" %}
+{% set version = "1.1.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 30ead2dd36cc53db544e7ef447c2ac8ca6cf836d49ae57c75e133a8429884fe4
+
+build:
+  number: 0
+  # spacy isn't available on s390x
+  skip: True  # [py<38 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - setuptools-scm 7.0.4
+    - toml
+    - wheel
+  run:
+    - python
+    - spacy >=3.4.1,<4.0
+    - pyrush >=1.0.8
+    - pysbd 0.3.4
+    - jsonschema
+    - medspacy_quickumls 3.0
+
+test:
+  imports:
+    - medspacy
+  source_files:
+    - tests/
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+    - pytest -k "not (test_span_groups or test_overlapping_spans or test_multiword_span or test_load_lang_model or test_execute_example_notebooks)"
+
+about:
+  home: https://github.com/medspacy/medspacy
+  dev_url: https://github.com/medspacy/medspacy
+  doc_url: https://github.com/medspacy/medspacy
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Library for clinical NLP with spaCy
+  description: |
+    MedSpaCy is a library of tools for performing clinical NLP and text processing tasks with the popular spaCy framework. The medspacy package brings together a number of other packages, each of which implements specific functionality for common clinical text processing specific to the clinical domain, such as sentence segmentation, contextual analysis and attribute assertion, and section detection.
+
+extra:
+  recipe-maintainers:
+    - skupr-anaconda

@@ -1,0 +1,44 @@
+{% set version = "20.10.2" %}
+
+package:
+  name: clickclick
+  version: {{ version }}
+
+source:
+  fn: {{ version }}.tar.gz
+  url: https://codeberg.org/hjacobs/python-clickclick/archive/{{ version }}.tar.gz
+  sha256: c6d88c5751873a0c42db2d8e26035a0c94b78c2ba54a7e5085383bcc8c848fd8
+  
+build:
+  noarch: python
+  number: 1
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - flake8
+    - six
+
+  run:
+    - python
+    - click >=4.0
+    - pyyaml >=3.11
+
+test:
+  imports:
+    - clickclick
+
+about:
+  home: https://github.com/zalando/python-clickclick
+  license: Apache-2.0
+  summary: 'Click utility functions'
+  license_family: APACHE
+  license_file: LICENSE
+  dev_url: https://github.com/zalando/python-clickclick
+
+extra:
+  recipe-maintainers:
+    - rvalieris

@@ -1,0 +1,49 @@
+{% set name = "apache-airflow-providers-dbt-cloud" %}
+{% set version = "2.3.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/apache-airflow-providers-dbt-cloud-{{ version }}.tar.gz
+  sha256: a3f068f3ad5ec9b746e86de2a8fca0ff67a2a39a7834d900e9d446fa8633aedf
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - setuptools
+    - pip
+  run:
+    - python >=3.7
+    - apache-airflow-providers-http
+    - apache-airflow >=2.3.0
+
+test:
+  imports:
+    - airflow.providers.dbt.cloud
+    - airflow.providers.dbt.cloud.hooks
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://airflow.apache.org/
+  summary: Provider for Apache Airflow. Implements apache-airflow-providers-dbt-cloud package
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - NOTICE
+  license_family: Apache
+  doc_url: https://airflow.apache.org/docs/apache-airflow-providers-dbt-cloud/stable/index.html
+  dev_url: https://github.com/apache/airflow/
+
+extra:
+  recipe-maintainers:
+    - xylar

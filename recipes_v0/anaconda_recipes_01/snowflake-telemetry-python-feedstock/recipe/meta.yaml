@@ -1,0 +1,60 @@
+{% set name = "snowflake-telemetry-python" %}
+{% set version = "0.3.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/snowflakedb/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: dbcc8daf0b98540608bc7abbc4df43c00148281fec88551007d5765c12d6c6cd
+
+build:
+  number: 0
+  skip: true  # [py<38 or py>311]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+  run:
+    - python
+    - opentelemetry-sdk ==1.12.0
+    - opentelemetry-api ==1.12.0
+    - opentelemetry-exporter-otlp ==1.12.0
+
+test:
+  source_files:
+    - tests
+    - src
+  requires:
+    - pip
+    # setuptools is included here to satisfy pip check.
+    - setuptools >=40,<66
+    - pytest
+  imports:
+    - snowflake.telemetry
+    - snowflake.telemetry.version
+  commands:
+    - pip check
+    - pip install tests/snowflake-telemetry-test-utils
+    - pytest tests
+
+about:
+  home: https://github.com/snowflakedb/snowflake-telemetry-python
+  summary: Snowflake Telemetry for Python
+  description: |
+      snowflake-telemetry-python is a package that supports emitting
+      telemetry data from Python UDFs, UDTFs, and Stored Procedures.
+      This package is a stub for the full functionality when
+      running in Snowflake.
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE.txt
+  doc_url: https://github.com/snowflakedb/snowflake-telemetry-python/blob/main/README.md
+  dev_url: https://github.com/snowflakedb/snowflake-telemetry-python
+
+

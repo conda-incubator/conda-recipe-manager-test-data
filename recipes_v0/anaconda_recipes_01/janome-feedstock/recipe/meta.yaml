@@ -1,0 +1,46 @@
+{% set name = "Janome" %}
+{% set version = "0.4.2" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 14c31bbfc11724da299b4b71a06bccb3af9a105e7c912bc38a22132d8991ec97
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - python >=3.7
+
+test:
+  imports:
+    - janome
+    - janome.sysdic
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/mocobeta/janome
+  summary: Japanese morphological analysis engine.
+  license: Apache-2.0
+  license_file:
+    - LICENSE.txt
+    - NOTICE.txt
+  doc_url: https://mocobeta.github.io/janome/en/
+  dev_url: https://github.com/mocobeta/janome/wiki#for-contributors
+
+extra:
+  recipe-maintainers:
+    - BastianZim

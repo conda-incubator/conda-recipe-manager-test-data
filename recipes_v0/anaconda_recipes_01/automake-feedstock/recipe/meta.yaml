@@ -1,0 +1,56 @@
+{% set name = "automake" %}
+{% set version = "1.16.5" %}
+{% set checksum = "07bd24ad08a64bc17250ce09ec56e921d6343903943e99ccf63bbf0705e34605" %}
+{% set build = "1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://ftp.gnu.org/gnu/automake/automake-{{ version }}.tar.gz
+  sha256: {{ checksum }}
+
+build:
+  number: {{ build }}
+  skip: True  # [win]
+  # gives an error because of the asterisk in the version pins without this, most likely because we pin perl in cbc.yaml:
+  ignore_run_exports_from:
+    - perl 5.*
+
+requirements:
+  build:
+    - make
+  host:
+    - m4
+    - autoconf
+    - perl 5.*
+    - make
+  run:
+    - m4
+    - autoconf
+    - perl 5.*
+
+test:
+  commands:
+    - automake --version
+    - automake --help
+
+about:
+  home: https://www.gnu.org/software/automake/
+  license: GPL-2.0-or-later
+  license_family: GPL
+  license_file: COPYING
+  summary: Tool for automatically generating Makefile.in files compliant with the GNU Coding Standards.
+  description: |
+    Automake is a tool for automatically generating Makefile.ins from files
+    called Makefile.am.  It assumes that the project uses Autoconf and enforces
+    certain restrictions on the configure.ac contents.
+  dev_url: https://git.savannah.gnu.org/cgit/automake.git
+  doc_url: https://www.gnu.org/software/automake/manual/automake.html
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - ocefpaf
+    - mingwandroid

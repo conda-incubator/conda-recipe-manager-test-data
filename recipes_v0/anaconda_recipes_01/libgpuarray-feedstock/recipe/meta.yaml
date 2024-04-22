@@ -1,0 +1,44 @@
+{% set version = "0.7.6" %}
+
+package:
+  name: libgpuarray
+  version: {{ version }}
+
+source:
+  fn: libgpuarray-{{ version }}.tar.gz
+  url: https://github.com/Theano/libgpuarray/releases/download/v{{ version }}/libgpuarray-{{ version }}.tar.gz
+  sha256: 887b6433a30282cb002117da89b05812c770fd9469f93950ff3866ddd02bfc64
+  patches:  # [osx and arm64]
+    # Changes CMAKE_OSX_ARCHITECTURES from x86_64 to arm64
+    - cmake-osx-arch-arm64.patch  # [osx and arm64]
+
+build:
+  number: 1
+  # trigger: 1
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - cmake
+    - make  # [unix]
+    - patch  # [osx and arm64]
+  host:
+    - mako
+
+test:
+  commands:
+    - test -f ${PREFIX}/lib/libgpuarray.dylib                   # [osx]
+    - test -f ${PREFIX}/lib/libgpuarray.so                      # [linux]
+    - if not exist %PREFIX%\\Library\\lib\\gpuarray.lib exit 1  # [win]
+
+about:
+  home: http://github.com/Theano/libgpuarray
+  license: ISC
+  license_file: LICENSE
+  summary: 'Library to manipulate arrays on GPU'
+  doc_url: http://deeplearning.net/software/libgpuarray/
+  dev_url: http://github.com/Theano/libgpuarray
+
+extra:
+  recipe-maintainers:
+    - abergeron

@@ -1,0 +1,57 @@
+{% set name = "towncrier" %}
+{% set version = "22.12.0" %}
+{% set sha256 = "9c49d7e75f646a9aea02ae904c0bc1639c8fd14a01292d2b123b8d307564034d" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  entry_points:
+    - towncrier = towncrier._shell:cli
+
+requirements:
+  host:
+    - incremental
+    - pip
+    - python >=3.7
+  run:
+    - click
+    - click-default-group
+    - incremental
+    - jinja2
+    - python >=3.7
+    - setuptools
+    - tomli
+
+test:
+  imports:
+    - towncrier
+  commands:
+    - towncrier --help
+
+about:
+  home: https://github.com/twisted/towncrier
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Building newsfiles for your project
+
+  description: |
+    towncrier is a utility to produce useful, summarised news files for your project.
+    Rather than reading the Git history as some newer tools to produce it, or having one single
+    file which developers all write to, towncrier reads "news fragments" which contain
+    information useful to end users.
+
+extra:
+  recipe-maintainers:
+    - kain88-de
+    - ericpre

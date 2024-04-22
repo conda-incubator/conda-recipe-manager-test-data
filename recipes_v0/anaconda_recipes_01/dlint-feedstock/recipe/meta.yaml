@@ -1,0 +1,45 @@
+{% set name = "dlint" %}
+{% set version = "0.13.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/dlint-py/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+  sha256: 0da1d1e7f1773efe5fa37f0049ee0e2beabc6472d8e513a5bc6f3adfdf8fd080
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - flake8 >=3.6.0,<6.0.0
+    - python >=3.6
+
+test:
+  imports:
+    - dlint
+  requires:
+    - flake8
+    - m2-grep  # [win]
+    - pip
+  commands:
+    - pip check
+    - flake8 --version | grep dlint
+
+about:
+  home: https://github.com/dlint-py/dlint
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: Flake8 expention for encouraging best and secure coding practices.
+  doc_url: https://github.com/dlint-py/dlint/tree/master/docs
+
+extra:
+  recipe-maintainers:
+    - thewchan

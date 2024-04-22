@@ -1,0 +1,51 @@
+{% set name = "fountains" %}
+{% set version = "2.2.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/f/fountains/fountains-2.2.0.tar.gz
+  sha256: 321390e297a6c668dfa7b532e612c0f22f01048e506ef0f812311c28c33fbb72
+
+build:
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - pip
+    - wheel
+  run:
+    - python
+    - bitlist >=1.2,<2.dev0
+
+test:
+  imports:
+    - fountains
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://pypi.org/project/fountains
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  summary: |
+    Python library for generating and concisely specifying reproducible pseudorandom binary data for unit testing.
+  description: |
+    This library makes it possible to generate pseudorandom binary test data in a reproducible way, as well as to embed
+    concise specifications of correct function behavior on that test data. This enables the construction of functional
+    tests within unit testing suites that fit within one-line definitions but still test a function’s behavior against
+    a large number of inputs.
+  doc_url: https://pypi.org/project/fountains
+  dev_url: https://pypi.org/project/fountains
+
+extra:
+  recipe-maintainers:
+    - boldorider4

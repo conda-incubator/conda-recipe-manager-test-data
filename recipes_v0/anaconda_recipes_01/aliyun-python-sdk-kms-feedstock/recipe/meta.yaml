@@ -1,0 +1,43 @@
+{% set name = "aliyun-python-sdk-kms" %}
+{% set version = "2.16.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: a7f185772c88f3a0dda856b666dda436d82e00f9f11ea5bbf12dcab2610ee358
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - aliyun-python-sdk-core >=2.11.5
+
+test:
+  imports:
+    - aliyunsdkkms
+
+about:
+  home: http://develop.aliyun.com/sdk/python
+  license: Apache-2.0
+  license_file: LICENSE
+  summary: Aliyun Python SDK is the official software development kit.
+
+  description: |
+    Aliyun Python SDK is the official software development kit. It
+    makes things easy to integrate your Python application, library,
+    or script with Aliyun services.
+
+extra:
+  recipe-maintainers:
+    - shcheklein
+    - efiop

@@ -1,0 +1,41 @@
+{% set name = "html2text" %}
+{% set version = "2020.1.16" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e296318e16b059ddb97f7a8a1d6a5c1d7af4544049a01e261731d2d5cc277bbb
+
+build:
+  number: 0
+  noarch: python
+  entry_points:
+    - html2text = html2text.cli:main
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vvv"
+
+requirements:
+  host:
+    - pip
+    - python >=3.5
+  run:
+    - python >=3.5
+
+test:
+  imports:
+    - html2text
+  commands:
+    - html2text --help
+
+about:
+  home: https://github.com/Alir3z4/html2text/
+  license: GNU General Public (GPL)
+  license_family: LGPL
+  license_file: COPYING
+  summary: Turn HTML into equivalent Markdown-structured text.
+
+extra:
+  recipe-maintainers:
+    - nehaljwani

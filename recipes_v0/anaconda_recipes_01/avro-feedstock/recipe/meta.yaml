@@ -1,0 +1,67 @@
+{% set name = "avro" %}
+{% set version = "1.11.3" %}
+{% set sha256 = "3393bb5139f9cf0791d205756ce1e39a5b58586af5b153d6a3b5a199610e9d17" %}
+
+package:
+    name: {{ name }}
+    version: {{ version }}
+
+source:
+    url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/avro-{{ version }}.tar.gz
+    sha256: {{ sha256 }}
+
+build:
+  skip: true  # [py2k]
+  entry_points:
+    - avro = avro.__main__:main
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+  run:
+    - python
+    - typing-extensions  # [py<38]
+
+test:
+  source_files:
+    - avro/test
+  imports:
+    - avro
+  commands:
+    - pip check
+    - avro --help
+    - pytest avro/test
+  requires:
+    - pip
+    - pytest
+
+about:
+  home: https://avro.apache.org
+  license: Apache-2.0
+  license_file:
+    - avro/LICENSE
+    - avro/NOTICE
+  license_family: Apache
+  summary: Avro is a serialization and RPC framework.
+  description: |
+    Apache Avro is a data serialization system.
+    Avro provides:
+    * Rich data structures.
+    * A compact, fast, binary data format.
+    * A container file, to store persistent data.
+    * Remote procedure call (RPC).
+    * Simple integration with dynamic languages. Code generation is not required to read or write data files nor to use
+      or implement RPC protocols. Code generation as an optional optimization, only worth implementing for statically
+      typed languages.
+  doc_url: https://avro.apache.org/docs/
+  dev_url: https://github.com/apache/avro
+
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk

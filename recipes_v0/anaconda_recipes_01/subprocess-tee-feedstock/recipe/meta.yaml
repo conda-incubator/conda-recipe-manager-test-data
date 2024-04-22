@@ -1,0 +1,42 @@
+{% set name = "subprocess-tee" %}
+{% set version = "0.4.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/subprocess-tee-{{ version }}.tar.gz
+  sha256: b3c124993f8b88d1eb1c2fde0bc2069787eac720ba88771cba17e8c93324825d
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.8
+    - setuptools_scm
+  run:
+    - python >=3.8
+
+test:
+  imports:
+    - subprocess_tee
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/pycontribs/subprocess-tee
+  summary: subprocess-tee
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - tschoonj

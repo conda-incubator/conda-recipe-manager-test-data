@@ -1,0 +1,36 @@
+{% set version = "1.1.0" %}
+
+package:
+  name: descartes
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/d/descartes/descartes-{{ version }}.tar.gz
+  sha256: 135a502146af5ed6ff359975e2ebc5fa4b71b5432c355c2cafdc6dea1337035b
+
+build:
+  number: 4
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - matplotlib-base
+
+test:
+  imports:
+    - descartes
+
+about:
+  home: http://bitbucket.org/sgillies/descartes/
+  license: BSD-3-Clause
+  license_file: LICENSE.txt
+  summary: 'Use geometric objects as matplotlib paths and patches'
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

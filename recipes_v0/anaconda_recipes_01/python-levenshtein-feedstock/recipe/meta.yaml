@@ -1,0 +1,54 @@
+{% set name = "python-levenshtein" %}
+{% set camelName = "python-Levenshtein" %}
+{% set version = "0.12.2" %}
+{% set hash_val = "dc2395fbd148a1ab31090dd113c366695934b9e85fe5a4b2a032745efd0346f6" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ camelName }}-{{ version }}.tar.gz
+  sha256: {{ hash_val }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - Levenshtein
+  commands:
+    # Trivial test to ensure compiled C code is indeed available
+    - python -c "import sys; from Levenshtein import distance as d; assert 3==d('Good', 'Bad')"
+
+about:
+  home: http://github.com/ztane/python-Levenshtein
+  license: GPL-2.0-or-later
+  license_family: GPL
+  license_file: COPYING
+  summary: Python extension for computing string edit distances and similarities.
+  description: |
+    A Python extension written in C for fast computation of: Levenshtein (edit)
+    distance and edit sequence manipulation; string similarity; approximate median
+    strings, and generally string averaging; string sequence and set similarity.
+    Levenshtein has a some overlap with difflib (SequenceMatcher). It supports
+    only strings, not arbitrary sequence types, but on the other hand it's much
+    faster.
+  doc_url: https://rawgit.com/ztane/python-Levenshtein/master/docs/Levenshtein.html
+  dev_url: http://github.com/ztane/python-Levenshtein
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - peterjc

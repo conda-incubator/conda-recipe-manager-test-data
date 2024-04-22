@@ -1,0 +1,47 @@
+{% set name = "testtools" %}
+{% set version = "2.4.0" %}
+{% set bundle = "tar.gz" %}
+{% set hash_type = "sha256" %}
+{% set hash = "64c974a6cca4385d05f4bbfa2deca1c39ce88ede31c3448bee86a7259a9a61c8" %}
+{% set build = 0 %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.{{ bundle }}
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  {{ hash_type }}: {{ hash }}
+
+build:
+  number: {{ build }}
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - pbr >=0.11
+
+  run:
+    - python
+    - pbr >=0.11
+
+test:
+  imports:
+    - testtools
+
+about:
+  home: https://github.com/testing-cabal/testtools
+  license_file: LICENSE
+  license: MIT
+  license_family: MIT
+  summary: 'Extensions to the Python standard library unit testing framework'
+  dev_url: https://github.com/testing-cabal/testtools
+  doc_url: https://testtools.readthedocs.io/en/latest/
+
+extra:
+  recipe-maintainers:
+    - anguslees
+    - pmlandwehr

@@ -1,0 +1,49 @@
+{% set name = "libcups" %}
+{% set version = "2.4.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/OpenPrinting/cups/releases/download/v{{ version }}/cups-{{ version }}-source.tar.gz
+  sha256: f03ccb40b087d1e30940a40e0141dcbba263f39974c20eb9f2521066c9c6c908
+
+build:
+  number: 1
+  skip: True                                      # [not linux]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - make
+  host:
+    - zlib
+    - openssl {{ openssl }}
+  run:
+    - zlib
+    - openssl 3.*
+
+test:
+  commands:
+    - test -f ${PREFIX}/lib/libcups${SHLIB_EXT}
+    - test -f ${PREFIX}/include/cups/cups.h
+
+about:
+  home: https://openprinting.github.io/cups/
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: 'OpenPrinting CUPS is the standards-based, open source printing system'
+  description: |
+    OpenPrinting CUPS is the current standards-based, open source printing system developed by
+    OpenPrinting for Linux® and other Unix®-like operating systems.
+  doc_url: https://openprinting.github.io/cups/#DOCUMENTATION
+  dev_url: https://github.com/OpenPrinting/cups
+
+extra:
+  recipe-maintainers:
+    - isuruf
+    - hmaarrfk
+    - katietz

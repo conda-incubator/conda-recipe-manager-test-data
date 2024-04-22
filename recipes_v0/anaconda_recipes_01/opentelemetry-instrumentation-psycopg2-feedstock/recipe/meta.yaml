@@ -1,0 +1,72 @@
+{% set name = "opentelemetry-instrumentation-psycopg2" %}
+{% set version = "0.33b0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/opentelemetry-instrumentation-psycopg2-{{ version }}.tar.gz
+  sha256: 438f58bc1b9bc78bd89327e8e87f22255981e9d34a10130c79a7303d69537117
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - opentelemetry-api ~=1.12
+    - opentelemetry-instrumentation ==0.33b0
+    - opentelemetry-instrumentation-dbapi ==0.33b0
+    - python >=3.6
+    - wrapt <2.0.0,>=1.0.0
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test ==0.24b0
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test ==0.25b0
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test ==0.25b2
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.26b1
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.27b0
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.28b0
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.28b1
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.29b0
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.30b0
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.30b1
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.31b0
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.32b0
+    # - psycopg2 >=2.7.3.1
+    # - opentelemetry-test-utils ==0.33b0
+
+test:
+  imports:
+    - opentelemetry
+    - opentelemetry.instrumentation
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-psycopg2
+  summary: OpenTelemetry psycopg2 instrumentation
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk

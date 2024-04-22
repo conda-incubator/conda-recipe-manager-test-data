@@ -1,0 +1,53 @@
+{% set version = "2023.3" %}
+
+package:
+  name: python-tzdata
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/t/tzdata/tzdata-{{ version }}.tar.gz
+  sha256: 11ef1e08e54acb0d4f95bdb1be05da659673de4acbd21bf9c69e94cc5e907a3a
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools >=40.8.0
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - tzdata
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/python/tzdata
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  doc_url: https://tzdata.readthedocs.io/
+  dev_url: https://github.com/python/tzdata
+  summary: Provider of IANA time zone data
+
+  description: |
+    This is a Python package containing zic-compiled binaries for the IANA time zone database.
+    It is intended to be a fallback for systems that do not have system time zone data installed (or don't have it installed in a standard location),
+    as a part of PEP 615.
+
+extra:
+  skip-lints:
+    - avoid_noarch
+  recipe-maintainers:
+    - ocefpaf
+    - pganssle
+    - mbargull

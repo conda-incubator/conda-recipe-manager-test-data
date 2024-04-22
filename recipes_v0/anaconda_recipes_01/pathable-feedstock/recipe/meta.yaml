@@ -1,0 +1,51 @@
+{% set version = "0.4.3" %}
+
+package:
+  name: pathable
+  version: {{ version }}
+
+source:
+  - folder: dist
+    url: https://pypi.io/packages/source/p/pathable/pathable-{{ version }}.tar.gz
+    sha256: 5c869d315be50776cc8a993f3af43e0c60dc01506b399643f919034ebf4cdcab
+  - folder: src
+    url: https://github.com/p1c2u/pathable/archive/refs/tags/{{ version }}.tar.gz
+    sha256: eea76120e5fdc54f4e9b7bc5e24748d163cef61c3e60ed32675828ade141cf4b
+
+build:
+  number: 0
+  script: cd dist && {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - pip
+    - python
+    - poetry-core >=1.0.0
+  run:
+    - python
+
+test:
+  source_files:
+    - src/tests
+  imports:
+    - pathable
+  commands:
+    - pip check
+    - pytest src/tests -vv --cov=pathable --cov-report=term-missing:skip-covered --no-cov-on-fail --cov-fail-under=79
+  requires:
+    - pip
+    - pytest-cov
+
+about:
+  home: https://github.com/p1c2u/pathable
+  summary: Object-oriented paths
+  description: Object-oriented paths
+  dev_url: https://github.com/p1c2u/pathable
+  doc_url: https://github.com/p1c2u/pathable
+  license: Apache-2.0
+  license_family: Apache
+  license_file: dist/LICENSE
+
+extra:
+  recipe-maintainers:
+    - bollwyvl

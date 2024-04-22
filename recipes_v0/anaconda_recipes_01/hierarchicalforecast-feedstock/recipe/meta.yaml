@@ -1,0 +1,60 @@
+{% set name = "hierarchicalforecast" %}
+{% set version = "0.4.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/hierarchicalforecast-{{ version }}.tar.gz
+  sha256: 6add2a50f3536a7df045e28c366e72b8c71b5782cd477a95ad9f9821be886cc3
+
+build:
+  # numpy <1.24 not available for python 3.12
+  # numba not available on s390x
+  skip: True  # [py<37 or py>311 or s390x]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - pip
+    - python
+    - wheel
+    - setuptools
+  run:
+    - python
+    - numba
+    - numpy <1.24
+    - pandas
+    - scikit-learn
+    - quadprog
+    - matplotlib-base
+    - tqdm
+
+test:
+  imports:
+    - hierarchicalforecast
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/Nixtla/hierarchicalforecast/tree/main/
+  summary: Hierarchical Methods Time series forecasting
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  description: |
+    HierarchicalForecast offers a collection of reconciliation methods, 
+    including BottomUp, TopDown, MiddleOut, MinTrace and ERM.
+  doc_url: https://nixtla.github.io/hierarchicalforecast/
+  dev_url: https://github.com/Nixtla/hierarchicalforecast
+
+extra:
+  recipe-maintainers:
+    - sugatoray
+    - AzulGarza
+    - jmoralez
+    

@@ -1,0 +1,50 @@
+{% set version = "1.2.6" %}
+
+package:
+  name: pytoolconfig
+  version: {{ version }}
+
+source:
+  url: https://github.com/bagel897/pytoolconfig/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: c059be8047a10ca5b886614d332d066ba8766633b8da4665295089a0d11fe717
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True # [py<37]
+  number: 0
+  script_env:
+    - PDM_BUILD_SCM_VERSION={{ version }}
+
+requirements:
+  host:
+    - python
+    - pip
+    - pdm-backend >=1.0.5
+  run:
+    - packaging >=22.0
+    - python
+    - tomli >=2.0.1  # [py<311]
+    - typing-extensions >=4.4.0  # [py<38]
+
+test:
+  imports:
+    - pytoolconfig
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/bagel897/pytoolconfig
+  dev_url: https://github.com/bagel897/pytoolconfig
+  summary: Python tool configuration
+  description: |
+    Python tool configuration.
+  license: LGPL-3.0-or-later
+  license_family: LGPL
+  license_url: https://github.com/bagel897/pytoolconfig/blob/main/LICENSE
+  doc_url: https://github.com/bagel897/pytoolconfig/blob/main/README.md
+
+extra:
+  recipe-maintainers:
+    - jan-janssen

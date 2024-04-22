@@ -1,0 +1,45 @@
+{% set name = "aiopg" %}
+{% set version = "1.3.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 23f9e4cd9f28e9d91a6de3b4fb517e8bed25511cd954acccba9fe3a702d9b7d0
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+  skip: True  # [py<36]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - psycopg2 >=2.8.4
+    - async-timeout >=3.0,<5.0
+
+test:
+  requires:
+    - sqlalchemy
+    - pip
+  imports:
+    - aiopg
+    - aiopg.sa
+  command:
+    - pip check
+
+about:
+  home: https://aiopg.readthedocs.io
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: "Postgres integration with asyncio."
+  dev_url: https://github.com/aio-libs/aiopg
+  doc_url: https://aiopg.readthedocs.io/en/stable/

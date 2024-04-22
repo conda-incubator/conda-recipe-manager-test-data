@@ -1,0 +1,78 @@
+{% set name = "intel-extension-for-pytorch" %}
+{% set version = "1.12.1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/intel/{{ name }}/archive/refs/tags/v{{ version }}00.tar.gz
+  sha256: 6f2b54fc3e0a5e26ccaa0552ba93e6d7ecbdc2902b4920e86fde5efdfe427ebc
+  patches:
+    - patches/0001-add-git-rev.patch
+
+build:
+  number: 0
+  # Anything other than linux-64 is not supported fully by upstream, and 3.11
+  # doesn't have PyTorch yet. See the following link for more info:
+  # https://intel.github.io/intel-extension-for-pytorch/latest/tutorials/installation.html#install-via-wheel-file
+  skip: True  # [py<38 or py>310]
+  skip: True  # [not linux64]
+  missing_dso_whitelist:
+    - "$RPATH/libc10.so"
+    - "$RPATH/libLLVM-14.so"
+    - "$RPATH/libtorch_cpu.so"
+    - "$RPATH/libtorch_python.so"
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - llvmdev 14.0.6
+    - cmake 3.22.1
+    - patch
+    - make
+    - git                     # [not win]
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+    - packaging 23.0
+    - pybind11 2.10.1
+    - pytorch {{ version }}
+  run:
+    - python
+    - psutil
+    - torchvision
+    # Both OpenMP installations can be used with this package (can be selected at runtime).
+    - intel-openmp
+    - _openmp_mutex
+    - libllvm14 14.0.6
+    - pytorch {{ version }}
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+    - python -c "import torch; import torchvision; import intel_extension_for_pytorch as ipex; print('torch:', torch.__version__,' ipex:',ipex.__version__)"
+
+about:
+  home: https://www.intel.com/content/www/us/en/developer/tools/oneapi/optimization-for-pytorch.html
+  license_file: LICENSE.txt
+  license: Apache-2.0
+  license_family: Apache
+  summary: Intel® Extension for PyTorch for extra performance boost on Intel hardware.
+  description: |
+    | Intel® Extension for PyTorch extends PyTorch with up-to-date features optimizations
+    | for an extra performance boost on Intel hardware. Optimizations take advantage of
+    | AVX-512 Vector Neural Network Instructions (AVX512 VNNI)and Intel® Advanced Matrix Extensions
+    | (Intel® AMX) on Intel CPUs as well as Intel Xe Matrix Extensions (XMX) AI engines on
+    | Intel discrete GPUs.
+  dev_url: https://github.com/intel/intel-extension-for-pytorch
+  doc_url: https://intel.github.io/intel-extension-for-pytorch/cpu/latest/index.html
+
+extra:
+  recipe-maintainers:
+    - sumit0190

@@ -1,0 +1,54 @@
+{% set name = "ndg-httpsclient" %}
+{% set pypi_name = "ndg_httpsclient" %}
+{% set version = "0.5.1" %}
+{% set hash_type = "sha256" %}
+{% set hash = "d72faed0376ab039736c2ba12e30695e2788c4aa569c9c3e3d72131de2592210" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ pypi_name }}-{{ version }}.tar.gz
+  {{ hash_type }}: {{ hash }}
+
+build:
+  noarch: python
+  number: 1
+  script: python -m pip install --no-deps --ignore-installed .
+  entry_points:
+    - ndg_httpclient = ndg.httpsclient.utils:main
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - pyasn1 >=0.1.1
+    - pyopenssl
+
+test:
+  imports:
+    - ndg
+    - ndg.httpsclient
+    - ndg.httpsclient.test
+  commands:
+    - ndg_httpclient --help
+
+about:
+  home: https://github.com/cedadev/ndg_httpsclient
+  license: BSD 3-Clause
+  license_file: ndg/httpsclient/LICENSE
+  summary: Provides enhanced HTTPS support for httplib and urllib2 using PyOpenSSL.
+  description: |
+    A HTTPS client implementation for httplib, http.client and urllib2 based on PyOpenSSL.
+    PyOpenSSL provides a more fully featured SSL implementation over the default provided
+    with Python and importantly enables full verification of the SSL peer.
+  doc_url: http://pythonhosted.org/ndg-httpsclient
+  dev_url: https://github.com/cedadev/ndg_httpsclient
+
+extra:
+  recipe-maintainers:
+    - goanpeca
+    - nehaljwani

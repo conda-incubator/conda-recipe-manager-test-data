@@ -1,0 +1,46 @@
+{% set name = "tinyrpc" %}
+{% set version = "0.9.4" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  sha256: 630f67b8b5a924e386a185127e02be7de1993fd1016eb6533fd1103950c77606
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - python
+    - six
+  run:
+    - python
+    - six
+
+test:
+  imports:
+    - tests
+    - tinyrpc
+    - tinyrpc.dispatch
+    - tinyrpc.protocols
+    - tinyrpc.server
+    - tinyrpc.transports
+
+about:
+  home: "http://github.com/mbr/tinyrpc"
+  license: MIT
+  license_family: MIT
+  license_file: 
+  summary: "A small, modular, transport and protocol neutral RPC library that, among other things, supports JSON-RPC and zmq."
+  doc_url: 
+  dev_url: 
+
+extra:
+  recipe-maintainers:
+    - anaobi

@@ -1,0 +1,55 @@
+{% set name = "pipdeptree" %}
+{% set version = "2.3.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 9d666f77ff1b9528d01b3d98594096484f56de70d752abe22f13e681be239bd8
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - pipdeptree = pipdeptree:main
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+    - hatchling
+    - hatch-vcs
+  run:
+    - python >=3.6
+    - pip
+
+test:
+  imports:
+    - pipdeptree
+  commands:
+    - pipdeptree
+
+about:
+  home: http://github.com/naiquevin/pipdeptree
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Displays installed python packages in form of a dependency tree.
+  description: |
+    pipdeptree is a command line utility for displaying the
+    installed python packages in form of a dependency tree. It works for packages
+    installed globally on a machine as well as in a virtualenv. Since pip freeze
+    shows all dependencies as a flat list, finding out which are the top level
+    packages and which packages do they depend on requires some effort. It can also
+    be tedious to resolve conflicting dependencies because pip doesn't yet have
+    true dependency resolution (more on this later). This utility tries to solve
+    this problem.
+  doc_url: https://github.com/naiquevin/pipdeptree
+  dev_url: http://github.com/naiquevin/pipdeptree
+
+extra:
+  recipe-maintainers:
+    - cdiener

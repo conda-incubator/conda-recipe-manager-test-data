@@ -1,0 +1,59 @@
+{% set version = "2022.11.21" %}
+
+package:
+  name: nox
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/n/nox/nox-{{ version }}.tar.gz
+  sha256: e21c31de0711d1274ca585a2c5fde36b1aa962005ba8e9322bf5eeed16dcd684
+
+build:
+  number: 1
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vvv
+  entry_points:
+    - nox = nox.__main__:main
+    - tox-to-nox = nox.tox_to_nox:main
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - argcomplete >=1.9.4,<2.0
+    - colorlog >=2.6.1,<7.0.0
+    - packaging >=20.9
+    - typing_extensions >=3.7.4  # [py<=38]
+    - virtualenv >=14.0.0
+    - importlib_metadata  # [py<=38]
+    - jinja2
+
+test:
+  requires:
+    - python
+    - pip
+  imports:
+    - nox
+  commands:
+    - python -m pip check
+
+about:
+  home: https://nox.thea.codes
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Flexible test automation for Python
+
+  description: |
+    nox is a command-line tool that automates testing in multiple Python
+    environments, similar to Tox. Unlike Tox, Nox uses a standard Python
+    file for configuration.
+  doc_url: https://nox.thea.codes
+  dev_url: https://github.com/theacodes/nox
+
+extra:
+  recipe-maintainers:
+    - kynan
+    - MarckK
+    - tswast

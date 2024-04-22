@@ -1,0 +1,61 @@
+{% set name = "tf2onnx" %}
+{% set version = "1.13.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/onnx/tensorflow-onnx/archive/v{{ version }}.tar.gz
+  sha256: 2b3ffb792e1e9bb4390040c9e29856ef864a59f575727df61ce379e214959a21
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: true  # [win]
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - {{ compiler('c') }}
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - numpy                                  # [build_platform != target_platform]
+  host:
+    - python
+    - pip
+    - pytest-runner
+    - numpy
+    - onnx >=1.4.1
+    - requests
+    - six
+  run:
+    - python
+    - onnx >=1.4.1
+    - {{ pin_compatible('numpy') }}
+    - six
+    - requests
+    - python-flatbuffers >=1.12,<3
+    - tensorflow >=2.6
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+    - python -m tf2onnx.convert --help
+
+about:
+  home: https://github.com/onnx/tensorflow-onnx
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Tensorflow to ONNX converter
+  description: tf2onnx - convert TensorFlow models to ONNX models.
+  doc_url: http://simplejson.readthedocs.io/
+  dev_url: https://github.com/onnx/tensorflow-onnx
+
+extra:
+  recipe-maintainers:
+    - marcelotrevisani
+    - xhochy

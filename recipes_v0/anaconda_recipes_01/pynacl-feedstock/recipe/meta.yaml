@@ -1,0 +1,70 @@
+{% set name = "PyNaCl" %}
+{% set version = "1.5.0" %}
+{% set sha256 = "8ac7448f09ab85811607bdd21ec2464495ac8b7c66d146bf545b0f08fb9220ba" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - 0001-Fix-name-of-static-sodium-lib.patch
+
+build:
+  number: 0
+  skip: True  # [py<36]
+  ignore_run_exports:  # [win]
+    - libsodium        # [win]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - gnuconfig  # [unix]
+    - m2-patch   # [win]
+    - patch      # [not win]
+  host:
+    - python
+    - cffi >=1.4.1
+    - libsodium
+    - msinttypes  # [win and vc<14]
+    - pip
+    - setuptools >=40.8.0
+    - wheel
+  run:
+    - python
+    - six
+    - cffi >=1.4.1
+
+test:
+  imports:
+    - nacl
+    - nacl.bindings
+    - nacl.pwhash
+  requires:
+    - pip
+    - pytest >=3.2.1,!=3.3.0
+    - hypothesis >=3.27.0
+  source_files:
+    - tests/
+  commands:
+    - python -m pip check || true  # [not win]
+    - python -m pip check || exit 1  # [win]
+    - pytest
+
+about:
+  home: https://github.com/pyca/pynacl
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: PyNaCl is a Python binding to the Networking and Cryptography library, a crypto library with the stated goal of improving usability, security and speed.
+  description: |
+    PyNaCl is a Python binding to the Networking and Cryptography library, a crypto library with the stated goal of improving usability, security and speed. It supports Python 2.7 and 3.3+ as well as PyPy 2.6+.
+  doc_url: https://pynacl.readthedocs.io/en/latest/
+  dev_url: https://github.com/pyca/pynacl
+
+extra:
+  recipe-maintainers:
+    - CJ-Wright

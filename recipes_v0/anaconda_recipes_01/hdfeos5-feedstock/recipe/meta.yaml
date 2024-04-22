@@ -1,0 +1,55 @@
+{% set version = "5.1.16" %}
+
+package:
+  name: hdfeos5
+  version: {{ version }}
+
+source:
+  - url: ftp://edhs1.gsfc.nasa.gov/edhs/hdfeos5/latest_release/HDF-EOS{{ version }}.tar.Z
+    sha256: 119588067abf139c1c600a4519b880d04a3933049576c88acdc8ff6fc71803dd
+    patches:
+      # http://hdfeos.org/forums/showthread.php?t=673
+      - EHapi.c.patch
+      # https://lists.gnu.org/archive/html/guix-devel/2016-09/msg02110.html
+      - 0001-remove-unnecessary-headers.patch
+      - 0002-fix-automake-files-for-linux-compatibility.patch
+  - url: ftp://edhs1.gsfc.nasa.gov/edhs/hdfeos5/latest_release/HDF-EOS5.1.15_TESTDRIVERS.tar.Z
+    sha256: 9fd6933dbcedb3f2dc6810b8681bef426756ff5868dd04702ef84b360839362e
+
+build:
+  number: 0
+  skip: True  # [win]
+  # static libs.  No run_exports.
+  # run_exports:
+  #   # no info.  Leaving at minor.
+  #   - {{ pin_subpackage('hdfeos5', max_pin='x.x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - automake
+    - autoconf
+    - libtool
+    - patch       # [not win]
+    - m2-patch    # [win]
+  host:
+    - hdf5
+    - zlib
+
+test:
+  commands:
+    - test -f ${PREFIX}/lib/libGctp.a  # [not win]
+    - test -f ${PREFIX}/lib/libhe5_hdfeos.a  # [not win]
+    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
+    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
+
+about:
+  home: http://hdfeos.org/index.php
+  license: Public Domain
+  summary: 'Earth Observing System HDF.'
+
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - jhamman

@@ -1,0 +1,50 @@
+{% set name = "hijri-converter" %}
+{% set version = "2.2.2" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/hijri-converter-{{ version }}.tar.gz
+  sha256: d4a10db009c1417592bbfb3debecadfa04d8d8d5d51b64a971e969d761a9f3e1
+
+build:
+  skip: True    # [py<36]
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - python
+
+test:
+  imports:
+    - hijri_converter
+    - hijri_converter.locales
+  commands:
+    - pip check
+  requires:
+    # due to bug in conda build
+    - python <3.10
+    - pip
+
+about:
+  home: https://github.com/dralshehri/hijri-converter
+  summary: Accurate Hijri-Gregorian date converter based on the Umm al-Qura calendar
+  description: A Python package to convert accurately between Hijri and Gregorian dates using the Umm al-Qura calendar.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  dev_url: https://github.com/dralshehri/hijri-converter
+  doc_url: https://hijri-converter.readthedocs.io/en/stable/
+
+extra:
+  recipe-maintainers:
+    - dralshehri
+    - synapticarbors

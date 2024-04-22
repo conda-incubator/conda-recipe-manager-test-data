@@ -1,0 +1,59 @@
+{% set name = "gcab" %}
+{% set version = "1.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://ftp.acc.umu.se/pub/GNOME/sources/gcab/{{ version }}/gcab-{{ version }}.tar.xz
+  sha256: 67a5fa9be6c923fbc9197de6332f36f69a33dadc9016a2b207859246711c048f
+  patches:                         # [osx]
+    - disable-linker-script.patch  # [osx]
+
+build:
+  number: 0
+  # Not supported on win
+  skip: true  # [win]
+  run_exports:
+    - {{ pin_subpackage("gcab") }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - ninja
+    - meson
+    - pkg-config
+    - patch           # [osx]
+  host:
+    - gobject-introspection
+    - glib
+    - zlib
+  run:
+    - gettext           #  [osx]
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libgcab-1.0${SHLIB_EXT}
+    - gcab --version
+
+about:
+  home: https://github.com/GNOME/gcab
+  license: LGPL-2.1-or-later
+  license_family: LGPL
+  license_file:
+    - COPYING
+  license_url: https://github.com/GNOME/gcab/blob/master/COPYING
+  summary: A GObject library to create cabinet files
+  description: |
+    gcab - Program to create and manage Microsoft cabinet (.cab) archives.
+  dev_url: https://github.com/GNOME/gcab
+  doc_url: https://github.com/GNOME/gcab
+
+extra:
+  recipe-maintainers:
+    - isuruf
+    - xhochy
+    - katietz
+  skip-lints:
+    - missing_doc_source_url

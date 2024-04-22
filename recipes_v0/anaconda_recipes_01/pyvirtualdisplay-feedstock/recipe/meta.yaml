@@ -1,0 +1,36 @@
+{% set version = "3.0" %}
+
+package:
+  name: pyvirtualdisplay
+  version: {{ version }}
+
+source:
+  fn: pyvirtualdisplay-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/P/PyVirtualDisplay/PyVirtualDisplay-{{ version }}.tar.gz
+  sha256: 09755bc3ceb6eb725fb07eca5425f43f2358d3bf08e00d2a9b792a1aedd16159
+
+build:
+  number: 3
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - pillow
+
+test:
+  imports:
+    - pyvirtualdisplay
+
+about:
+  home: https://github.com/ponty/pyvirtualdisplay
+  license: BSD-2-Clause
+  license_file: LICENSE.txt
+  summary: python wrapper for Xvfb, Xephyr and Xvnc
+
+extra:
+  recipe-maintainers:
+    - ReimarBauer

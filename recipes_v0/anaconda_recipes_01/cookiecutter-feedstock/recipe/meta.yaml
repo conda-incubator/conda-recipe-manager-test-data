@@ -1,0 +1,80 @@
+{% set name = "cookiecutter" %}
+{% set version = "2.6.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: db21f8169ea4f4fdc2408d48ca44859349de2647fbe494a9d6c3edfc0542c21c
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vvv
+  entry_points:
+    - cookiecutter = cookiecutter.__main__:main
+  skip: True  # [py<37]
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - arrow
+    - binaryornot >=0.4.4
+    - click >=7.0,<9.0.0
+    - jinja2 >=2.7,<4.0.0
+    - python-slugify >=4.0.0
+    - pyyaml >=5.3.1
+    - requests >=2.23.0
+    - rich
+
+test:
+  imports:
+    - cookiecutter
+    - cookiecutter.main
+    - cookiecutter.environment
+    - cookiecutter.exceptions
+  requires:
+    - freezegun
+    - git
+    - m2-grep  # [win]
+    # omit mercurial, because it's not available and optional
+    # - mercurial  # [not (win and py3k)]
+    - pip
+    - pytest
+    - pytest-mock
+    - python
+  source_files:
+    - tests
+  commands:
+    - pip check
+    - cookiecutter --version | grep -iE "Cookiecutter {{ version.replace(".", "\\.") }}"
+    - pip list | grep -iE "cookiecutter\s+{{ version.replace(".", "\\.") }}"
+    - cookiecutter --help
+    - pytest tests -vvv
+
+about:
+  home: https://github.com/cookiecutter/cookiecutter
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  dev_url: https://github.com/cookiecutter/cookiecutter
+  doc_url: https://cookiecutter.readthedocs.io
+  summary: >
+    A command-line utility that creates projects from cookiecutters (project templates), e.g. creating a Python package project from a Python package project template.
+  description: |
+    Cookiecutter takes a template provided as a directory structure with template-files. Templates can be located in the filesystem, as a ZIP-file or on a VCS-Server (Git/Hg) like GitHub.
+    It reads a settings file and prompts the user interactively whether or not to change the settings.
+    Then it takes both and generates an output directory structure from it.
+    Additionally the template can provide code (Python or shell-script) to be executed before and after generation (pre-gen- and post-gen-hooks).
+extra:
+  recipe-maintainers:
+    - audreyfeldroy
+    - pydanny
+    - jensens
+    - ericof

@@ -1,0 +1,44 @@
+{% set name = "django-tinymce" %}
+{% set version = "3.5.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/django-tinymce-{{ version }}.tar.gz
+  sha256: ebe7e39e080415a0d4ca339f0f159754a7cc1dc7cd5276f32f9d3db3220134f8
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - python >=3.6
+    - django >=1.11,<3.0
+
+test:
+  imports:
+    - tests
+    - tests.testapp
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/jazzband/django-tinymce
+  summary: A Django application that contains a widget to render a form field as a TinyMCE editor.
+  doc_url: https://pythonhosted.org/django-tinymce/
+  license: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - mxr-conda

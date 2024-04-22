@@ -1,0 +1,45 @@
+{% set version = "0.9.6" %}
+
+package:
+    name: pyinotify
+    version: {{ version }}
+
+source:
+    fn: pyinotify-{{ version }}.tar.gz
+    url: https://pypi.python.org/packages/source/p/pyinotify/pyinotify-{{ version }}.tar.gz
+    sha256: 9c998a5d7606ca835065cdabc013ae6c66eb9ea76a00a1e3bc6e0cfe2b4f71f4
+
+build:
+    number: 1
+    skip: True  # [not linux]
+    script: pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+    host:
+        - python
+        - setuptools
+        - pip
+        - wheel
+    run:
+        - python
+
+test:
+    imports:
+        - pyinotify
+    requires:
+        - pip
+    commands:
+        - pip check
+
+about:
+    home: https://github.com/seb-m/pyinotify
+    license: MIT
+    license_family: MIT
+    license_file: COPYING
+    summary: Monitoring filesystems events with inotify on Linux.
+    dev_url: https://github.com/seb-m/pyinotify
+    doc_url: https://github.com/seb-m/pyinotify/wiki
+
+extra:
+    recipe-maintainers:
+        - kwilcox

@@ -1,0 +1,56 @@
+{% set name = "pycapnp" %}
+{% set version = "1.3.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pycapnp-{{ version }}.tar.gz
+  sha256: 7cf514c3068064e593d0401503f7a623c24c55776702a7a2d9cad9854710aa56
+
+build:
+  skip: true  # [python_impl == 'pypy']
+  number: 0
+  script:
+    - copy /y "{{ LIBRARY_INC }}\capnp\*.capnp" .\capnp\  # [win]
+    - cp -f {{ PREFIX }}/include/capnp/*.capnp ./capnp/  # [not win]
+    - {{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt --force-system-libcapnp  # [win]
+    - {{ PYTHON }} setup.py install --single-version-externally-managed --record=record.txt  # [not win]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - capnproto
+    - cython
+    - pkgconfig
+    - setuptools
+    - python
+  run:
+    - python
+    - __osx >={{ MACOSX_DEPLOYMENT_TARGET|default("10.9") }}  # [osx and x86_64]
+
+test:
+  source_files:
+    - test
+    - examples
+  requires:
+    - python
+    - pytest
+  imports:
+    - capnp
+  commands:
+    - pytest test
+
+about:
+  home: https://github.com/capnproto/pycapnp
+  summary: A cython wrapping of the C++ Cap'n Proto library
+  license: BSD-2-Clause
+  license_file: LICENSE.md
+
+extra:
+  recipe-maintainers:
+    - LehMaxence

@@ -1,0 +1,45 @@
+{% set name = "webdriver-manager" %}
+{% set version = "3.8.5" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/webdriver_manager-{{ version }}.tar.gz
+  sha256: e671f3b738af52351341d6df6674c2f0b959db0fe978e9a7135cfa36d1ad9560
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - packaging
+    - python >=3.7
+    - python-dotenv
+    - requests
+    - tqdm
+
+test:
+  imports:
+    - webdriver_manager
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/SergeyPirogov/webdriver_manager
+  summary: Library provides the way to automatically manage drivers for different browsers
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - thewchan

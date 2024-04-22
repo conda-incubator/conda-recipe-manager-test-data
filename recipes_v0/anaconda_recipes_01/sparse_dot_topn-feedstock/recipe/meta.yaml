@@ -1,0 +1,69 @@
+{% set name = "sparse_dot_topn" %}
+{% set version = "0.3.6" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/ing-bank/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 0dc006725fdf823854291f4451ac55f8923614ba57bafa3e9121e0c2f47b745d
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+  host:
+    - pip
+    - python
+    - numpy {{ numpy }}
+    - cython
+    - scipy
+    - setuptools
+    - wheel
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+    - scipy >=1.2.3
+
+test:
+  imports:
+    - sparse_dot_topn
+  source_files:
+    - tests/
+  requires:
+    - pandas
+    - pip
+    - pytest
+  commands:
+    - pip check
+    # Parametrized test test_awesome_cossim_top_small_matrix fails, see https://github.com/ing-bank/sparse_dot_topn/issues/90.
+    # Check the next release of sparse_dot_topn to see if it's fixed.
+    - pytest tests -vv -k "not test_awesome_cossim_top_small_matrix"
+
+about:
+  home: https://github.com/ing-bank/sparse_dot_topn
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Python package to accelerate the sparse matrix multiplication and top-n similarity selection
+  description: |
+    Sparse_dot_topn provides a fast way to performing a sparse matrix multiplication
+    followed by top-n multiplication result selections. Comparing very large feature vectors and
+    picking the best matches, in practice often results in performing sparse matrix multiplication
+    followed by selecting the top-n multiplication results. In this package, we implement a
+    customized Cython function for this purpose. When comparing our Cythonic approach to doing the
+    same use with SciPy and NumPy functions, our approach improves the speed by about 40% and
+    reduces memory consumption.
+  doc_url: https://github.com/ing-bank/sparse_dot_topn
+  dev_url: https://github.com/ing-bank/sparse_dot_topn
+
+extra:
+  recipe-maintainers:
+    - mxr-conda
+    - oblute
+    - benhuff
+    - rluria14

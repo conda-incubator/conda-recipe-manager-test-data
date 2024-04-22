@@ -1,0 +1,43 @@
+{% set name = "python-hcl2" %}
+{% set version = "4.0.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/python-hcl2-{{ version }}.tar.gz
+  sha256: 0c79e2e4d14ec61110955ac1c6f504a2a5522e66e6dc598434e10c35e32d245d
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - lark-parser >=0.10.0,<0.11.0
+    - python >=3.6
+
+test:
+  imports:
+    - hcl2
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/amplify-education/python-hcl2
+  summary: A parser for HCL2
+  license: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - RohitK89
+    - mariusvniekerk

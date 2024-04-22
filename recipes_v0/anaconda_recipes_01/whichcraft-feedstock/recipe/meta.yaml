@@ -1,0 +1,46 @@
+{% set version = "0.6.1" %}
+{% set name = "whichcraft" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: acdbb91b63d6a15efbd6430d1d7b2d36e44a71697e93e19b7ded477afd9fce87
+
+build:
+  noarch: python
+  number: 0
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - python
+
+test:
+  source_files:
+    - test_whichcraft.py
+  requires:
+    - pytest
+  imports:
+    - whichcraft
+  commands:
+    - pytest
+
+about:
+  home: https://github.com/pydanny/whichcraft
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: >
+            This package provides cross-platform cross-python shutil.which
+            functionality.
+
+extra:
+  recipe-maintainers:
+    - bollwyvl
+    - pydanny

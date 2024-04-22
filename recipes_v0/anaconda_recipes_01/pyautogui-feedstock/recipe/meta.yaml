@@ -1,0 +1,61 @@
+{% set name = "pyautogui" %}
+{% set version = "0.9.53" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/PyAutoGUI-{{ version }}.tar.gz
+  sha256: d31de8f712218d90be7fc98091fce1a12a3e9196e0c814eb9afd73bb2ec97035
+
+build:
+  skip: True  # [py>38]
+  number: 0
+  script:
+    - {{ PYTHON }} -m pip install . -vv    # [not linux]
+    - DISPLAY=localhost:1.0 xvfb-run {{ PYTHON }} -m pip install . -vv  # [linux]
+
+requirements:
+  host:
+    - pip
+    - python
+    - python-xlib  # [linux]
+    - pyobjc-framework-quartz  # [osx]
+
+  run:
+    - mouseinfo
+    - pygetwindow >=0.0.5  # [not linux]
+    - pymsgbox
+    - pyobjc-core  # [osx]
+    - pyobjc-framework-quartz  # [osx]
+    - pyscreeze >=0.1.21
+    - python
+    - pytweening >=1.0.1
+    - python-xlib
+
+test:
+  source_files:
+    - tests
+  imports:
+    - pyautogui  # [not linux]
+  commands:
+    - export DISPLAY=:99  # [linux]
+    - xvfb-run python -c "import mouseinfo"  &  # [linux]
+    - pytest -vvv --capture=tee-sys -k "not TestKeyboard and not TestPyScreezeFunctions and not test__normalizeXYArgs" tests  # [win]
+    - pytest -vvv --capture=tee-sys -k "not TestKeyboard and not TestPyScreezeFunctions and not test__normalizeXYArgs and not TestMouse and not TestFailSafe" tests  # [linux]
+    - pytest -vvv --capture=tee-sys -k "not TestKeyboard and not TestPyScreezeFunctions and not test__normalizeXYArgs and not test_pause" tests  # [osx]
+  requires:
+    - pip
+    - pytest
+
+about:
+  home: https://github.com/asweigart/pyautogui
+  license: BSD-3-Clause
+  license_file: LICENSE.txt
+  summary: A cross-platform module for GUI automation for human beings. Control the keyboard and mouse from a Python script.
+
+extra:
+  recipe-maintainers:
+    - thewchan
+    - jschueller

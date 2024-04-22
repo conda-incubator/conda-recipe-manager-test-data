@@ -1,0 +1,53 @@
+{% set name = "jwcrypto" %}
+{% set version = "1.4.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 80a35e9ed1b3b2c43ce03d92c5d48e6d0b6647e2aa2618e4963448923d78a37b
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+    - setuptools
+  run:
+    - python >=3.6
+    - cryptography >=2.3
+    - deprecated
+
+test:
+  imports:
+    - jwcrypto
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://jwcrypto.readthedocs.io/en/latest/
+  license: LGPL-3.0-only
+  license_family: LGPL
+  license_file: LICENSE
+  summary: Implements JWK,JWS,JWE specifications using python-cryptography
+  description: |
+    An implementation of the JOSE Working Group documents: RFC 7515 - JSON Web
+    Signature (JWS) RFC 7516 - JSON Web Encryption (JWE) RFC 7517 - JSON Web
+    Key (JWK) RFC 7518 - JSON Web Algorithms (JWA) RFC 7519 - JSON Web Token
+    (JWT) RFC 7520 - Examples of Protecting Content Using JSON Object Signing
+    and Encryption (JOSE)
+  doc_url: https://jwcrypto.readthedocs.io/en/latest/
+  dev_url: https://github.com/latchset/jwcrypto
+
+extra:
+  recipe-maintainers:
+    - aymondebroglie
+    - scopatz

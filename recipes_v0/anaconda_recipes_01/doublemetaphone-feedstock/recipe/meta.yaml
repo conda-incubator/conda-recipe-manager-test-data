@@ -1,0 +1,44 @@
+{% set name = "DoubleMetaphone" %}
+{% set version = "1.1" %}
+{% set md5 = "eb6a3f05f3254db7268d462cd0a3ff49" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  md5: {{ md5 }}
+
+build:
+  number: 2
+  script: python setup.py install --single-version-externally-managed --record record.txt
+  skip: true  # [win and py3k]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - setuptools
+    - cython
+
+  run:
+    - python
+
+test:
+  imports:
+    - doublemetaphone
+
+about:
+  license: MIT
+  license_file: LICENSE
+  summary: Python wrapper for C++ Double Metaphone
+  home: https://github.com/datamade/doublemetaphone
+  dev_url: https://github.com/datamade/doublemetaphone
+
+extra:
+  recipe-maintainers:
+    - proinsias

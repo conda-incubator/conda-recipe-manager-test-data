@@ -1,0 +1,54 @@
+{% set name = "mono" %}
+{% set version = "6.12.0.182" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://download.mono-project.com/sources/mono/mono-{{ version }}.tar.xz
+  sha256: 57366a6ab4f3b5ecf111d48548031615b3a100db87c679fc006e8c8a4efd9424
+
+build:
+  number: 0
+  # We skip Windows because it requires Cygwin or WSL, and osx-arm64 is not supported yet.
+  # We skip others because they are community-supported and don't get upstream support.
+  skip: True  # [not (linux64 or (osx and x86_64))]
+
+requirements:
+  build:
+    - perl
+    - automake >=1.16
+    - libtool
+    - pkg-config
+    - cmake
+    - autoconf
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - python
+    - make
+  host:
+    - zlib {{ zlib }}
+
+test:
+  commands:
+    - mono --version
+    - mono --help
+
+about:
+  home: https://www.mono-project.com
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: |
+    Mono is a software platform designed to allow developers to easily create cross platform applications.
+  description: |
+    Mono is a software platform designed to allow developers to easily create cross platform applications.
+    It is an open source implementation of Microsoft's .NET Framework based on the ECMA standards for C# and the Common Language Runtime.
+  doc_url: https://www.mono-project.com/docs/
+  dev_url: https://github.com/mono/mono
+
+extra:
+  recipe-maintainers:
+    - bgruening
+    - wolfv

@@ -1,0 +1,45 @@
+{% set name = "fastkml" %}
+{% set version = "0.12" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/fastkml-{{ version }}.tar.gz
+  sha256: 34d8eb2f77b554002743bb8be5678f89d8ecea5a64ded1480028f43405d8b638
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - pytest
+    - python >=3.6
+  run:
+    - pygeoif <1.0
+    - python >=3.6
+    - python-dateutil
+
+test:
+  imports:
+    - fastkml
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: "https://github.com/cleder/fastkml"
+  license: LGPL-2.1-only
+  license_file: LICENSE.txt
+  summary: "Fast KML processing in python"
+  doc_url: "https://pypi.org/project/fastkml/"
+
+extra:
+  recipe-maintainers:
+    - mxr-conda

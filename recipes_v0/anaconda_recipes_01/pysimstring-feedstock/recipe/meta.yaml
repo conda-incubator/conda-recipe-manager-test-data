@@ -1,0 +1,49 @@
+{% set name = "pysimstring" %}
+{% set version = "1.2.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d2805d9e0b8e887442f9d9b672f5cf912c1eed91b2ca6bbe8250b86df27dd360
+
+build:
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - pysimstring
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/percevalw/simstring
+  dev_url: https://github.com/percevalw/simstring
+  doc_url: https://github.com/percevalw/simstring
+  summary: Python Simstring bindings for Linux, OS X and Windows
+  description: Python Simstring bindings for Linux, OS X and Windows
+  license: BSD-3-Clause
+  license_family: BSD
+  # LICENSE file is missing from sdist, but present in repo,
+  # see also https://github.com/percevalw/pysimstring/blob/master/LICENSE
+  license_file: '{{ environ["RECIPE_DIR"] }}/LICENSE'
+
+extra:
+  recipe-maintainers:
+    - skupr-anaconda

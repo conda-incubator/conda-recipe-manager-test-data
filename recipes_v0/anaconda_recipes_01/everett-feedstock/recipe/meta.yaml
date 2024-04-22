@@ -1,0 +1,45 @@
+{% set name = "everett" %}
+{% set version = "3.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/willkg/everett/archive/v{{ version }}.tar.gz
+  sha256: 75343ec4fc9035f8e598e6877b9c12eeebcb1d81603ca5b9692bbbc8c7917840
+
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - everett
+    - everett.ext
+    - everett.manager
+
+about:
+  home: https://github.com/willkg/everett
+  license: MPL-2.0
+  license_family: MOZILLA
+  license_file: LICENSE
+  summary: Configuration library for Python applications
+  doc_url: https://pypi.org/project/everett/
+  dev_url: ttps://github.com/willkg/everett
+
+extra:
+  recipe-maintainers:
+    - mxr-conda
+    - oblute
+    - benhuff
+    - rluria14

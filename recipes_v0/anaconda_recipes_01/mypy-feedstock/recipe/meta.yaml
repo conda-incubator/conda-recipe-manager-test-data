@@ -1,0 +1,106 @@
+{% set name = "mypy" %}
+{% set version = "1.8.0" %}
+
+package:
+  name: mypy-split
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/mypy-{{ version }}.tar.gz
+  sha256: 6ff8b244d7085a0b425b56d327b480c3b29cafbd2eff27316a004f9a7391ae07
+
+build:
+  number: 0
+  skip: true  # [py<38]
+
+outputs:
+  - name: mypy
+    script: build_mypy.sh  # [unix]
+    script: bld_mypy.bat   # [win]
+    build:
+      skip: true  # [py<38]
+      entry_points:
+        - mypy = mypy.__main__:console_entry
+        - stubgen = mypy.stubgen:main
+        - stubtest = mypy.stubtest:main
+        - dmypy = mypy.dmypy.client:console_entry
+        - mypyc = mypyc.__main__:main
+    requirements:
+      build:
+        - {{ compiler('c') }}
+      host:
+        - python
+        - pip
+        - setuptools
+        - wheel
+        - typing-extensions >=4.1.0
+        - mypy_extensions >=1.0.0
+        - tomli >=1.1.0  # [py<311]
+        - types-psutil
+        - types-setuptools
+      run:
+        - python
+        - typing-extensions >=4.1.0
+        - mypy_extensions >=1.0.0
+        - tomli >=1.1.0  # [py<311]
+        # extra: dmypy
+        - psutil >=4.0
+    test:
+      imports:
+        - mypy
+        - mypy.dmypy
+        - mypy.plugins
+        - mypy.server
+        - mypyc
+      commands:
+        - pip check
+        - mypy --help
+        - stubgen --help
+        - stubtest --help
+        - dmypy --help
+        - mypyc --help
+        - dir %SP_DIR%\mypy\*.pyd /s /b  # [win]
+        - ls $SP_DIR/mypy/*.so  # [unix] (compiled as .so on mac)
+      requires:
+        - pip
+
+  - name: mypyc
+    requirements:
+      host:
+        - python
+      run:
+        - {{ pin_subpackage("mypy", exact=True) }}
+        - {{ compiler('c') }}
+        - python
+    test:
+      files:
+        - test_mypyc.py
+      requires:
+        - pip
+      commands:
+        - pip check
+        - mypyc --help
+        - python test_mypyc.py
+
+about:
+  home: https://www.mypy-lang.org/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Optional static typing for Python
+  description: |
+    Add type annotations to your Python programs, and use mypy to type check
+    them. Mypy is essentially a Python linter on steroids, and it can catch
+    many programming errors by analyzing your program, withoutactually having
+    to run it.  Mypy has a powerful type system with features such as type
+    inference, gradual typing, generics and union types.
+  doc_url: https://mypy.readthedocs.io
+  dev_url: https://github.com/python/mypy
+
+extra:
+  recipe-maintainers:
+    - nehaljwani
+    - ocefpaf
+    - matthiasdiener
+    - bollwyvl
+    - cbouss

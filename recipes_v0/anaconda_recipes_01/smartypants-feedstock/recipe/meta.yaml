@@ -1,0 +1,46 @@
+{% set name = "smartypants" %}
+{% set version = "2.0.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/leohemsted/{{ name }}.py/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: b98191911ff3b4144ef8ad53e776a2d0ad24bd508a905c6ce523597c40022773
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+
+  run:
+    - python
+
+test:
+  requires:
+    - pip
+  commands:
+    - python -m pip check
+  imports:
+    - smartypants
+
+about:
+  home: https://github.com/leohemsted/smartypants.py
+  license_file: COPYING
+  license: BSD-3-Clause
+  license_family: BSD
+  summary: 'Python with the SmartyPants'
+  dev_url: https://github.com/leohemsted/smartypants.py
+  doc_url: https://pythonhosted.org/smartypants/
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - thewchan

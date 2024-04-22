@@ -1,0 +1,55 @@
+{% set version = "1.0.3" %}
+
+package:
+  name: minikanren
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/m/miniKanren/miniKanren-{{ version }}.tar.gz
+  sha256: 1ec8bdb01144ad5e8752c7c297fb8a122db920f859276d25a72d164e998d7f6e
+  patches:
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - toolz
+    - cons >=0.4.0
+    - multipledispatch
+    - etuples >=0.3.1
+    - logical-unification >=0.4.1
+    - typing_extensions
+
+test:
+  imports:
+    - kanren
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/pythological/kanren
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: An extensible, lightweight relational/logic programming DSL written in pure Python
+  description: |
+    Logic programming is a general programming paradigm. This implementation however came about specifically to
+    serve as an algorithmic core for Computer Algebra Systems in Python and for the automated generation and
+    optimization of numeric software. Domain specific languages, code generation, and compilers have recently been a
+    hot topic in the Scientific Python community. Kanren aims to be a low-level core for these projects.
+  dev_url: https://github.com/pythological/kanren
+  doc_url: https://github.com/pythological/kanren
+
+extra:
+  recipe-maintainers:
+    - brandonwillard

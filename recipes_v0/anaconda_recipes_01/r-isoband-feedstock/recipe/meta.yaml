@@ -1,0 +1,58 @@
+{% set version = "0.2.7" %}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-isoband
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/isoband_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/isoband/isoband_{{ version }}.tar.gz
+  sha256: 7693223343b45b86de2b5b638ff148f0dafa6d7b1237e822c5272902f79cdf61
+
+build:
+  merge_build_host: true  # [win]
+  number: 1
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - cross-r-base {{ r_base }}  # [build_platform != target_platform]
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+  host:
+    - r-base
+  run:
+    - r-base
+    - {{ native }}gcc-libs         # [win]
+
+test:
+  commands:
+    - $R -e "library('isoband')"           # [not win]
+    - "\"%R%\" -e \"library('isoband')\""  # [win]
+
+about:
+  home: https://isoband.r-lib.org
+  dev_url: https://github.com/r-lib/isoband
+  doc_url: https://isoband.r-lib.org/reference/index.html
+  license: MIT
+  summary: A fast C++ implementation to generate contour lines (isolines) and contour polygons (isobands) from regularly spaced grids containing elevation data.
+  license_family: MIT
+  license_file:
+    - {{ environ["PREFIX"] }}/lib/R/share/licenses/MIT
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - conda-forge/r

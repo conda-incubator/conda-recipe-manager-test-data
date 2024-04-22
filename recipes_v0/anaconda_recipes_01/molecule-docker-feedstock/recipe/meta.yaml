@@ -1,0 +1,46 @@
+{% set name = "molecule-docker" %}
+{% set version = "2.1.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/molecule-docker-{{ version }}.tar.gz
+  sha256: 195b97673cbc2335cfa6810816de5cbf807507bf350a9d16ca98b224b1647145
+
+build:
+  number: 2
+  skip: true  # [py < 38 or win]
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - docker-py >=4.3.1
+    - molecule >=4.0.0
+    - python
+    - python-selinux  # [linux]
+    - requests
+
+test:
+  imports:
+    - molecule_docker
+    - molecule_docker.test
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/ansible-community/molecule-docker
+  summary: Molecule aids in the development and testing of Ansible roles
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - tschoonj

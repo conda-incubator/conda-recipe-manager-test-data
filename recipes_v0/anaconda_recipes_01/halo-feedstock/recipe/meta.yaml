@@ -1,0 +1,42 @@
+{% set name = "halo" %}
+{% set version = "0.0.31" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 7b67a3521ee91d53b7152d4ee3452811e1d2a6321975137762eb3d70063cc9d6
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.5
+  run:
+    - colorama >=0.3.9
+    - log_symbols >=0.0.14
+    - python >=3.5
+    - six >=1.12.0
+    - spinners >=0.0.24
+    - termcolor >=1.1.0
+
+test:
+  imports:
+    - halo
+
+about:
+  home: https://github.com/manrajgrover/halo
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Beautiful terminal spinners in Python
+
+extra:
+  recipe-maintainers:
+    - duncanmmacleod

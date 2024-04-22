@@ -1,0 +1,52 @@
+{% set name = "bravado-core" %}
+{% set version = "5.17.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 0da9c6f3814734622a55db3f62d08db6e188b25f3ebd087de370c91afb66a7f4
+
+build:
+  number: 0
+  script: '{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv '
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - jsonref
+    - jsonschema >=2.5.1
+    - msgpack-python >=0.5.2
+    - requests
+    - python >=3.6
+    - python-dateutil
+    - pytz
+    - pyyaml
+    - simplejson
+    - six
+    - typing
+    - swagger-spec-validator >=2.0.1
+
+test:
+  imports:
+    - bravado_core
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/Yelp/bravado-core
+  license: BSD-3-Clause
+  license_file: LICENSE.txt
+  summary: Library for adding Swagger support to clients and servers
+
+extra:
+  recipe-maintainers:
+    - chapmanb
+    - marcelotrevisani

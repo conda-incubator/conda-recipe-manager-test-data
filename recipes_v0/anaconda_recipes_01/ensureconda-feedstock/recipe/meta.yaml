@@ -1,0 +1,59 @@
+{% set name = "ensureconda" %}
+{% set version = "1.4.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 2ee70b75f6aa67fca5b72bec514e66deb016792959763cbd48720cfe051a24a4
+
+build:
+  number: 1
+  skip: True  # [py<37]
+  entry_points:
+    - ensureconda = ensureconda.cli:ensureconda_cli
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - hatchling >=0.21.1
+    - hatch-vcs
+  run:
+    - python
+    - appdirs
+    - click >=5.1
+    - filelock
+    - packaging
+    - requests >=2
+
+test:
+  imports:
+    - ensureconda
+  requires:
+    - pip
+  commands:
+    - pip check
+    - ensureconda --help
+
+about:
+  home: https://github.com/conda-incubator/ensureconda
+  summary: Install and run applications packaged with conda in isolated environments
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE-MIT
+  description: |
+    Install and run applications packaged with conda in isolated environments.
+    Ensureconda is a cli tool that will:
+    1. Find a preexisting conda/mamba executable
+    2. Install one if nothing was found and installation is allowed.
+    3. Return the path of the executable found/installed on stdout
+  doc_url: https://github.com/conda-incubator/ensureconda
+  dev_url: https://github.com/conda-incubator/ensureconda
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk

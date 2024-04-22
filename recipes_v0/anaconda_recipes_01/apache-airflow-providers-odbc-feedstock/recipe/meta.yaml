@@ -1,0 +1,50 @@
+{% set name = "apache-airflow-providers-odbc" %}
+{% set version = "3.2.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/apache-airflow-providers-odbc-{{ version }}.tar.gz
+  sha256: dddfb6bd96640f9579f2f3b8ec3001d185556c95617f4d0889f8a57ff9768e87
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - setuptools
+    - pip
+  run:
+    - python >=3.7
+    - apache-airflow-providers-common-sql >=1.3.1
+    - apache-airflow >=2.3.0
+    - pyodbc
+
+test:
+  imports:
+    - airflow.providers.odbc
+    - airflow.providers.odbc.hooks
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://airflow.apache.org/
+  summary: Provider for Apache Airflow. Implements apache-airflow-providers-odbc package
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - NOTICE
+  license_family: Apache
+  doc_url: https://airflow.apache.org/docs/apache-airflow-providers-odbc/stable/index.html
+  dev_url: https://github.com/apache/airflow/
+
+extra:
+  recipe-maintainers:
+    - xylar

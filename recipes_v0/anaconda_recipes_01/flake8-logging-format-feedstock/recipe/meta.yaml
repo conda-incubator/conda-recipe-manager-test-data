@@ -1,0 +1,44 @@
+{% set name = "flake8-logging-format" %}
+{% set version = "0.9.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/flake8-logging-format-{{ version }}.tar.gz
+  sha256: e830cc49091e4b8ab9ea3da69a3da074bd631ce9a7db300e5c89fb48ba4a6986
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - logging_format
+  commands:
+    - pip check
+    - flake8 --version | grep logging-format
+  requires:
+    - flake8
+    - pip
+
+about:
+  home: https://github.com/globality-corp/flake8-logging-format
+  summary: Flake8 extension to validate (lack of) logging format strings
+  license: Apache-2.0
+  # PR made upstream to include license file in source code package; https://github.com/globality-corp/flake8-logging-format/pull/28
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - thewchan

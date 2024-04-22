@@ -1,0 +1,64 @@
+{% set name = "glfw" %}
+{% set version = "3.3.8" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/{{ name }}/{{ name }}/archive/{{ version }}.tar.gz
+  fn: glfw-{{ version }}.tar.gz
+  sha256: f30f42e05f11e5fc62483e513b0488d5bceeab7d9c5da0ffe2252ad81816c713
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - cmake
+    - m2-patch               # [win]
+    - pkg-config             # [unix]
+    - ninja                  # [win]
+    - make                   # [unix]
+  host:
+    - xorg-libx11            # [linux]
+    - xorg-libxrandr         # [linux]
+    - xorg-libxinerama       # [linux]
+    - xorg-libxcursor        # [linux]
+    - xorg-libxi             # [linux]
+  run:
+    - xorg-libxrandr         # [linux]
+    - xorg-libxcursor        # [linux]
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libglfw${SHLIB_EXT}                # [unix]
+    - if not exist %PREFIX%/Library/lib/glfw3dll.lib exit 1  # [win]
+    - if not exist %PREFIX%/Library/bin/glfw3.dll exit 1     # [win]
+
+about:
+  home: https://www.glfw.org/
+  license: Zlib
+  license_file: LICENSE.md
+  summary: Open Source, multi-platform library for OpenGL, OpenGL ES and Vulkan application development.
+
+  # The remaining entries in this section are optional, but recommended
+  description: |
+    GLFW is an Open Source, multi-platform library for OpenGL, OpenGL ES and
+    Vulkan application development. It provides a simple,
+    platform-independent API for creating windows, contexts and surfaces,
+    reading input, handling events, etc.
+
+    GLFW natively supports Windows, macOS and Linux and other Unix-like
+    systems.  An experimental implementation for the Wayland protocol is
+    available but not yet officially supported.
+
+  doc_url: https://www.glfw.org/documentation.html
+  dev_url: https://github.com/glfw/glfw
+
+extra:
+  recipe-maintainers:
+    - hmaarrfk
+    - kmuehlbauer
+    - hoechenberger

@@ -1,0 +1,68 @@
+{% set version = "0.17.1" %}
+
+package:
+  name: myst-nb
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/m/myst-nb/myst-nb-{{ version }}.tar.gz
+  sha256: 14df725f3e00cb5efef4f863bf0c273490c8c662dfee39ed8a7b374bf2561933
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --ignore-installed
+  entry_points:
+    - mystnb-docutils-html = myst_nb.docutils_:cli_html
+    - mystnb-docutils-html5 = myst_nb.docutils_:cli_html5
+    - mystnb-docutils-latex = myst_nb.docutils_:cli_latex
+    - mystnb-docutils-pseudoxml = myst_nb.docutils_:cli_pseudoxml
+    - mystnb-docutils-xml = myst_nb.docutils_:cli_xml
+    - mystnb-quickstart = myst_nb.cli:quickstart
+    - mystnb-to-jupyter = myst_nb.cli:md_to_nb
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+    - flit-core >=3.4,<4
+  run:
+    - importlib-metadata
+    - ipykernel
+    - ipython
+    - jupyter-cache >=0.5.0,<0.6.0
+    - myst-parser >=0.18.0,<0.19.0
+    - nbclient
+    - nbformat >=5.0,<6
+    - python >=3.7
+    - pyyaml
+    - sphinx >=4,<6
+    - typing_extensions
+
+test:
+  requires:
+    - pip
+  imports:
+    - myst_nb
+    - myst_nb.ext.glue
+  commands:
+    - pip check
+    - mystnb-docutils-html --help
+    - mystnb-docutils-html5 --help
+    - mystnb-docutils-latex --help
+    - mystnb-docutils-pseudoxml --help
+    - mystnb-docutils-xml --help
+    - mystnb-quickstart --help
+    - mystnb-to-jupyter --help
+
+about:
+  home: https://github.com/executablebooks/MyST-NB
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: A Jupyter Notebook Sphinx reader built on top of the MyST markdown parser.
+  doc_url: https://myst-nb.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - mmcky
+    - conda-forge/jupyter-book

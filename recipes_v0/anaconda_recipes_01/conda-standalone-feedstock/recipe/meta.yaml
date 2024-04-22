@@ -1,0 +1,75 @@
+{% set version = "24.1.2" %}
+{% set conda_libmamba_solver_version = "24.1.0" %}
+{% set libmambapy_version = "1.5.6" %}
+{% set constructor_version = "3.6.0" %}
+{% set python_version = "3.10.13" %}
+
+package:
+  name: conda-standalone
+  version: {{ version }}
+
+source:
+  - url: https://github.com/conda/conda-standalone/archive/{{ version }}.tar.gz
+    sha256: b45f14013e843fa4f89a51a4f3498331f7aa2717c6a6f11126d5327749a5d36b
+  - url: https://github.com/conda/conda/archive/{{ version }}.tar.gz
+    sha256: 6bc4f1f72a0edddefa10e0667d6ab2eb2f1956919a59508bf3bf6c001bf7a6e8
+    folder: conda_src
+    patches:
+      - "{{ SRC_DIR | replace('\\', '/') }}/src/conda_patches/0001-Rename-and-replace-entrypoint-stub-exe.patch"
+      - "{{ SRC_DIR | replace('\\', '/') }}/src/conda_patches/0002-Manipulate-PATH-directly-instead-of-_call_ing-conda.patch"
+  - url: https://github.com/conda/constructor/archive/{{ constructor_version }}.tar.gz  # [win]
+    sha256: d47e6f805337de70a72dea62999853361fbf558e2fbf3a9016c7a007be82ff46  # [win]
+    folder: constructor_src  # [win]
+
+build:
+  number: 1
+  ignore_run_exports:
+    - '*'
+
+requirements:
+  build:
+    - patch  # [not win]
+    - m2-patch  # [win]
+    - pyinstaller
+    - python ={{ python_version }}
+    - conda ={{ version }}
+    - conda-package-handling >=1.6
+    - menuinst >=2.0.2
+    - conda-libmamba-solver ={{ conda_libmamba_solver_version }}
+    - libmambapy ={{ libmambapy_version }}
+    - archspec >=0.2.3
+  run_constrained:
+    - constructor >={{ constructor_version }}
+
+test:
+  requires:
+    - pytest
+    - menuinst >=2
+  source_files:
+    - tests
+  commands:
+    - pytest -vv # [not s390x]
+    - pytest -vv -k "not test_new_environment" # [s390x]
+    - test ! -f {{ PREFIX }}/bin/codesign  # [osx]
+
+about:
+  home: https://github.com/conda/conda-standalone
+  summary: Entry point and dependency collection for PyInstaller-based standalone conda.
+  description: A standalone conda executable built with PyInstaller.
+  license: LicenseRef-CondaStandalone
+  license_file:
+    - LICENSE
+    - 3rd-party-licenses.json
+  doc_url: https://github.com/conda/conda-standalone
+  dev_url: https://github.com/conda/conda-standalone
+
+extra:
+  recipe-maintainers:
+    - jaimergp
+    - jakirkham
+    - msarahan
+    - forrestwaters
+    - nehaljwani
+
+  skip-lints:
+  - missing_license_family

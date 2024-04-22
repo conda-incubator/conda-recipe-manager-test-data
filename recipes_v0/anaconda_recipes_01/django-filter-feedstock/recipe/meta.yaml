@@ -1,0 +1,46 @@
+{% set version = "22.1" %}
+
+package:
+  name: django-filter
+  version: {{ version }}
+
+source:
+  url: https://github.com/carltongibson/django-filter/archive/{{ version }}.tar.gz
+  sha256: 6deb6b532bfee44d94df463da3d720ce3b02972e45e1bc9ed3872cc82170480d
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.5
+    - pip
+  run:
+    - python >=3.5
+    - django >=2.2
+
+test:
+  imports:
+    - django_filters
+    - django_filters.rest_framework
+  commands:
+    - pip check
+    - python -c "import django; from django.conf import settings; settings.configure(); django.setup(); import django_filters; import django_filters.rest_framework"
+  requires:
+    - pip
+
+about:
+  home: http://github.com/carltongibson/django-filter/tree/master
+  summary: Django-filter is a a generic system for filtering Django QuerySets based on user selections
+  license: BSD-3-Clause
+  license_file: LICENSE
+  license_family: BSD
+  doc_url: https://django-filter.readthedocs.io/en/latest/
+  dev_url: https://github.com/carltongibson/django-filter
+
+extra:
+  recipe-maintainers:
+    - kwilcox
+    - ocefpaf

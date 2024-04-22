@@ -1,0 +1,56 @@
+{% set name = "sphinx-autobuild" %}
+{% set version = "2021.3.14" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: de1ca3b66e271d2b5b5140c35034c89e47f263f2cd5db302c9217065f7443f05
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed .
+  entry_points:
+    - sphinx-autobuild=sphinx_autobuild.__main__:main
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - flit
+
+  run:
+    - python >=3.6
+    - sphinx
+    - livereload >=2.3.0
+
+test:
+  requires:
+    - pytest
+    - mock
+
+  imports:
+    - sphinx_autobuild
+
+  source_files:
+    - tests
+
+  commands:
+    - sphinx-autobuild --help
+    - pytest tests
+
+about:
+  home: https://github.com/executablebooks/sphinx-autobuild
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Watch a Sphinx directory and rebuild the documentation when a change is detected. Also includes a livereload enabled web server.
+
+
+extra:
+  recipe-maintainers:
+    - jrderuiter
+    - xhochy

@@ -1,0 +1,55 @@
+{% set name = "ppft" %}
+{% set version = "1.7.6.7" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: ab34436814e2f18238f35688fd869b2641b2d2d8dca22b8d246f6701dfc954c8
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - six >=1.7.3
+  run_constrained:
+    - dill >=0.3.7
+
+test:
+  requires:
+    - pip
+  imports:
+    - ppft
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/uqfoundation/ppft
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: distributed and parallel python
+  description: |
+    ppft is a friendly fork of Parallel Python (pp). ppft extends Parallel Python 
+    to provide packaging and distribution with pip and setuptools, support for Python 3, 
+    and enhanced serialization using dill.source. ppft uses Parallel Python to provide 
+    mechanisms for the parallel execution of Python code on SMP (systems with multiple 
+    processors or cores) and clusters (computers connected via network).
+  doc_url: https://ppft.readthedocs.io
+  dev_url: https://github.com/uqfoundation/ppft
+
+extra:
+  recipe-maintainers:
+    - jschueller
+    - synapticarbors

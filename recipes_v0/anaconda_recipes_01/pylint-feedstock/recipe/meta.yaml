@@ -1,0 +1,83 @@
+{% set version = "2.16.2" %}
+
+package:
+  name: pylint
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pylint/pylint-{{ version }}.tar.gz
+  sha256: 13b2c805a404a9bf57d002cd5f054ca4d40b0b87542bdaba5e05321ae8262c84
+
+build:
+  number: 0
+  skip: True #[py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+  entry_points:
+    - pylint = pylint:run_pylint
+    - pylint-config = pylint:_run_pylint_config
+    - epylint = pylint:run_epylint
+    - pyreverse = pylint:run_pyreverse
+    - symilar = pylint:run_symilar
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - astroid >=2.14.2,<=2.16.0
+    - colorama >=0.4.5
+    - dill >=0.2  # [py<311]
+    - dill >=0.3.6  # [py>=311]
+    - isort >=4.2.5,<6
+    - mccabe >=0.6,<0.8
+    - platformdirs >=2.2.0
+    # 2022/07/25 RSK pylint switched from toml to tomli in 2.13.0
+    - tomli >=1.1.0 # [py<311]
+    - tomlkit >=0.10.1
+    - typing_extensions >=3.10.0  # [py<310]
+
+test:
+  imports:
+    - pylint
+    - pylint.checkers
+    - pylint.extensions
+    - pylint.pyreverse
+    - pylint.reporters
+    - pylint.reporters.ureports
+    - pylint.utils
+  requires:
+    - pip
+    # Astroid needs to be pinned to current minimum version
+    # https://github.com/PyCQA/pylint/blob/v2.16.2/requirements_test_min.txt#L3
+    - astroid 2.14.2
+  commands:
+    - pip check
+    - pylint --help
+    # Has no help option.
+    # Running without arguments is an error.
+    # So just check that it exists.
+    - type epylint  # [unix]
+    - where epylint  # [win]
+    - pyreverse --help
+    - symilar --help
+
+about:
+  home: https://www.pylint.org
+  license: GPL-2.0-or-later
+  license_family: GPL
+  license_file: LICENSE
+  summary: python code static checker
+  description: |
+    Pylint is a tool that checks for errors in Python code, tries to enforce a
+    coding standard and looks for code smells.
+  doc_url: https://pylint.readthedocs.io
+  dev_url: https://github.com/PyCQA/pylint/
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - timleslie
+    - goanpeca

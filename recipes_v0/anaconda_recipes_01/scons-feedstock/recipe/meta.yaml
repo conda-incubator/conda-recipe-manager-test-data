@@ -1,0 +1,70 @@
+{% set name = "SCons" %}
+{% set version = "4.1.0.post1" %}
+{% set sha256 = "ecb062482b9d80319b56758c0341eb717735437f86a575bac3552804428bd73e" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  # be careful of using "noarch: python": we have had trouble in the past in a single platform (#2)
+  # which would not be caught by the noarch package
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - scons = SCons.Script.Main:main
+    - sconsign = SCons.Utilities.sconsign:main
+    - scons-configure-cache = SCons.Utilities.ConfigureCache:main
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+  host:
+    - pip
+    - python
+  run:
+    - python
+
+test:
+  imports:
+    - SCons
+    - SCons.Node
+    - SCons.Platform
+    - SCons.Scanner
+    - SCons.Script
+    - SCons.Tool
+    - SCons.Tool.MSCommon
+    - SCons.Tool.docbook
+    - SCons.Tool.packaging
+    - SCons.Variables
+    - SCons.compat
+  commands:
+    - scons --help
+    - sconsign --help
+    - scons-configure-cache --help
+
+about:
+  home: http://www.scons.org/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Open Source next-generation build tool.
+  description: |
+    SCons is an Open Source software construction tool that is, a
+    next-generation build tool. Think of SCons as an improved, cross-platform
+    substitute for the classic Make utility with integrated functionality
+    similar to autoconf/automake and compiler caches such as ccache. In short,
+    SCons is an easier, more reliable and faster way to build software.
+  doc_url: http://scons.org/documentation.html
+  dev_url: https://github.com/SCons/scons
+
+extra:
+  recipe-maintainers:
+    - stuertz
+    - nicoddemus

@@ -1,0 +1,52 @@
+{% set name = "conda-souschef" %}
+{% set version = "2.2.3" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/conda-souschef-{{ version }}.tar.gz
+  sha256: 9bf3dba0676bc97616636b80ad4a75cd90582252d11c86ed9d3456afb939c0c3
+
+build:
+  number: 0
+  # Trigger 2
+  skip: True  # [py<38]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - setuptools-scm
+    - wheel
+  run:
+    - python
+    - ruamel.yaml >=0.15.3
+    - ruamel.yaml.jinja2
+
+test:
+  imports:
+    - souschef
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/marcelotrevisani/souschef
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Project to handle conda recipes
+  description: |
+    Library to easily manipulate conda recipes.
+  dev_url: https://github.com/marcelotrevisani/souschef
+  doc_url: https://github.com/marcelotrevisani/souschef
+
+extra:
+  recipe-maintainers:
+    - marcelotrevisani

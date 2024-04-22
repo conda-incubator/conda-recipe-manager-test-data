@@ -1,0 +1,63 @@
+{% set name = "tifffile" %}
+{% set version = "2023.4.12" %}
+{% set sha256 = "2fa99f9890caab919d932a0acaa9d0f5843dc2ef3594e212963932e20713badd" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [py<38]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation
+  entry_points:
+    - tifffile = tifffile:main
+    - tiffcomment = tifffile.tiffcomment:main
+    - tiff2fsspec = tifffile.tiff2fsspec:main
+    - lsm2bin = tifffile.lsm2bin:main
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - numpy >=1.19.2
+    # Extras require:
+    - imagecodecs >=2023.1.23
+  run_constrained:
+    - matplotlib-base >=3.3
+
+test:
+  imports:
+    - tifffile
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/cgohlke/tifffile
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  description: |
+      Tifffile is a Python library to store NumPy arrays in TIFF (Tagged Image File Format) files, and read image and metadata from TIFF-like files used in bioimaging.
+  summary: Read and write image data from and to TIFF files.
+  doc_url: https://github.com/cgohlke/tifffile/blob/master/README.rst
+  dev_url: https://github.com/cgohlke/tifffile
+
+extra:
+  recipe-maintainers:
+    - blink1073
+    - ericpre
+    - jakirkham
+    - mrakitin
+    - ocefpaf
+    - stuarteberg

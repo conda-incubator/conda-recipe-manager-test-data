@@ -1,0 +1,104 @@
+{% set major = "1.50" %}
+{% set patch = "7" %}
+{% set version = major + "." + patch %}
+
+package:
+  name: pango
+  version: {{ version }}
+
+source:
+  url: http://ftp.gnome.org/pub/GNOME/sources/pango/{{ major }}/pango-{{ version }}.tar.xz
+  sha256: 0477f369a3d4c695df7299a6989dc004756a7f4de27eecac405c6790b7e3ad33
+
+build:
+  number: 0
+  detect_binary_files_with_prefix: true
+  run_exports:
+    # excellent: https://abi-laboratory.pro/tracker/timeline/pango/
+    - {{ pin_subpackage('pango') }}
+  missing_dso_whitelist:         # [linux]
+    - '**/libc.so.6'             # [linux]
+    - '**/libm.so.6'             # [linux]
+  ignore_run_exports:
+    - libcxx          # [osx]
+    - libstdcxx-ng    # [linux]
+    - pixman
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}   # `meson setup` requires this for built-in tests
+    - {{ cdt('libxau-devel') }}           # [linux]
+    - {{ cdt('libxext-devel') }}          # [linux]
+    - {{ cdt('libx11-devel') }}           # [linux]
+    - {{ cdt('libxcb') }}                 # [linux]
+    - {{ cdt('libxrender-devel') }}       # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}   # [linux and (s390x or ppc64le or x86_64)]; needed for cairo support
+    - meson >=0.55.3
+    - ninja-base
+    - pkg-config
+    - gobject-introspection
+    - pthread-stubs
+  host:
+    - cairo >=1.12.10
+    - fontconfig >=2.13.0               # [not win]
+    - freetype                          # [not win]
+    - fribidi >=1.0.6
+    - glib >=2.62
+    - harfbuzz >=2.6.0
+    - pkg-config
+    - gobject-introspection
+  run:
+    - cairo >=1.12.10
+    - fontconfig >=2.13.0               # [not win]
+    - freetype                          # [not win]
+    - fribidi >=1.0.6
+    - glib >=2.62
+    - harfbuzz >=2.6.0
+
+test:  
+  requires:
+    - pkg-config
+  commands:
+    - pango-list --help
+    - pango-view --help
+    # Ensure gobject introspection data got built
+    - test -f $PREFIX/share/gir-1.0/Pango-1.0.gir # [not win]
+    # check that libraries are installed and can be found through pkg-config
+    # (used by downstream builds)
+    {% set libs = ["Pango", "PangoCairo"] %}
+    {% set libs = libs + ["PangoFT2"] %}   # [unix]
+    {% set libs = libs + ["PangoWin32"] %} # [win]
+    {% for lib in libs %}
+    - test -f $PREFIX/lib/lib{{ lib | lower }}-1.0${SHLIB_EXT}  # [unix]
+    - test -f `pkg-config --variable=libdir --dont-define-prefix {{ lib | lower }}`/lib{{ lib | lower }}-1.0${SHLIB_EXT}  # [unix]
+    - if not exist %PREFIX%\\Library\\bin\\{{ lib | lower }}-1.0-0.dll exit 1  # [win]
+    - for /f "usebackq tokens=*" %%a in (`pkg-config --variable=exec_prefix --dont-define-prefix {{ lib | lower }}`) do if not exist "%%a/bin/{{ lib | lower }}-1.0-0.dll" exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\lib\\{{ lib | lower }}-1.0.lib exit 1  # [win]
+    - for /f "usebackq tokens=*" %%a in (`pkg-config --variable=libdir --dont-define-prefix {{ lib | lower }}`) do if not exist "%%a/{{ lib | lower }}-1.0.lib" exit 1  # [win]
+    - test -f $PREFIX/lib/girepository-1.0/{{ lib }}-1.0.typelib    # [unix]
+    {% endfor %}
+
+about:
+  home: https://pango.gnome.org/
+  license: GPL-2.0-or-later
+  license_family: GPL
+  license_file: COPYING
+  summary: 'Text layout and rendering engine.'
+  description: |
+    Pango is a library for laying out and rendering of text, with an emphasis
+    on internationalization. Pango can be used anywhere that text layout is
+    needed, though most of the work on Pango so far has been done in the
+    context of the GTK+ widget toolkit. Pango forms the core of text and font
+    handling for GTK+-2.x.
+  doc_url: https://docs.gtk.org/Pango/
+  doc_source_url: https://gitlab.gnome.org/GNOME/pango/-/tree/main/docs
+  dev_url: https://gitlab.gnome.org/GNOME/pango/
+
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - ccordoba12
+    - jakirkham
+    - pkgw
+    - chenghlee

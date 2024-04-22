@@ -1,0 +1,52 @@
+{% set name = "funcx" %}
+{% set version = "1.0.10" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/funcx-{{ version }}.tar.gz
+  sha256: 01f134558f96af26d155abaae0920c70bec4a98b8e96f5961bd31b23cbb0526e
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - dill =0.3.5.1
+    - fair-research-login =0.2.6
+    - globus-sdk >=3,<4
+    - python >=3.6
+    - requests >=2.20.0
+    - texttable >=1.6.4,<2
+    - websockets =10.3
+    - six
+    - packaging
+    - funcx-common =0.0.24
+    - tblib
+    - pika
+
+test:
+  imports:
+    - funcx
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/funcx-faas/funcx
+  summary: 'funcX: High Performance Function Serving for Science'
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - WardLT
+    - jan-janssen

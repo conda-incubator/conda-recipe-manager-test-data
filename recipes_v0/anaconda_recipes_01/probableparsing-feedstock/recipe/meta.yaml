@@ -1,0 +1,45 @@
+{% set name = "probableparsing" %}
+{% set version = "0.0.1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 8114bbf889e1f9456fe35946454c96e42a6ee2673a90d4f1f9c46a406f543767
+
+build:
+  number: 1000
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv 
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - probableparsing
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/datamade/probableparsing
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Common methods for probable parsing
+  description: Common methods for probable parsing
+  doc_url: https://github.com/datamade/probableparsing
+  dev_url: https://github.com/datamade/probableparsing
+
+extra:
+  recipe-maintainers:
+    - wyseguy7

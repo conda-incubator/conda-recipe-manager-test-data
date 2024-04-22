@@ -1,0 +1,172 @@
+{% set name = "langchain" %}
+{% set version = "0.0.298" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/langchain-{{ version }}.tar.gz
+    sha256: d8425a05aee5dc5474d2a1fae766b7e19b5b08d8facac2d4a81353ce3df80322
+  - url: https://github.com/langchain-ai/{{ name }}/archive/v{{ version }}.tar.gz
+    sha256: b24039599f2ba23047b1aacaeb656361854d813d4d35f6088d2a7cfb7f809f6b
+    folder: github-source
+
+build:
+  number: 0
+  skip: True # [py<38]
+  script: 
+    - cp github-source/LICENSE LICENSE
+    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  entry_points:
+    - langchain-server = langchain.server:main
+
+requirements:
+  host:
+    - pip
+    - python
+    - poetry-core >=1.0.0
+  run:
+    - python
+    - pydantic >=1.0.0,<3.0.0
+    - sqlalchemy >=1.4,<3
+    - requests >=2.0.0,<3.0.0
+    - pyyaml >=5.3
+    - numpy >=1.0.0,<2.0.0
+    - dataclasses-json >=0.5.7,<0.7.0
+    - tenacity >=8.1.0,<9.0.0
+    - aiohttp >=3.8.3,<4.0.0
+    - async-timeout >=4.0.0,<5.0.0  # [py<311]
+    - numexpr >=2.8.4,<3.0.0
+    - langsmith >=0.0.38,<0.1.0
+  run_constrained:
+    - azure-core >=1.26.4,<2.0.0
+    - tqdm >=4.48.0
+    - openapi-schema-pydantic >=1.2.0,<2.0.0
+    - faiss-cpu >=1.0.0,<2.0.0
+    - wikipedia >=1.0.0,<2.0.0
+    - elasticsearch >=8.0.0,<9.0.0
+    - opensearch-py >=2.0.0,<3.0.0
+    - redis-py >=4.0.0,<5.0.0
+    - manifest-ml >=0.0.1,<0.0.2
+    - nltk >=3.0.0,<4.0.0
+    - transformers >=4.0.0,<5.0.0
+    - beautifulsoup4 >=4.0.0,<5.0.0
+    - pytorch >=1,<3
+    - jinja2 >=3.0.0,<4.0.0
+    - tiktoken >=0.3.2,<0.6.0
+    - pinecone-client >=2.0.0,<3.0.0
+    - pinecone-text >=0.4.2,<0.5.0
+    - pymongo >=4.3.3,<5.0.0
+    - clickhouse-connect >=0.5.14,<0.6.0
+    - weaviate-client >=3.0.0,<4.0.0
+    - marqo >=1.2.4,<2.0.0
+    - google-api-python-client 2.70.0
+    - google-auth >=2.18.1,<3.0.0
+    - wolframalpha 5.0.0
+    - qdrant-client >=1.3.1,<2.0.0
+    - tensorflow-text >=2.11.0,<3.0.0
+    - cohere >=4.0.0,<5.0.0
+    - openai >=0.0.0,<1.0.0
+    - nlpcloud >=1.0.0,<2.0.0
+    - nomic >=1.0.43,<2.0.0
+    - huggingface_hub >=0.0.0,<1.0.0
+    - google-search-results >=2.0.0,<3.0.0
+    - sentence-transformers >=2.0.0,<3.0.0
+    - arxiv >=1.4.0,<2.0.0
+    - pypdf >=3.4.0,<4.0.0
+    - networkx >=2.6.3,<3.0.0
+    - aleph-alpha-client >=2.15.0,<3.0.0
+    - deeplake >=3.6.8,<4.0.0
+    - libdeeplake >=0.0.60,<0.0.61
+    - pgvector >=0.1.6,<0.2.0
+    - psycopg2-binary >=2.9.5,<3.0.0
+    - pyowm >=3.3.0,<4.0.0
+    - azure-identity >=1.12.0,<2.0.0
+    - gptcache >=0.1.7
+    - atlassian-python-api >=3.36.0,<4.0.0
+    - pytesseract >=0.3.10,<0.4.0
+    - html2text >=2020.1.16,<2021.0.0
+    - duckduckgo-search >=3.8.3,<4.0.0
+    - azure-cosmos >=4.4.0,<5.0.0
+    - lark >=1.1.5,<2.0.0
+    - lancedb >=0.1.0,<0.2.0
+    - pexpect >=4.8.0,<5.0.0
+    - pyvespa >=0.33.0,<0.34.0
+    - O365 >=2.0.26,<3.0.0
+    - jq >=1.4.1,<2.0.0
+    - pdfminer-six >=20221105.0.0,<20221106.0.0
+    - docarray >=0.32.0,<0.33.0
+    - lxml >=4.9.2,<5.0.0
+    - pymupdf >=1.22.3,<2.0.0
+    - pypdfium2 >=4.10.0,<5.0.0
+    - gql >=3.4.1,<4.0.0
+    - pandas >=2.0.1,<3.0.0
+    - telethon >=1.28.5,<2.0.0
+    - neo4j-python-driver >=5.8.1,<6.0.0
+    - langkit >=0.0.6,<0.1.0
+    - chardet >=5.1.0,<6.0.0
+    - requests-toolbelt >=1.0.0,<2.0.0
+    - openlm >=0.0.5,<0.0.6
+    - scikit-learn >=1.2.2,<2.0.0
+    - azure-ai-formrecognizer >=3.2.1,<4.0.0
+    - azure-ai-vision >=0.11.1,<0.11.2
+    - azure-cognitiveservices-speech >=1.28.0,<2.0.0
+    - py-trello >=0.19.0,<0.20.0
+    - momento >=1.5.0,<2.0.0
+    - bibtexparser >=1.4.0,<2.0.0
+    - singlestoredb >=0.7.1,<0.8.0
+    - pyspark >=3.4.0,<4.0.0
+    - clarifai >=9.1.0
+    - tigrisdb >=1.0.0,<2.0.0
+    - nebula3-python >=3.4.0,<4.0.0
+    - mwparserfromhell >=0.6.4,<0.7.0
+    - mwxml >=0.3.3,<0.4.0
+    - awadb >=0.3.9,<0.4.0
+    - azure-search-documents 11.4.0b8
+    - esprima-python >=4.0.1,<5.0.0
+    - streamlit >=1.18.0,<2.0.0
+    - psychicapi >=0.8.0,<0.9.0
+    - cassio >=0.1.0,<0.2.0
+    - rdflib >=6.3.2,<7.0.0
+    - sympy >=1.12.0,<2.0.0
+    - rapidfuzz >=3.1.1,<4.0.0
+    - rank-bm25 >=0.2.2,<0.3.0
+    - amadeus >=8.1.0
+    - geopandas >=0.13.1,<0.14.0
+    - python-arango >=7.5.9,<8.0.0
+    - gitpython >=3.1.32,<4.0.0
+    - librosa >=0.10.0,<0.10.1
+    - feedparser >=6.0.10,<7.0.0
+    - newspaper3k >=0.2.8,<0.3.0
+    - amazon-textract-caller <2
+    - xata >=1.0.0,<2.0.0
+    - xmltodict >=0.13.0,<0.14.0
+    - markdownify >=0.11.6,<0.12.0
+    - assemblyai >=0.17.0,<0.18.0
+    - dashvector >=1.0.1,<2.0.0
+    - sqlite-vss >=0.1.2,<0.2.0
+    - timescale-vector >=0.0.1,<0.0.2
+
+test:
+  imports:
+    - langchain
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/langchain-ai/langchain
+  doc_url: https://python.langchain.com/
+  dev_url: https://github.com/hwchase17/langchain
+  summary: Building applications with LLMs through composability
+  description: |
+    LangChain is a framework for developing applications powered by language models (LLMs).
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - YYYasin19

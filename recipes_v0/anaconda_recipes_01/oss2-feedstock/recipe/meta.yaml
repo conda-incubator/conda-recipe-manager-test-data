@@ -1,0 +1,54 @@
+{% set name = "oss2" %}
+{% set version = "2.16.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/oss2-{{ version }}.tar.gz
+  sha256: a08ca287dbadb19767a204297540c185f5ccccad7ef6f9ca3a180f77b6dc8376
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - aliyun-python-sdk-core >=2.13.12
+    - aliyun-python-sdk-kms >=2.4.1
+    - crcmod >=1.7
+    - pycryptodome >=3.4.7
+    - python >=3.6
+    - requests !=2.9.0
+    - six
+
+test:
+  imports:
+    - oss2
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: http://oss.aliyun.com
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Aliyun OSS (Object Storage Service) SDK.
+  description: |
+    Alibaba Cloud Object Storage Python SDK 2.x. This version is not
+    compatible with the previous version (Version 0.x). The package
+    name is "oss2" to avoid conflicts with previous versions.
+
+extra:
+  recipe-maintainers:
+    - shcheklein
+    - efiop
+    - maxhora

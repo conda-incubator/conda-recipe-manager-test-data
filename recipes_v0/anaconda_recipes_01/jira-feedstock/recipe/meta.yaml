@@ -1,0 +1,70 @@
+{% set name = "jira" %}
+{% set version = "3.6.0" %}
+{% set bundle = "tar.gz" %}
+{% set hash_type = "sha256" %}
+{% set hash_val = "4c67497fe8dc2f60f1c4f7b33479f059c928bec3db9dcb5cd7b6a09b6ecc0942" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.{{ bundle }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  {{ hash_type }}: {{ hash_val }}
+
+build:
+  noarch: python
+  entry_points:
+    - jirashell = jira.jirashell:main
+  number: 0
+  script: python -m pip install --no-deps --no-build-isolation --ignore-installed . -v
+
+requirements:
+  host:
+    - pip
+    - python >=3.8
+    - setuptools >=60.0.0
+    - setuptools-scm >=7.0.0
+    - wheel
+
+  run:
+    - defusedxml
+    - keyring
+    - packaging
+    - pillow >=2.1.0
+    - python >=3.8
+    - requests >=2.10.0
+    - requests-oauthlib >=1.1.0
+    - requests-toolbelt
+    - typing_extensions >=3.7.4.2
+    - ipython >=4.0.0
+
+test:
+  imports:
+    - jira
+  requires:
+    - pip
+  commands:
+    - pip check
+    - jirashell --help
+
+about:
+  home: https://github.com/pycontribs/jira
+  license: BSD-2-Clause
+  license_file: LICENSE
+  license_family: BSD
+  summary: 'The easiest way to automate JIRA'
+  dev_url: https://github.com/pycontribs/jira
+  doc_url: https://jira.readthedocs.io
+  description: |-
+    This library eases the use of the Jira REST API from Python and it has been
+    used in production for years.
+
+extra:
+  skip-lints:
+    - avoid_noarch
+  recipe-maintainers:
+    - ericdill
+    - parente
+    - pmlandwehr

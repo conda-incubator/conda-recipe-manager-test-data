@@ -1,0 +1,41 @@
+{% set name = "lazy" %}
+{% set version = "1.5" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/lazy-{{ version }}.tar.gz
+  sha256: cb3d8612aa895a48afe8f08860573ba8ef5ee4fdbe1b3cd606c5f50a16152186
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.3
+    - pip
+
+  run:
+    - python >=3.3
+test:
+  imports:
+    - lazy
+  commands:
+    - pip check
+  requires:
+    - pip
+about:
+  home: https://github.com/stefanholek/lazy
+  summary: Lazy attributes for Python objects
+  doc_url: https://pythonhosted.org/lazy/
+  license: BSD-2-Clause
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - thewchan

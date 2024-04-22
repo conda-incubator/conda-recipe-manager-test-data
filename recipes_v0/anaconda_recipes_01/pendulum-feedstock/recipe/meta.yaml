@@ -1,0 +1,51 @@
+{% set version = "2.1.2" %}
+
+package:
+  name: pendulum
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pendulum/pendulum-{{ version }}.tar.gz
+  sha256: b06a0ca1bfe41c990bbf0c029f0b6501a7f2ec4e38bfec730712015e8860f207
+
+build:
+  number: 1
+  noarch: python
+  script:
+    - {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+    - poetry-core
+  run:
+    - python >=3.6
+    - python-dateutil >=2.6,<3.0
+    - pytzdata >=2020.1
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+  imports:
+    - pendulum
+
+about:
+  home: https://pendulum.eustace.io
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Python datetimes made easy
+  description: |
+    Drop-in replacement for the standard datetime class.
+    It behaves exactly like it but with many improvements.
+  doc_url: https://pendulum.eustace.io/docs/
+  dev_url: https://github.com/sdispater/pendulum
+
+extra:
+  recipe-maintainers:
+    - mcs07
+    - ocefpaf
+    - xylar

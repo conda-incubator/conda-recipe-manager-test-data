@@ -1,0 +1,36 @@
+{% set version = "1.4.1" %}
+
+package:
+  name: odfpy
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/o/odfpy/odfpy-{{ version }}.tar.gz
+  sha256: db766a6e59c5103212f3cc92ec8dd50a0f3a02790233ed0b52148b70d3c438ec
+
+build:
+  number: 0
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - defusedxml
+
+test:
+  imports:
+    - odf
+
+about:
+  home: https://github.com/eea/odfpy
+  license: Apache-2.0
+  license_file: APACHE-LICENSE-2.0.txt
+  summary: 'Python API and tools to manipulate OpenDocument files'
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

@@ -1,0 +1,92 @@
+{% set name = "bokeh" %}
+{% set version = "3.4.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/bokeh-{{ version }}.tar.gz
+  sha256: 9ea6bc407b5e7d04ba7a2f07d8f00e8b6ffe02c2368e707f41bb362a9928569a
+
+build:
+  number: 1
+  skip: true  # [py<39]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - bokeh = bokeh.__main__:main
+
+requirements:
+  host:
+    - python
+    - colorama 0.4.6
+    - pip
+    - setuptools
+    - setuptools-git-versioning 1.13.1
+    - wheel
+    - numpy {{ numpy }}
+  run:
+    - python
+    - jinja2 >=2.9
+    - contourpy >=1.2
+    - {{ pin_compatible('numpy') }}
+    - packaging >=16.8
+    - pandas >=1.2
+    - pillow >=7.1.0
+    - pyyaml >=3.10
+    - tornado >=6.2
+    - xyzservices >=2021.09.1
+
+test:
+  imports:
+    - bokeh
+    - bokeh.application
+    - bokeh.application.handlers
+    - bokeh.client
+    - bokeh.command
+    - bokeh.command.subcommands
+    - bokeh.core
+    - bokeh.core.property
+    - bokeh.core.validation
+    - bokeh.models
+    - bokeh.models.widgets
+    - bokeh.plotting
+    - bokeh.sampledata
+    - bokeh.server
+    - bokeh.protocol
+    - bokeh.protocol.messages
+    - bokeh.server.views
+    - bokeh.sphinxext
+    - bokeh.themes
+    - bokeh.util
+  requires:
+    - pip
+  commands:
+    - pip check
+    - bokeh --help
+    - bokeh info
+
+about:
+  home: https://bokeh.org/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Bokeh is an interactive visualization library for modern web browsers.
+  description: |
+    Bokeh is an interactive visualization library for modern web browsers.
+    It provides elegant, concise construction of versatile graphics,
+    and affords high-performance interactivity over large or streaming
+    datasets. Bokeh can help anyone who would like to quickly and easily
+    make interactive plots, dashboards, and data applications.
+  doc_url: https://docs.bokeh.org/en/latest/
+  dev_url: https://github.com/bokeh/bokeh
+
+extra:
+  recipe-maintainers:
+    - almarklein
+    - jakirkham
+    - mattpap
+    - ocefpaf
+    - philippjfr
+  skip-lints:
+    - python_build_tool_in_run

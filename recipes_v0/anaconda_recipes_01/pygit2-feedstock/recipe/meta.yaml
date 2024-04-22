@@ -1,0 +1,51 @@
+{% set version = "1.11.1" %}
+
+# must pin the appropiate libgit2 version documented here:
+# https://www.pygit2.org/install.html#version-numbers
+
+package:
+  name: pygit2
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pygit2/pygit2-{{ version }}.tar.gz
+  sha256: 793f583fd33620f0ac38376db0f57768ef2922b89b459e75b1ac440377eb64ec
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - cffi                                   # [build_platform != target_platform]
+    - {{ compiler('c') }}
+
+  host:
+    - python
+    - pip
+    - cffi
+    - libgit2 1.5
+
+  run:
+    - python
+    - cffi
+
+test:
+  imports:
+    - pygit2
+
+about:
+  home: http://github.com/libgit2/pygit2
+  summary: Python bindings for libgit2.
+  license: GPL-2.0-only WITH GCC-exception-2.0
+  license_family: GPL
+  license_file: COPYING
+  doc_url: http://www.pygit2.org/
+  dev_url: https://github.com/libgit2/pygit2
+
+extra:
+  recipe-maintainers:
+    - efiop
+    - kszucs
+    - xhochy

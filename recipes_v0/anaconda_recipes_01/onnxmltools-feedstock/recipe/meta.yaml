@@ -1,0 +1,62 @@
+{% set name = "onnxmltools" %}
+{% set version = "1.11.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://github.com/onnx/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+    sha256: 0db032ac4625e35da757465d6f01bc3f4ce3d6e112d7f50c1a57c8816695eec4
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - numpy 
+    - onnx 
+    - skl2onnx 
+
+test:
+  imports:
+    - onnxmltools
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://learn.microsoft.com/en-us/windows/ai/windows-ml/onnxmltools
+  summary: ONNXMLTools enables conversion of models to ONNX
+  description: |
+    ONNXMLTools enables you to convert models from different machine learning toolkits into ONNX. Currently the following toolkits are supported:
+
+      - Tensorflow (a wrapper of tf2onnx converter)
+      - scikit-learn (a wrapper of skl2onnx converter)
+      - Apple Core ML
+      - Spark ML (experimental)
+      - LightGBM
+      - libsvm
+      - XGBoost
+      - H2O
+      - CatBoost
+      - Pytorch has its builtin ONNX exporter.
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  dev_url: https://github.com/onnx/onnxmltools
+  doc_url: https://github.com/onnx/onnxmltools#readme
+
+extra:
+  recipe-maintainers:
+    - xhochy
+    - janjagusch

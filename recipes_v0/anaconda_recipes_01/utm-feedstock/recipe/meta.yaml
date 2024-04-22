@@ -1,0 +1,46 @@
+{% set name = "utm" %}
+{% set version = "0.7.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/utm-{{ version }}.tar.gz
+  sha256: 3c9a3650e98bb6eecec535418d0dfd4db8f88c8ceaca112a0ff0787e116566e2
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - utm
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/Turbo87/utm
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Bidirectional UTM-WGS84 converter for python.
+  description: Bidirectional UTM-WGS84 converter for python.
+  doc_url: https://github.com/Turbo87/utm
+  dev_url: https://github.com/Turbo87/utm
+
+extra:
+  recipe-maintainers:
+    - snowman2
+    - Turbo87

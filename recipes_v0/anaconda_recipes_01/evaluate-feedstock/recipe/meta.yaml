@@ -1,0 +1,71 @@
+{% set name = "evaluate" %}
+{% set version = "0.4.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/evaluate-{{ version }}.tar.gz
+  sha256: bd6a59879be9ae13b681684e56ae3e6ea657073c4413b30335e9efa9856e4f44
+
+build:
+  # Skip s390x until datasets >=2.0.0 is available
+  skip: true  # [py<37 or s390x]
+  entry_points:
+    - evaluate-cli=evaluate.commands.evaluate_cli:main
+  script: {{ PYTHON }} -m pip install . -vv --no-deps
+  number: 0
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - datasets >=2.0.0
+    - numpy >=1.17
+    - dill
+    - pandas
+    - requests >=2.19.0
+    - tqdm >=4.62.1
+    - python-xxhash
+    - multiprocess
+    - importlib-metadata  # [py<38]
+    - fsspec >=2021.05.0
+    - huggingface_hub >=0.7.0
+    - packaging
+    - responses <0.19
+    - cookiecutter # to populate metric template. Required by CLI: https://github.com/huggingface/evaluate/blob/v0.3.0/src/evaluate/commands/evaluate_cli.py#L6
+
+test:
+  imports:
+    - evaluate
+  commands:
+    - pip check
+    - evaluate-cli --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/huggingface/evaluate
+  summary: HuggingFace community-driven open-source library of evaluation
+  description: |
+    Evaluate is a library that makes evaluating and comparing models and reporting their performance easier and more standardized.
+
+    It currently contains:
+
+      - implementations of dozens of popular metrics: the existing metrics cover a variety of tasks spanning from NLP to Computer Vision, and include dataset-specific metrics for datasets. With a simple command like `accuracy = load("accuracy")`, get any of these metrics ready to use for evaluating a ML model in any framework (Numpy/Pandas/PyTorch/TensorFlow/JAX).
+      - comparisons and measurements: comparisons are used to measure the difference between models and measurements are tools to evaluate datasets.
+      - an easy way of adding new evaluation modules to the 🤗 Hub: you can create new evaluation modules and push them to a dedicated Space in the 🤗 Hub with evaluate-cli create [metric name], which allows you to see easily compare different metrics and their outputs for the same sets of references and predictions.
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  doc_url: https://huggingface.co/docs/evaluate/index
+  dev_url: https://github.com/huggingface/evaluate
+
+extra:
+  recipe-maintainers:
+    - wietsedv

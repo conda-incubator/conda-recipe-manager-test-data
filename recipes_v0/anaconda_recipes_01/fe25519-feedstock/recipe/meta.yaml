@@ -1,0 +1,47 @@
+{% set name = "fe25519" %}
+{% set version = "1.5.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 95afb5eed3c78dc78c4deed693c0c655a4a9b64f1725afa5ec64dea8b2050efb
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: True  # [py<38]
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - fe25519
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/nthparty/fe25519
+  summary: Pure-Python data structure for working with Ed25519 (and Ristretto) field elements and operations.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  description: |
+    This library provides a native Python implementation of Ed25519 field elements and a number of operations over them.
+  doc_url: https://github.com/nthparty/fe25519/blob/main/README.rst
+  dev_url: https://github.com/nthparty/fe25519
+
+extra:
+  recipe-maintainers:
+    - Arishamays1

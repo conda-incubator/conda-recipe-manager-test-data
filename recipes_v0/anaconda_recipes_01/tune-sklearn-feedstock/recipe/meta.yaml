@@ -1,0 +1,51 @@
+{% set name = "tune-sklearn" %}
+{% set version = "0.4.6" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  # NOTE: pypi doesnt contain a source package for it. See
+  # https://github.com/ray-project/tune-sklearn/issues/159
+  url: https://github.com/ray-project/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: f6d531f99a02de4a420cbefb96de64c8db4a014f2c7352f38a6a7a37e2103614
+
+build:
+  number: 1
+  # ray-core/ray-tune 2.3.0 haven't Python 3.11 support at the moment.
+  skip: True  # [py<38 or py>310 or s390x or ppc64le]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - numpy >=1.16
+    - ray-tune >=2.0.0
+    - scipy
+    - scikit-learn
+    - scikit-optimize
+
+test:
+  imports:
+    - tune_sklearn
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/ray-project/tune-sklearn
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: A drop-in replacement for Scikit-Learn's GridSearchCV / RandomizedSearchCV -- but with cutting edge hyperparameter tuning techniques.
+  description: |
+    A drop-in replacement for Scikit-Learn's GridSearchCV / RandomizedSearchCV -- but with cutting edge hyperparameter tuning techniques.
+  doc_url: https://github.com/ray-project/tune-sklearn/blob/master/README.md
+  dev_url: https://github.com/ray-project/tune-sklearn

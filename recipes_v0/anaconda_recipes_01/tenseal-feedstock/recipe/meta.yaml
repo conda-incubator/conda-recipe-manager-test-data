@@ -1,0 +1,71 @@
+{% set name = "tenseal" %}
+{% set version = "0.3.14" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/OpenMined/TenSEAL/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: d3c086836200c45ad6b9ac0a149b535aa3bc5dd5dac8d1bf5f8fe1706e234623
+  patches:
+    - patches/0001-unvendor-deps.patch
+    - patches/0002-Fix-windows-build.patch  # [win]
+
+build:
+  number: 0
+  script_env:
+    - VERBOSE=1
+  script: {{ PYTHON }} -m pip install . --no-build-isolation --no-deps -v
+  missing_dso_whitelist:
+    - '$RPATH/ld64.so.1'  # [s390x]
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - cmake
+    - patch  # [not win]
+    - m2-patch  # [win]
+    - make  # [not win]
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+    - seal 4.1.1
+    - zlib {{ zlib }}
+    - libprotobuf {{ libprotobuf }}
+    - pybind11 2.10
+    - xtensor 0.23.5
+  run:
+    - python
+    - zlib  # pin through run_exports
+    - libprotobuf  # pin through run_exports
+    - numpy
+
+test:
+  source_files:
+    - tests/python
+    - tests/__init__.py
+    - pytest.ini
+  imports:
+    - tenseal
+    - tenseal.sealapi
+    - tenseal.tensors
+  commands:
+    - pip check
+    - pytest -v tests/python/sealapi tests/python/tenseal -m "not slow"
+  requires:
+    - pip
+    - pytest
+    - scikit-image
+
+about:
+  home: https://github.com/OpenMined/TenSEAL
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: A library for doing homomorphic encryption operations on tensors
+  description: TenSEAL is a library for doing homomorphic encryption operations on tensors, built on top of Microsoft SEAL. It provides ease of use through a Python API, while preserving efficiency by implementing most of its operations using C++.
+  doc_url: https://github.com/OpenMined/TenSEAL
+  dev_url: https://github.com/OpenMined/TenSEAL

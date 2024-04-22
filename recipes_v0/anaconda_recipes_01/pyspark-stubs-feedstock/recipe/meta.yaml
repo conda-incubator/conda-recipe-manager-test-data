@@ -1,0 +1,42 @@
+{% set name = "pyspark-stubs" %}
+{% set version = "3.0.0.post3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: bea8b6ed8a77fac06d8df99d80b9d017bf4de632583d7eef829b4e65653f9d03
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - pyspark >=3.0.0,<3.1.0
+    - python >=3.6
+  run:
+    - pyspark >=3.0.0,<3.1.0
+    - python >=3.6
+
+test:
+  commands:
+    - test -f $SP_DIR/pyspark/py.typed  # [unix]
+    - if not exist %SP_DIR%\\pyspark\\py.typed exit 1  # [win]
+
+about:
+  home: https://github.com/zero323/pyspark-stubs
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: A collection of the Apache Spark stub files
+  doc_url: https://github.com/zero323/pyspark-stubs/blob/branch-2.4/README.rst
+  dev_url: https://github.com/zero323/pyspark-stubs
+
+extra:
+  recipe-maintainers:
+    - zero323

@@ -1,0 +1,47 @@
+{% set name = "aws-c-compression" %}
+{% set version = "0.2.16" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/awslabs/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: 044b1dbbca431a07bde8255ef9ec443c300fc60d4c9408d4b862f65e496687f4
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage("aws-c-compression", max_pin="x.x.x") }}
+
+requirements:
+  build:
+    - cmake
+    - {{ compiler('c') }}
+    - ninja-base
+  host:
+    - aws-c-common 0.8.5
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libaws-c-compression${SHLIB_EXT}  # [unix]
+    - test -f $PREFIX/include/aws/compression/compression.h  # [unix]
+    - if not exist %LIBRARY_INC%\\aws\\compression\\compression.h exit 1          # [win]
+    - if not exist %PREFIX%\\Library\\bin\\aws-c-compression.dll exit 1  # [win]
+
+about:
+  home: https://github.com/awslabs/aws-c-compression
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: C99 implementation of huffman encoding/decoding
+  description: |
+    This is a cross-platform C99 implementation of compression algorithms such as gzip, and huffman 
+    encoding/decoding. Currently only huffman is implemented.
+  doc_url: https://github.com/awslabs/aws-c-compression
+  dev_url: https://github.com/awslabs/aws-c-compression
+
+extra:
+  recipe-maintainers:
+    - xhochy
+    - conda-forge/aws-sdk-cpp

@@ -1,0 +1,54 @@
+{% set version = "1.0.20" %}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-dosnow
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/doSNOW_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/doSNOW/doSNOW_{{ version }}.tar.gz
+  sha256: 917cabed166aa2d1ec291691c17e1e3d344e858543e1682e3a442cc0c504bbb8
+
+build:
+  merge_build_host: true  # [win]
+  number: 0
+  noarch: generic
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+    - cross-r-base {{ r_base }}    # [build_platform != target_platform]
+  host:
+    - r-base
+    - r-foreach >=1.2.0
+    - r-iterators >=1.0.0
+    - r-snow >=0.3.0
+  run:
+    - r-base
+    - r-foreach >=1.2.0
+    - r-iterators >=1.0.0
+    - r-snow >=0.3.0
+
+test:
+  commands:
+    - $R -e "library('doSNOW')"           # [not win]
+    - "\"%R%\" -e \"library('doSNOW')\""  # [win]
+
+about:
+  home: https://cran.r-project.org/web/packages/doSNOW/index.html
+  license: GPL-2.0-only
+  summary: Provides a parallel backend for the %dopar% function using Luke Tierney's snow package.
+  license_family: GPL2
+  license_file:
+    - {{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2
+
+extra:
+  recipe-maintainers:
+    - conda-forge/r
+    - tomnl

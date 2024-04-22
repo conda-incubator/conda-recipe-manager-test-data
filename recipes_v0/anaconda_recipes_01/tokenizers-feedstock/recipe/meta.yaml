@@ -1,0 +1,73 @@
+{% set name = "tokenizers" %}
+{% set version = "0.15.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: c0a331d6d5a3d6e97b7f99f562cee8d56797180797bc55f12070e495e717c980
+
+build:
+  number: 0
+  skip: True  # [py<37]
+  missing_dso_whitelist:
+    - /usr/lib/libresolv.9.dylib  # [osx]
+    - /usr/lib64/libgcc_s.so.1  # [linux]
+    - $RPATH/ld64.so.1  # [s390x]
+  script:
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vvv
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - {{ compiler('rust') }}
+    # It's needed to find openssl
+    - pkg-config
+  host:
+    - python
+    - pip
+    - openssl {{ openssl }} # [linux]
+    - maturin >=1.0,<2.0
+  run:
+    - python
+    - openssl # [linux]
+    - huggingface_hub >=0.16.4,<1.0
+
+test:
+  imports:
+    - tokenizers
+    - tokenizers.models
+    - tokenizers.decoders
+    - tokenizers.normalizers
+    - tokenizers.pre_tokenizers
+    - tokenizers.processors
+    - tokenizers.trainers
+    - tokenizers.implementations
+    - tokenizers.tools
+    - huggingface_hub
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/huggingface/tokenizers
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Fast State-of-the-Art Tokenizers optimized for Research and Production
+  description: |
+    Provides an implementation of today's most used tokenizers, with a focus on 
+    performance and versatility.
+  dev_url: https://github.com/huggingface/tokenizers
+  doc_url: https://huggingface.co/docs/tokenizers/index
+
+extra:
+  recipe-maintainers:
+    - anthchirp
+    - hadim
+    - ndmaxar
+    - oblute
+    - setu4993

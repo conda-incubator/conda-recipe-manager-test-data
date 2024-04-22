@@ -1,0 +1,56 @@
+{% set version = "1.2.0" %}
+
+package:
+  name: h5netcdf
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/h/h5netcdf/h5netcdf-{{ version }}.tar.gz
+  sha256: 7f6b2733bde06ea2575b79a6450d9bd5c38918ff4cb2a355bf22bbe8c86c6bcf
+
+build:
+  skip: True  # [py<39]
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - setuptools-scm
+    - pip
+    - wheel
+  run:
+    - h5py
+    - python
+    - packaging
+
+test:
+  imports:
+    - h5netcdf
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/h5netcdf/h5netcdf
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  description: |
+    A Python interface for the netCDF4 file-format that reads and writes local or remote HDF5 files directly via h5py
+    or h5pyd, without relying on the Unidata netCDF library.
+  summary: Pythonic interface to netCDF4 via h5py
+  dev_url: https://github.com/h5netcdf/h5netcdf
+  doc_url: https://github.com/h5netcdf/h5netcdf
+
+extra:
+  recipe-maintainers:
+    - hmaarrfk
+    - jhamman
+    - ocefpaf
+    - shoyer
+    - kmuehlbauer
+  skip-lints:
+    - python_build_tool_in_run  # it complaints about packaging which is a run dep, not a host dep

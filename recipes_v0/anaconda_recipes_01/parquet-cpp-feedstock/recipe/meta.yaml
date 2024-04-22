@@ -1,0 +1,56 @@
+# Parquet-cpp has been migrated to arrow codebase, so this is a meta package
+# which install's the appropiate version of arrow-cpp.
+
+# https://github.com/apache/arrow/blob/master/cpp/src/parquet/.parquetcppversion
+{% set parquet_version = "1.5.1" %}
+# Don't forget to update me!
+{% set arrow_version = "0.13.0" %}
+
+package:
+  name: parquet-cpp
+  version: {{ parquet_version }}
+
+build:
+  number: 4
+  noarch: generic
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+  host:
+    - arrow-cpp >={{ arrow_version }}
+  run:
+    - arrow-cpp >={{ arrow_version }}
+
+test:
+  commands:
+    # headers
+    - test -f $PREFIX/include/parquet/api/reader.h               # [unix]
+    - if not exist %LIBRARY_INC%\\parquet\\api\\reader.h exit 1  # [win]
+
+    # static
+    # - test -f $PREFIX/lib/libparquet.a                                # [unix]
+    - if not exist %PREFIX%\\Library\\lib\\parquet_static.lib exit 1  # [win]
+
+    # shared
+    - test -f $PREFIX/lib/libparquet.so                        # [linux]
+    - test -f $PREFIX/lib/libparquet.dylib                     # [osx]
+    - if not exist %PREFIX%\\Library\\bin\\parquet.dll exit 1  # [win]
+
+about:
+  home: http://github.com/apache/arrow
+  license: Apache 2.0
+  summary: 'C++ libraries for the Apache Parquet file format'
+
+extra:
+  recipe-maintainers:
+    - wesm
+    - xhochy
+    - leifwalsh
+    - jreback
+    - cpcloud
+    - siddharthteotia
+    - kou
+    - kszucs
+    - pitrou
+

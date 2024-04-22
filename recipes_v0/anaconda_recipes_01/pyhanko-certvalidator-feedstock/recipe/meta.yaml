@@ -1,0 +1,46 @@
+{% set name = "pyhanko-certvalidator" %}
+{% set version = "0.20.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pyhanko-certvalidator-{{ version }}.tar.gz
+  sha256: 096faf8eeca1eb77dc74a6cb95a17c6e8594a4e9f341fa9fe97a4538a17150e3
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - python >=3.7
+    - asn1crypto >=1.5.0
+    - cryptography >=3.3.1
+    - oscrypto >=1.1.0
+    - requests >=2.24.0
+    - uritools >=3.0.1
+
+test:
+  imports:
+    - pyhanko_certvalidator
+    - pyhanko_certvalidator.fetchers
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/MatthiasValvekens/certvalidator
+  summary: Validates X.509 certificates and paths; forked from wbond/certvalidator
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - mrakitin

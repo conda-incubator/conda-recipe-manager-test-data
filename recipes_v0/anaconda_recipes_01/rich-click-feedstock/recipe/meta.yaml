@@ -1,0 +1,51 @@
+{% set name = "rich-click" %}
+{% set version = "1.6.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/ewels/rich-click/archive/v{{ version }}.tar.gz
+  sha256: 94cb58820b7728d00d0f6ea485a16e451c298e1cb496d37dcd707a4918ff0596
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - rich-click=rich_click.cli:main
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - python >=3.7
+    - rich >=10
+    - click >=7,<9
+
+test:
+  imports:
+    - rich_click
+  requires:
+    - pip
+  commands:
+    - pip check
+    - rich-click --help
+
+about:
+  home: https://github.com/ewels/rich-click
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Format click help output nicely with rich
+  description: |
+    Provides attractive help output from click,
+    formatted with rich, with minimal customisation required.
+  doc_url: https://github.com/ewels/rich-click
+  dev_url: https://github.com/ewels/rich-click
+
+extra:
+  recipe-maintainers:
+    - ewels

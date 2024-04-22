@@ -1,0 +1,83 @@
+{% set version = "1.28.0" %}
+
+package:
+  name: featuretools
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/f/featuretools/featuretools-{{ version }}.tar.gz
+  sha256: 33612eb1528a55ce4700f0c420c7775f4ff0533d5f256251ad6c07a17787f774
+
+build:
+  skip: true  # [py<38 or s390x]
+  number: 0
+  script: {{ PYTHON }} -m pip install --no-deps --no-build-isolation -vv .
+
+requirements:
+  host:
+    - pip
+    - python
+    - wheel
+    - setuptools
+    
+  run:
+    - cloudpickle >=1.5.0
+    - holidays >=0.13,<0.33.0
+    - numpy >=1.21.0
+    - packaging >=20.0
+    - pandas >=1.5.0
+    - psutil >=5.6.6
+    - python
+    - scipy >=1.10.0
+    - tqdm >=4.32.0
+    - woodwork >=0.23.0
+test:
+  commands:
+    # docker-py has an exact pinning for pywin32 that cause pip check to fail.
+    - pip check  # [not win]
+    #test_nans fails with Intel MKL, so openblas is used
+    - pytest --pyargs featuretools -v -k "not test_nans"  # [win]
+    - pytest --pyargs featuretools -v  # [not win]
+  imports:
+    - featuretools
+  requires:
+    - pip
+    - boto3 >=1.17.46
+    - composeml >=0.8.0
+    - graphviz >=0.8.4
+    - moto >=3.0.7
+    - pyarrow >=3.0.0,<13.0.0
+    - pympler >=0.8
+    - pytest >=7.1.2
+    - pytest-timeout >=2.1.0
+    - pytest-xdist >=2.5.0
+    - python-graphviz >=0.8.4
+    - smart_open >=5.0.0
+    - urllib3 >=1.26.5
+    - openblas  # [not win]
+
+about:
+  doc_url: https://featuretools.alteryx.com
+  dev_url: https://github.com/alteryx/Featuretools
+  home: https://featuretools.com/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: a framework for automated feature engineering
+  description: |
+    Featuretools is a framework to perform automated feature engineering. 
+    It excels at transforming temporal and relational datasets into 
+    feature matrices for machine learning.
+
+extra:
+  recipe-maintainers:
+    - stefaniesmith
+    - sbadithe
+    - ozzieD
+    - machineAYX
+    - rwedge
+    - tamargrey
+    - thehomebrewnerd
+    - jeff-hernandez
+    - gsheni
+    - dvreed77

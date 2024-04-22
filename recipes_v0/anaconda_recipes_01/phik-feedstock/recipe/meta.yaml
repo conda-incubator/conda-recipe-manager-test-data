@@ -1,0 +1,61 @@
+{% set name = "phik" %}
+{% set version = "0.12.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/phik-{{ version }}.tar.gz
+  sha256: 29f5eb2e72d064c3215c106559ed40402c5ec0c39391ccd27afa11f88d397407
+
+build:
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed . -vv
+  number: 0
+  skip: True  # [py<37]
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - cmake >=3.16
+    - ninja-base
+  host:
+    - python
+    - pip
+    - setuptools >=42
+    - wheel
+    - pybind11 >=2.8.1
+    - scikit-build >=0.14.1
+  run:
+    - python
+    - numpy >=1.18.0
+    - scipy >=1.5.2
+    - pandas >=0.25.1
+    - matplotlib-base >=2.2.3
+    - joblib >=0.14.1
+
+test:
+  imports:
+    - phik
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://phik.rtfd.io
+  license: Apache-2.0
+  license_family: Apache
+  license_file:
+    - LICENSE
+    - NOTICE
+  summary: Phi_K correlation analyzer library
+  description: |
+    Phi_K is a new and practical correlation coefficient based on several
+    refinements to Pearson's hypothesis test of independence of two variables.
+  doc_url: https://phik.readthedocs.io/
+  dev_url: https://github.com/KaveIO/PhiK
+
+extra:
+  recipe-maintainers:
+    - cbouss

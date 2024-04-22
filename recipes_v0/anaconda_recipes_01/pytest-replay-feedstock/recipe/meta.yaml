@@ -1,0 +1,52 @@
+{% set name = "pytest-replay" %}
+{% set version = "1.4.0" %}
+{% set hash_type = "sha256" %}
+{% set hash_value = "a88a30088cc7f27ae0d40e98e748d07824bd8bebe9108e95773791d03be3d1fb" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  fn: '{{ name }}-{{ version }}.tar.gz'
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  '{{ hash_type }}': '{{ hash_value }}'
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  noarch: python
+
+requirements:
+  build:
+    - pip
+    - python >=3.6
+    - setuptools_scm
+    - setuptools
+    - wheel
+  run:
+    - pytest >=3.0.0
+    - python >=3.6
+
+test:
+  imports:
+    - pytest_replay
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/ESSS/pytest-replay
+  license: MIT
+  license_family: MIT
+  license_file: 'LICENSE'
+  summary: Saves shell scripts that allow re-execute previous pytest runs to reproduce crashes or flaky tests
+  description: "Saves previous test runs and allow re-execute previous pytest runs to reproduce crashes or flaky tests"
+  dev_url: https://github.com/ESSS/pytest-replay
+
+extra:
+  recipe-maintainers:
+    - nicoddemus
+    - tadeu
+    - prusse-martin

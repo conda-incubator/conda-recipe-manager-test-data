@@ -1,0 +1,65 @@
+{% set name = "cybox" %}
+{% set version = "2.1.0.21" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 8b12110180aceed0f85f8d6c1860a32a679c261f097d909384a81b3b73ff9716
+  patches:
+    - patches/0001-do-not-use-mixbox.vendor.six.patch
+    - patches/0001-do-not-use-collections.MutableSequence.patch  # [py>39]
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  build:
+    - patch       # [not win]
+    - m2-patch    # [win]
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - lxml >=2.2.3
+    - mixbox >=1.0.2
+    - python-dateutil
+
+test:
+  imports:
+    - cybox
+    - cybox.bindings
+    - cybox.bindings.extensions
+    - cybox.bindings.extensions.location
+    - cybox.common
+    - cybox.core
+    - cybox.objects
+    - cybox.utils
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+    - pytest --pyargs cybox
+
+about:
+  home: https://cyboxproject.github.io
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: A Python library for parsing and generating CybOX content.
+  description: |
+    A Python library for parsing, manipulating, and generating
+    Cyber Observable eXpression (CybOX) v2.1.0 content.
+  doc_url: https://cybox.readthedocs.io/
+  dev_url: https://github.com/CybOXProject/python-cybox
+
+extra:
+  recipe-maintainers:
+    - lorepirri

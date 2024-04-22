@@ -1,0 +1,59 @@
+{% set name = "pooch" %}
+{% set version = "1.7.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: f174a1041b6447f0eef8860f76d17f60ed2f857dc0efa387a7f08228af05d998
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - setuptools_scm
+    - wheel
+  run:
+    - python
+    - platformdirs >=2.5.0
+    - packaging >=20.0
+    - requests >=2.19.0
+  run_constrained:
+    - tqdm >=4.41.0,<5.0.0
+    - paramiko >=2.7.0
+    - xxhash >=1.4.3
+
+test:
+  requires:
+    - pytest
+    - pip
+  imports:
+    - pooch
+  commands:
+    - pytest --pyargs pooch.tests.test_integration
+    - pip check
+
+about:
+  home: https://github.com/fatiando/pooch
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: A friend to fetch your data files
+  description: |
+    Pooch manages your remote data files. It automatically downloads and stores
+    them in a local directory (using HTTP or FTP), with support for versioning,
+    corruption checks, and custom download and post-processing operations.
+  doc_url: https://www.fatiando.org/pooch
+  dev_url: https://github.com/fatiando/pooch
+
+extra:
+  recipe-maintainers:
+    - leouieda
+    - dopplershift

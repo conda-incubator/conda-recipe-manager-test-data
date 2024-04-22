@@ -1,0 +1,45 @@
+{% set name = "visdcc" %}
+{% set version = "0.0.50" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 22ab477027da32ca196bf7175c12f86b50936fdc2224fc3aee7da8af8cbbd1ab
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - dash
+    - dash-renderer
+    - dash-html-components
+    - dash-core-components
+
+test:
+  imports:
+    - dash
+    - dash_core_components
+    - dash_html_components
+    - visdcc
+
+about:
+  home: https://github.com/jimmybow/visdcc
+  license: MIT
+  license_file: LICENSE.txt
+  summary: Dash Core Components for Visualization.
+
+extra:
+  recipe-maintainers:
+    - jfallmann

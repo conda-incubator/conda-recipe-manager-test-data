@@ -1,0 +1,51 @@
+{% set name = "libpcap" %}
+{% set version = "1.10.1" %}
+{% set sha256 = "ed285f4accaf05344f90975757b3dbfe772ba41d1c401c2648b7fa45b711bdd4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: http://www.tcpdump.org/release/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - fix-install.patch  # [osx]
+
+build:
+  number: 0
+  skip: True  # [win]
+  run_exports:
+    # https://abi-laboratory.pro/?view=timeline&l=libpcap
+    # Symbol removal at minor bump
+    - {{ pin_subpackage('libpcap', max_pin='x.x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - flex
+    - bison
+    - m4
+    - make
+    - libtool
+    - patch
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libpcap.so      # [linux]
+    - test -f $PREFIX/lib/libpcap.dylib   # [osx]
+    - test -f $PREFIX/include/pcap.h      # [unix]
+
+about:
+  home: www.tcpdump.org
+  license: BSD 3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: 'the LIBpcap interface to various kernel packet capture mechanism'
+  doc_url: http://www.tcpdump.org/#documentation
+  dev_url: https://github.com/the-tcpdump-group/libpcap
+
+extra:
+  recipe-maintainers:
+    - nehaljwani

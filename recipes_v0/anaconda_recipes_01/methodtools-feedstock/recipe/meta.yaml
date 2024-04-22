@@ -1,0 +1,51 @@
+{% set name = "methodtools" %}
+{% set version = "0.4.7" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/youknowone/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+  sha256: 2339bcdc9dfe2df922cf17f7c303824e2702fac28fbec53c65102b0bd1691bb1
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - wirerope >=0.4.7
+
+test:
+  imports:
+    - methodtools
+  requires:
+    - pip
+    - pytest
+  source_files:
+    - tests
+  commands:
+    - pip check
+    - pytest tests
+
+about:
+  home: https://github.com/youknowone/methodtools
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Expand standard functools to methods
+  description: |
+    Expand functools features to methods, classmethods, staticmethods and even for (unofficial) hybrid methods.
+  doc_url: https://methodtools.readthedocs.io
+  dev_url: https://github.com/youknowone/methodtools
+
+extra:
+  recipe-maintainers:
+    - timkpaine

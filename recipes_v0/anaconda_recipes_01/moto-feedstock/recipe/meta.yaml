@@ -1,0 +1,173 @@
+{% set version = "4.1.3" %}
+
+package:
+  name: moto
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/source/m/moto/moto-{{ version }}.tar.gz
+    sha256: c8200ccaa9440c2e9daa0bd5e0bd768a719db5a2c82ea8d782f0e3fa09a3c5e2
+
+build:
+  number: 0
+  # there seem to be missing docker-py >=2.5.1 and cfn-lint >=0.4.0 for s390x
+  skip: True  # [py<37 or s390x]
+  entry_points:
+    - moto_server = moto.server:main
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    # we need to bound this since 198 changed some of the api
+    - boto3 >=1.9.201
+    - botocore >=1.12.201
+    - cryptography >=3.3.1
+    - requests >=2.5
+    - xmltodict
+    - werkzeug >=0.5,!=2.2.0,!=2.2.1
+    - python-dateutil >=2.1,<3.0.0
+    - responses >=0.13.0
+    - jinja2 >=2.10.1
+    - python-jose >=3.1.0,<4.0.0
+    - ecdsa !=0.15
+    - docker-py >=2.5.1
+    - graphql-core
+    - pyyaml >=5.1
+    - cfn-lint >=0.40.0
+    - sshpubkeys >=3.1.0
+    - flask !=2.2.0,!=2.2.1
+    - flask_cors
+    - jsondiff >=1.1.2
+    - aws-xray-sdk >=0.93,!=0.96
+    - openapi-spec-validator >=0.2.8
+    - pyparsing >=3.0.7
+
+test:
+  imports:
+    - moto
+    - moto.acm
+    - moto.apigateway
+    - moto.applicationautoscaling
+    - moto.appsync
+    - moto.athena
+    - moto.autoscaling
+    - moto.awslambda
+    - moto.batch
+    - moto.budgets
+    - moto.cloudformation
+    - moto.cloudfront
+    - moto.cloudwatch
+    - moto.codecommit
+    - moto.codepipeline
+    - moto.cognitoidentity
+    - moto.cognitoidp
+    - moto.config
+    - moto.core
+    - moto.datapipeline
+    - moto.datasync
+    - moto.dax
+    - moto.dms
+    - moto.dms
+    - moto.ds
+    - moto.dynamodb
+    - moto.dynamodbstreams
+    - moto.ec2
+    - moto.ec2.responses
+    - moto.ec2instanceconnect
+    - moto.ecr
+    - moto.ecs
+    - moto.efs
+    - moto.eks
+    - moto.elasticache
+    - moto.elasticbeanstalk
+    - moto.elastictranscoder
+    - moto.elb
+    - moto.elbv2
+    - moto.emr
+    - moto.emrcontainers
+    - moto.es
+    - moto.events
+    - moto.firehose
+    - moto.forecast
+    - moto.glacier
+    - moto.glue
+    - moto.guardduty
+    - moto.iam
+    - moto.instance_metadata
+    - moto.iot
+    - moto.iotdata
+    - moto.kinesis
+    - moto.kinesisvideo
+    - moto.kinesisvideoarchivedmedia
+    - moto.kms
+    - moto.logs
+    - moto.managedblockchain
+    - moto.mediaconnect
+    - moto.medialive
+    - moto.mediapackage
+    - moto.mediastore
+    - moto.mediastoredata
+    - moto.opsworks
+    - moto.organizations
+    - moto.packages
+    - moto.polly
+    - moto.ram
+    - moto.rds
+    - moto.redshift
+    - moto.resourcegroups
+    - moto.resourcegroupstaggingapi
+    - moto.route53
+    - moto.route53resolver
+    - moto.s3
+    - moto.s3bucket_path
+    - moto.s3control
+    - moto.sagemaker
+    - moto.sdb
+    - moto.secretsmanager
+    - moto.ses
+    - moto.sns
+    - moto.sqs
+    - moto.ssm
+    - moto.ssoadmin
+    - moto.stepfunctions
+    - moto.sts
+    - moto.support
+    - moto.swf
+    - moto.swf.models
+    - moto.timestreamwrite
+    - moto.transcribe
+    - moto.utilities
+    - moto.wafv2
+    - moto.xray
+  requires:
+    - pip
+  commands:
+    # pip check fails on docker-py for windows
+    - pip check  # [not win]
+    - moto_server --help
+
+about:
+  home: https://docs.getmoto.org/en/latest/#
+  description : A library that allows you to easily mock out tests based on AWS infrastructure.
+  summary: A library that allows your python tests to easily mock out the boto library.
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
+  doc_url: https://docs.getmoto.org
+  dev_url: https://github.com/getmoto/moto
+
+extra:
+  recipe-maintainers:
+    - jan-janssen
+    - johanneskoester
+    - mariusvniekerk
+    - hajapy
+
+  skip-lints:
+    - missing_pip_check

@@ -1,0 +1,56 @@
+{% set name = "ax-platform" %}
+{% set version = "0.2.10" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/ax-platform-{{ version }}.tar.gz
+  sha256: cf5ff1929feceaeb5282913579483a4a8c036dff4f4be218e0482e4b0ea64c24
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+    - setuptools >=34.4
+    - setuptools-scm
+  run:
+    - botorch ==0.8.0
+    # Required by botorch 0.8.0
+    - gpytorch ==1.9.0
+    - ipywidgets <8.0.0
+    - jinja2
+    # Required by botorch 0.8.0
+    - linear_operator ==0.2.0
+    - pandas
+    - plotly
+    - python >=3.7
+    - scikit-learn
+    - scipy
+    - typeguard
+
+test:
+  imports:
+    - ax
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/facebook/Ax
+  summary: Adaptive Experimentation
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - rpanai
+    - thewchan

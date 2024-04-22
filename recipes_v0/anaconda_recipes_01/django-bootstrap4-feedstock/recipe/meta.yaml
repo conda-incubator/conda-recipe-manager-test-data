@@ -1,0 +1,54 @@
+{% set version = "3.0.1" %}
+
+package:
+  name: django-bootstrap4
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/d/django-bootstrap4/django-bootstrap4-{{ version }}.tar.gz
+  sha256: c5c97fb473bb56e3a91b4f4be52b74a3fc384ec3baae50dd0807fa922a55ec2b
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - beautifulsoup4 >=4.8.0
+    - django >=2.2
+    - importlib-metadata <3
+    - python >=3.6
+
+test:
+  source_files:
+    - tests
+    - manage.py
+  imports:
+    - bootstrap4
+    - bootstrap4.templatetags
+  commands:
+    - pip check
+    - python manage.py test
+  requires:
+    - pip
+    - gdal
+
+
+about:
+  home: https://github.com/zostera/django-bootstrap4
+  summary: Bootstrap 4 for Django
+  license: BSD-3-Clause
+  license_file: LICENSE
+  description:  Write Django as usual, and let django-bootstrap4 make template output into Bootstrap 4 code.
+  doc_url: http://django-bootstrap4.readthedocs.io/
+  dev_url: https://github.com/zostera/django-bootstrap4
+
+extra:
+  recipe-maintainers:
+    - cshaley
+    - sannykr
+    - maksdan

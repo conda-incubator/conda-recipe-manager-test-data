@@ -1,0 +1,43 @@
+{% set name = "voluptuous" %}
+{% set version = "0.13.1" %}
+{% set sha256 = "e8d31c20601d6773cb14d4c0f42aee29c6821bbd1018039aac7ac5605b489723" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools
+    - flake8
+
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - voluptuous
+
+about:
+  home: https://github.com/alecthomas/voluptuous
+  license: BSD3
+  license_file: COPYING
+  summary: Voluptuous is a Python data validation library
+
+extra:
+  recipe-maintainers:
+    - tusharmakkar08
+    - vamega
+    - jan-janssen

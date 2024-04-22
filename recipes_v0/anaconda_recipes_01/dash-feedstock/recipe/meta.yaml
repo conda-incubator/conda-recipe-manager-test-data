@@ -1,0 +1,85 @@
+{% set name = "dash" %}
+{% set version = "2.14.2" %}
+{% set sha256 = "602e7b0047cc9c48a81244377b812e79198678ef759a0039dadfe81023e20e96" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - 0001-remove-obsolete-components.patch
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: true  # [py<38]
+
+requirements:
+  build:
+    - patch  # [not win]
+    - m2-patch  # [win]
+  host:
+    - python
+    - setuptools
+    - pip
+    - wheel
+  run:
+    - python
+    - flask >=1.0.4,<3.1
+    - werkzeug <3.1
+    - plotly >=5.0.0
+    - importlib-metadata
+    - typing_extensions >=4.1.1
+    - requests
+    - retrying
+    - ansi2html
+    - nest-asyncio
+    # compress extra
+    - flask-compress
+  run_constrained:
+    # Obsolete components now included in dash.
+    - dash-core-components ==2.0.0
+    - dash-html-components ==2.0.0
+    - dash-table ==5.0.0
+    # diskcache extra
+    - diskcache >=5.2.1
+    - multiprocess >=0.70.12
+    - psutil >=5.8.0
+    # celery extra
+    - redis >=3.5.3
+    - celery >=5.1.2
+    - importlib-metadata <5 # [py<38]
+
+test:
+  imports:
+    - dash.dash
+    - dash.dependencies
+    - dash.exceptions
+    - dash.resources
+    - dash.dcc
+    - dash.html
+    - dash.dash_table
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://plotly.com/dash/
+  doc_url: https://dash.plotly.com/
+  dev_url: https://github.com/plotly/dash
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'A Python framework for building reactive web-apps.'
+  description: |
+    Built on top of Plotly.js, React and Flask, Dash ties modern UI elements like dropdowns,
+    sliders, and graphs directly to your analytical Python code.
+
+extra:
+  recipe-maintainers:
+    - moorepants

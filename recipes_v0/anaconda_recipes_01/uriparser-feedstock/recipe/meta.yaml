@@ -1,0 +1,46 @@
+{% set name = "uriparser" %}
+{% set version = "0.9.7" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/{{ name }}/{{ name }}/archive/{{ name }}-{{ version }}.tar.gz
+  sha256: 8e19250654a204af0858408b55dc78941382a8c824bf38fc7f2a95ca6e16d7a0
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - cmake
+    - ninja
+    - pkg-config  # [linux]
+
+test:
+  commands:
+    - test -f $PREFIX/lib/liburiparser.so                                # [linux]
+    - test -f $PREFIX/lib/liburiparser.dylib                             # [osx]
+    - test -f $PREFIX/lib/cmake/uriparser-{{ version }}/uriparser.cmake  # [not win]
+    - if not exist %PREFIX%\\Library\\bin\\uriparser.dll exit 1          # [win]
+    - if not exist %PREFIX%\\Library\\lib\\cmake\\uriparser-{{ version }}\\uriparser.cmake exit 1  # [win]
+
+about:
+  home: https://uriparser.github.io/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: COPYING
+  summary: 'RFC 3986 compliant URI parsing and handling library written in C89'
+  description: |
+    uriparser is a strictly RFC 3986 compliant URI parsing and handling
+    library written in C89 ("ANSI C"). uriparser is cross-platform, fast,
+    supports Unicode, and is licensed under the New BSD license.
+  doc_url: https://uriparser.github.io/
+  dev_url: https://github.com/uriparser/uriparser
+
+extra:
+  recipe-maintainers:
+    - pitrou
+    - wesm

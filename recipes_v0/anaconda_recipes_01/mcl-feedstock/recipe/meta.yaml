@@ -1,0 +1,74 @@
+{% set name = "mcl" %}
+{% set version = "1.86.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/herumi/{{ name}}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: a3ab1cd01a6419f46210fd5874e795e37a4565fa305e0302301b31ffed208872
+  patches:
+    - patches/0001-Don-t-install-static-library.patch
+    - patches/0002-Move-Windows-shared-library-in-bin.patch
+
+build:
+  skip: True  # [s390x]
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    # upstream support building by gcc on x86, on other platforms - clang  
+    - clang    # [linux and aarch64]
+    - clangxx  # [linux and aarch64]
+    - cmake
+    - make  # [unix]
+    - patch  # [not win]
+    - m2-patch  # [win]
+  host:
+    # pin through gmp run_exports
+    - gmp  # [unix]
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libmcl${SHLIB_EXT}                # [unix]
+    - test -f $PREFIX/lib/libmclbn256${SHLIB_EXT}           # [unix]
+    - test -f $PREFIX/lib/libmclbn384${SHLIB_EXT}           # [unix]
+    - test -f $PREFIX/lib/libmclbn384_256${SHLIB_EXT}       # [unix]
+    - test -f $PREFIX/include/mcl/bn256.hpp                 # [unix]
+    - test -f $PREFIX/include/mcl/bn_c256.h                 # [unix]
+    - test -f $PREFIX/include/mcl/bn.hpp                    # [unix]
+    - test -f $PREFIX/include/mcl/bn.h                      # [unix]
+
+    - if not exist %LIBRARY_BIN%\mcl.dll          exit 1     # [win]
+    - if not exist %LIBRARY_BIN%\mclbn256.dll     exit 1     # [win]
+    - if not exist %LIBRARY_BIN%\mclbn384.dll     exit 1     # [win]
+    - if not exist %LIBRARY_BIN%\mclbn384_256.dll exit 1     # [win]
+    - if not exist %LIBRARY_LIB%\mcl.lib          exit 1     # [win]
+    - if not exist %LIBRARY_LIB%\mclbn256.lib     exit 1     # [win]
+    - if not exist %LIBRARY_LIB%\mclbn384.lib     exit 1     # [win]
+    - if not exist %LIBRARY_LIB%\mclbn384_256.lib exit 1     # [win]
+
+    - if not exist %LIBRARY_INC%\mcl\bn256.hpp    exit 1     # [win]
+    - if not exist %LIBRARY_INC%\mcl\bn_c256.h    exit 1     # [win]
+    - if not exist %LIBRARY_INC%\mcl\bn.hpp       exit 1     # [win]
+    - if not exist %LIBRARY_INC%\mcl\bn.h         exit 1     # [win]
+ 
+about:
+  home: https://github.com/herumi/mcl/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: COPYRIGHT
+  summary: A portable and fast pairing-based cryptography library.
+  description: |
+    mcl is a library for pairing-based cryptography, which supports the optimal 
+    Ate pairing over BN curves and BLS12-381 curves.
+
+  doc_url: https://github.com/herumi/mcl/
+  dev_url: https://github.com/herumi/mcl/
+
+extra:
+  recipe-maintainers:
+    - M-Waszkiewicz-Anaconda

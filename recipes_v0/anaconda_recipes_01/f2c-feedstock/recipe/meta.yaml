@@ -1,0 +1,58 @@
+{% set name = "f2c" %}
+{% set version = "20210323183018" %}
+{% set libsha256 = "ca404070e9ce0a9aaa6a71fc7d5489d014ade952c5d6de7efb88de8e24f2e8e0" %}
+{% set srcsha256 = "d4847456aa91c74e5e61e2097780ca6ac3b20869fae8864bfa8dcc66f6721d35" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://web.archive.org/web/{{ version }}/https://netlib.sandia.gov/f2c/libf2c.zip
+    folder: libf2c
+    sha256: {{ libsha256 }}
+  - url: https://web.archive.org/web/{{ version }}/https://netlib.sandia.gov/f2c/src.tgz
+    folder: src
+    sha256: {{ srcsha256 }}
+
+build:
+  number: 0
+  skip: True  # [vc < 14 and win]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - cmake  # [not win]
+    - make  # [not win]
+    - ninja  # [win]
+
+test:
+  requires:
+    - {{ compiler('c') }}
+  files:
+    - test_main.f
+  commands:
+    - test -f ${PREFIX}/include/f2c/f2c.h  # [not win]
+    - test -f ${PREFIX}/bin/f2c  # [not win]
+    - test -f ${PREFIX}/lib/libf2c.a  # [not win]
+    - test -f ${PREFIX}/lib/libf2c.so  # [linux]
+    - test -f ${PREFIX}/lib/libf2c.dylib  # [osx]
+    - f2c --version
+    - f2c test_main.f && ${CC} test_main.c -L${PREFIX}/lib -lf2c -lm -I${PREFIX}/include -o test_main -Wl,-rpath,${PREFIX}/lib && ./test_main  # [not win]
+
+about:
+  home: https://www.netlib.org/f2c/
+  license: SMLNJ
+  license_file: LICENSE
+  license_family: OTHER
+  summary: 'f2c is a program to convert Fortran 77 to C code, developed at Bell Laboratories.'
+  description:  The standalone f2c program was based on the core of the first complete Fortran 77
+                compiler to be implemented, the "f77" program by Feldman and Weinberger.
+  doc_url: https://www.netlib.org/f2c/README
+  dev_url: https://www.netlib.org/f2c/
+
+extra:
+  recipe-maintainers:
+    - giacomov
+    - jasercion
+    - Areustle

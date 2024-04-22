@@ -1,0 +1,50 @@
+{% set version = "0.8.0" %}
+
+package:
+  name: tensorflow-hub
+  version: {{ version }}
+
+source:
+  url: https://github.com/tensorflow/hub/archive/v{{ version }}.tar.gz
+  sha256: 8b8d7b121855d43c52af4899552f1458ecd83bc9e50748dc4180e62e1d2bedd9
+
+build:
+  number: 0
+  # This is a noarch: python package, it contains no compiled code but a
+  # compiler is required to convert protocol buffer definitions.
+  # The build has only been tested on linux-64
+  noarch: python
+  skip: true  # [not linux]
+  ignore_run_exports:
+    - libgcc-ng
+    - libstdcxx-ng
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - bazel >=0.24
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - numpy >=1.12.0
+    - six >=1.12.0
+    - protobuf >=3.8.0
+    - tensorflow >=1.14.0
+
+test:
+  imports:
+    - tensorflow_hub
+
+about:
+  home: https://www.tensorflow.org/hub/
+  license: Apache-2.0
+  license_file: LICENSE
+  summary: A library for transfer learning by reusing parts of TensorFlow models.
+
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - jjhelmus

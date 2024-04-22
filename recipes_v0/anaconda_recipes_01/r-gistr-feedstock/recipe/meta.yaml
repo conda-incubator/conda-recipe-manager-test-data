@@ -1,0 +1,117 @@
+{% set version = '0.9.0' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-gistr
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/gistr_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/gistr/gistr_{{ version }}.tar.gz
+  sha256: 170ae025151ee688e7d31b9e49112086a8ddf4fef10155e9ee289ad7f28c8929
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: git2r, testthat
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-assertthat
+    - r-crul
+    - r-dplyr
+    - r-httr
+    - r-jsonlite
+    - r-knitr
+    - r-magrittr
+    - r-rmarkdown
+
+  run:
+    - r-base
+    - r-assertthat
+    - r-crul
+    - r-dplyr
+    - r-httr
+    - r-jsonlite
+    - r-knitr
+    - r-magrittr
+    - r-rmarkdown
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('gistr')"           # [not win]
+    - "\"%R%\" -e \"library('gistr')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://github.com/ropensci/gistr (devel), https://docs.ropensci.org/gistr (website)
+  license: MIT
+  summary: 'Work with ''GitHub'' ''gists'' from ''R'' (e.g., <https://en.wikipedia.org/wiki/GitHub#Gist>,
+    <https://docs.github.com/en/github/writing-on-github/creating-gists/>). A ''gist''
+    is simply one or more files with code/text/images/etc. This package allows the user
+    to create new ''gists'', update ''gists'' with new files, rename files, delete files,
+    get and delete ''gists'', star and ''un-star'' ''gists'', fork ''gists'', open a
+    ''gist'' in your default browser, get embed code for a ''gist'', list ''gist'' ''commits'',
+    and get rate limit information when ''authenticated''. Some requests require authentication
+    and some do not. ''Gists'' website: <https://gist.github.com/>.'
+  license_family: MIT
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/MIT'
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: gistr
+# Title: Work with 'GitHub' 'Gists'
+# Description: Work with 'GitHub' 'gists' from 'R' (e.g., <https://en.wikipedia.org/wiki/GitHub#Gist>, <https://docs.github.com/en/github/writing-on-github/creating-gists/>). A 'gist' is simply one or more files with code/text/images/etc. This package allows the user to create new 'gists', update 'gists' with new files, rename files, delete files, get and delete 'gists', star and 'un-star' 'gists', fork 'gists', open a 'gist' in your default browser, get embed code for a 'gist', list 'gist' 'commits', and get rate limit information when 'authenticated'. Some requests require authentication and some do not. 'Gists' website: <https://gist.github.com/>.
+# Version: 0.9.0
+# Authors@R: c( person("Scott", "Chamberlain", role = c("aut", "cre"), email = "myrmecocystus@gmail.com", comment = c(ORCID="0000-0003-1444-9135")), person("Ramnath", "Vaidyanathan", role = "aut"), person("Karthik", "Ram", role = "aut") )
+# License: MIT + file LICENSE
+# URL: https://github.com/ropensci/gistr (devel), https://docs.ropensci.org/gistr (website)
+# BugReports: https://github.com/ropensci/gistr/issues
+# VignetteBuilder: knitr
+# Encoding: UTF-8
+# Language: en-US
+# Imports: jsonlite, crul, httr, magrittr, assertthat, knitr, rmarkdown, dplyr
+# Suggests: git2r, testthat
+# RoxygenNote: 7.1.1
+# X-schema.org-applicationCategory: Web
+# X-schema.org-keywords: http, https, API, web-services, GitHub, GitHub API, gist, gists, code, script, snippet
+# X-schema.org-isPartOf: https://ropensci.org
+# NeedsCompilation: no
+# Packaged: 2020-07-28 22:45:33 UTC; sckott
+# Author: Scott Chamberlain [aut, cre] (<https://orcid.org/0000-0003-1444-9135>), Ramnath Vaidyanathan [aut], Karthik Ram [aut]
+# Maintainer: Scott Chamberlain <myrmecocystus@gmail.com>
+# Repository: CRAN
+# Date/Publication: 2020-07-29 05:10:15 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

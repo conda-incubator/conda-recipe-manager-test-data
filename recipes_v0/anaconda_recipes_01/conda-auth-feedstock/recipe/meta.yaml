@@ -1,0 +1,61 @@
+{% set name = "conda-auth" %}
+{% set version = "0.2.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/conda-incubator/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+  sha256: c0520d782f99f5c70fcccc3ada84091e75788d49c67cc61586a66b60653cc6f3
+build:
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+  number: 0
+  skip: true # [py<38]
+
+requirements:
+  host:
+    - python
+    - pip
+    - hatchling
+    - hatch-vcs
+  run:
+    - python
+    - click
+    - conda >=23.9.0
+    - keyring
+    - requests
+    - ruamel.yaml
+
+test:
+  imports:
+    - conda_auth
+  commands:
+    - pip check
+    - conda auth --help
+    - conda auth login --help
+    - conda auth logout --help
+  requires:
+    - pip
+    - keyrings.alt # [linux]
+
+about:
+  home: https://conda-incubator.github.io/conda-auth/
+  summary: Conda plugin for improved access to private channels
+  description: |
+    Conda auth is a conda plugin which adds more secure authentication support to conda.
+    Once installed, it provides two new commands you can use to manage credentials and
+    access private conda channels:
+      - conda auth login for logging into a private channel and storing your credentials
+      - conda auth logout for logging out of a private channel and removing your credentials
+  license: BSD-3-Clause
+  license_file: LICENSE
+  license_family: BSD
+  dev_url: https://github.com/conda-incubator/conda-auth
+  doc_url: https://conda-incubator.github.io/conda-auth/
+
+
+extra:
+  recipe-maintainers:
+    - travishathaway
+    - jezdez

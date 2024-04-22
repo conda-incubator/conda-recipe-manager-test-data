@@ -1,0 +1,59 @@
+{% set version = "1.9.3" %}
+
+package:
+  name: wordcloud
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/w/wordcloud/wordcloud-{{ version }}.tar.gz
+  sha256: a9aa738d63ed674a40f0cc31adb83f4ca5fc195f03a6aff6e010d1f5807d1c58
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: True  # [py<37]
+  entry_points:
+    - wordcloud_cli = wordcloud.__main__:main
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+    - cython >=0.29.33
+    - setuptools-scm
+  run:
+    - python
+    - pillow
+    - numpy >=1.6.1
+    - matplotlib-base
+
+test:
+  imports:
+    - wordcloud
+  requires:
+    - pip
+  commands:
+    - pip check
+    - wordcloud_cli -h
+
+about:
+  home: https://github.com/amueller/word_cloud
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  summary: A little word cloud generator in Python
+  description: |
+    A little word cloud generator in Python.
+  dev_url: https://github.com/amueller/word_cloud
+  doc_url: https://amueller.github.io/word_cloud/
+
+
+extra:
+  recipe-maintainers:
+    - amueller
+    - ericdill
+    - ocefpaf

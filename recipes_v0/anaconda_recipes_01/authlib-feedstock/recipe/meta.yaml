@@ -1,0 +1,52 @@
+{% set name = "authlib" %}
+{% set version = "1.0.1" %}
+{% set sha256 = "6e74a4846ac36dfc882b3cc2fbd3d9eb410a627f2f2dc11771276655345223b1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|capitalize }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - requests
+    - cryptography >=3.2
+
+test:
+  imports:
+    - authlib
+  requires:
+    - pip
+  commands:
+    - pip check
+  # downstreams:
+  #   - simple-salesforce
+  #   - airflow
+
+about:
+  home: https://authlib.org/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: The ultimate Python library in building OAuth and OpenID Connect servers. JWS,JWE,JWK,JWA,JWT included. https://authlib.org/
+
+  doc_url: https://docs.authlib.org/en/latest/
+  dev_url: https://github.com/lepture/authlib
+
+extra:
+  recipe-maintainers:
+    - chrisburr
+    - markfennema

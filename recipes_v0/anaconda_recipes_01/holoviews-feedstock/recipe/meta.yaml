@@ -1,0 +1,70 @@
+{% set name = "holoviews" %}
+{% set version = "1.18.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 578e30e89d72754f97a83ebe08198fec8e87cc7e49b25b9f31ec393f939ca500
+
+build:
+  number: 0
+  # We cannot build a recent version of panel due to missing nodejs and panel on s390x
+  skip: True  # [py<39 or s390x]
+  entry_points:
+    - holoviews = holoviews.util.command:main
+  script:
+    - {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - pyct 0.5.0
+    - param 2.0
+  run:
+    - python
+    - colorcet
+    - numpy >=1.0
+    - packaging
+    - panel >=1.0
+    - pandas >=0.20.0
+    - param >=1.12.0,<3.0
+    - pyviz_comms >=0.7.4
+    - matplotlib-base >=3
+
+test:
+  imports:
+    - holoviews
+  requires:
+    - pip
+  commands:
+    - pip check
+    - holoviews -h
+
+about:
+  home: https://holoviews.org
+  summary: Stop plotting your data - annotate your data and let it visualize itself.
+  description: |
+    HoloViews is an open-source Python library designed to make data analysis
+    and visualization seamless and simple. With HoloViews, you can usually
+    express what you want to do in very few lines of code, letting you focus on
+    what you are trying to explore and convey, not on the process of plotting.
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  dev_url: https://github.com/holoviz/holoviews
+  doc_url: https://holoviews.org/getting_started/index.html
+
+extra:
+  recipe-maintainers:
+    - jlstevens
+    - philippjfr
+    - basnijholt
+  skip-lints:
+    - python_build_tool_in_run
+    - host_section_needs_exact_pinnings

@@ -1,0 +1,59 @@
+{% set name = "jinxed" %}
+{% set version = "1.2.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 032acda92d5c57cd216033cbbd53de731e6ed50deb63eb4781336ca55f72cda5
+
+build:
+  number: 0
+  Skip: True  # [py<35]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - wheel
+    - setuptools
+  run:
+    - ansicon  # [win]
+    - python
+
+test:
+  source_files:
+    - tests
+  imports:
+    - jinxed
+    - jinxed.terminfo
+  commands:
+    - pip check
+    # skipping test_tparm.py as not comatible with  ncurses >= 6.4
+    - pytest -k "not test_tparm.py" -vv
+  requires:
+    - pip
+    - pytest
+    - ncurses # [not win]
+
+
+about:
+  home: https://pypi.org/project/jinxed/
+  summary: Jinxed Terminal Library
+  description: | 
+    Jinxed is an implementation of a subset of the Python curses library. It provides pure Python implementations of 
+    terminfo functions such as tigetstr() and tparm() as well as convenience methods for working with Windows terminals.
+  license_family: OTHER
+  license: MPL-2.0
+  license_file: LICENSE
+  doc_url: https://jinxed.readthedocs.io/
+  dev_url: https://github.com/Rockhopper-Technologies/jinxed/
+
+extra:
+  recipe-maintainers:
+    - hadim
+    - mattip

@@ -1,0 +1,54 @@
+{% set name = "asyncpgsa" %}
+{% set version = "0.27.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 32e9ad376caf969d606800a977f044dda2ed946eb10f3c87dac2690ae897f6aa
+
+build:
+  number: 1
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    # Project imports itself to find out version during build
+    # time which results into importing runtime dependencies
+    - asyncpg
+    - sqlalchemy <2
+  run:
+    - python
+    - asyncpg >=0.22.0
+    - sqlalchemy <2
+
+test:
+  imports:
+    - asyncpgsa
+    - asyncpgsa.testing
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/canopytax/asyncpgsa
+  license: Apache 2.0
+  license_family: Apache
+  license_file: '{{ environ["RECIPE_DIR"] }}/LICENSE'
+  summary: A fast PostgreSQL Database Client Library for Python/asyncio.
+  description: |
+    asyncpgsa is a database interface library designed specifically for
+    PostgreSQL and Python/asyncio. asyncpgsa is an efficient, clean
+    implementation of PostgreSQL server binary protocol for use with Python's
+    asyncio framework.
+  dev_url: https://github.com/CanopyTax/asyncpgsa
+  doc_url: https://asyncpgsa.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - nehaljwani

@@ -1,0 +1,48 @@
+{% set name = "pywinrm" %}
+{% set version = "0.4.1" %}
+{% set sha256 = "4ede5c6c85b53780ad0dbf9abef2fa2ea58f44c82256a84a63eae5f1205cea81" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  build:
+    - python
+    - pip
+  run:
+    - python
+    - six
+    - xmltodict
+    - requests >=2.9.1
+    - requests_ntlm >=0.3.0
+
+test:
+  imports:
+    - winrm
+
+about:
+  home: https://github.com/diyan/pywinrm
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Python library for Windows Remote Management (WinRM)'
+
+  description: |
+    pywinrm is a Python client for the Windows Remote Management (WinRM) service. 
+    It allows you to invoke commands on target Windows machines from any machine that can run Python.
+  dev_url: https://github.com/diyan/pywinrm
+
+extra:
+  recipe-maintainers:
+    - synapticarbors

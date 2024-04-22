@@ -1,0 +1,46 @@
+{% set name = "flake8-isort" %}
+{% set version = "6.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/flake8-isort-{{ version }}.tar.gz
+  sha256: 537f453a660d7e903f602ecfa36136b140de279df58d02eb1b6a0c84e83c528c
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - python >=3.7
+    - flake8
+    - isort >=5.0.0,<6
+
+test:
+  imports:
+    - flake8_isort
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/gforcada/flake8-isort
+  license: GPL-2.0-or-later
+  license_family: GPL
+  license_file: LICENSE
+  summary: flake8 plugin that integrates isort .
+  dev_url: https://github.com/gforcada/flake8-isort
+
+extra:
+  recipe-maintainers:
+    - dopplershift
+    - marcelotrevisani
+    - xylar

@@ -1,0 +1,50 @@
+{% set version = "4.3.0" %}
+
+package:
+  name: social-auth-core
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/s/social-auth-core/social-auth-core-{{ version }}.tar.gz
+  sha256: 4686f0e43cf12954216875a32e944847bb1dc69e7cd9573d16a9003bb05ca477
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3
+    - pip
+  run:
+    - python >=3
+    - cryptography >=1.4
+    - defusedxml >=0.5.0rc1
+    - oauthlib >=1.0.3
+    - pyjwt >=2.0.0
+    - python
+    - python3-openid >=3.0.10
+    - requests >=2.9.1
+    - requests-oauthlib >=0.6.1
+
+
+test:
+  imports:
+    - social_core
+    - social_core.backends
+  commands:
+    - pip check
+  requires:
+    - pip
+
+
+about:
+  home: https://github.com/python-social-auth/social-core
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: Python social authentication made simple
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

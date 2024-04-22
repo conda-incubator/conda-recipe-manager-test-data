@@ -1,0 +1,43 @@
+{% set name = "datefinder" %}
+{% set version = "0.7.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/akoumjian/datefinder/archive/v{{ version }}.tar.gz
+  sha256: c0eec1097d05c793892c46465206c23f87eb1419a683c2fad587cad89be61a31
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  noarch: python
+
+requirements:
+  host:
+    - python 2.7|>=3.4
+    - pip
+
+  run:
+    - python  2.7|>=3.4
+    - regex >=2017.02.08
+    - python-dateutil >=2.4.2
+    - pytz
+
+test:
+  imports:
+    - datefinder
+
+about:
+  home: https://github.com/akoumjian/datefinder
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A python module for locating dates inside text.
+  doc_url: https://github.com/akoumjian/datefinder
+  dev_url: https://github.com/akoumjian/datefinder
+
+extra:
+  recipe-maintainers:
+    - melonhead901

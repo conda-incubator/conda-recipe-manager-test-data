@@ -1,0 +1,109 @@
+{% set version = '0.30' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-dt
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/DT_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/DT/DT_{{ version }}.tar.gz
+  sha256: 2f1a53e32a9b493efc9041758810c6a744ebb17ad7a942b376389b7e95ff698e
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: knitr (>= 1.8), rmarkdown, shiny (>= 1.6), bslib, future, testit, tibble
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-crosstalk
+    - r-htmltools >=0.3.6
+    - r-htmlwidgets >=1.3
+    - r-httpuv
+    - r-jquerylib
+    - r-jsonlite >=0.9.16
+    - r-magrittr
+    - r-promises
+
+  run:
+    - r-base
+    - r-crosstalk
+    - r-htmltools >=0.3.6
+    - r-htmlwidgets >=1.3
+    - r-httpuv
+    - r-jquerylib
+    - r-jsonlite >=0.9.16
+    - r-magrittr
+    - r-promises
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('DT')"           # [not win]
+    - "\"%R%\" -e \"library('DT')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://github.com/rstudio/DT
+  license: GPL-3
+  summary: Data objects in R can be rendered as HTML tables using the JavaScript library 'DataTables'
+    (typically via R Markdown or Shiny). The 'DataTables' library has been included
+    in this R package. The package name 'DT' is an abbreviation of 'DataTables'.
+  license_family: GPL3
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: DT
+# Type: Package
+# Title: A Wrapper of the JavaScript Library 'DataTables'
+# Version: 0.30
+# Authors@R: c( person("Yihui", "Xie", email = "xie@yihui.name", role = c("aut", "cre")), person("Joe", "Cheng", role = "aut"), person("Xianying", "Tan", role = "aut"), person("JJ", "Allaire", role = "ctb"), person("Maximilian", "Girlich", role = "ctb"), person("Greg", "Freedman Ellis", role = "ctb"), person("Johannes", "Rauh", role = "ctb"), person("SpryMedia Limited", role = c("ctb", "cph"), comment = "DataTables in htmlwidgets/lib"), person("Brian", "Reavis", role = c("ctb", "cph"), comment = "selectize.js in htmlwidgets/lib"), person("Leon", "Gersen", role = c("ctb", "cph"), comment = "noUiSlider in htmlwidgets/lib"), person("Bartek", "Szopka", role = c("ctb", "cph"), comment = "jquery.highlight.js in htmlwidgets/lib"), person("Alex", "Pickering", role = c("ctb")), person("William", "Holmes", role = c("ctb")), person("Mikko", "Marttila", role = c("ctb")), person("Andres", "Quintero", role = c("ctb")), person("Stephane", "Laurent", role = c("ctb")), person(given = "Posit Software, PBC", role = c("cph", "fnd")) )
+# Maintainer: Yihui Xie <xie@yihui.name>
+# Description: Data objects in R can be rendered as HTML tables using the JavaScript library 'DataTables' (typically via R Markdown or Shiny). The 'DataTables' library has been included in this R package. The package name 'DT' is an abbreviation of 'DataTables'.
+# URL: https://github.com/rstudio/DT
+# BugReports: https://github.com/rstudio/DT/issues
+# License: GPL-3 | file LICENSE
+# Imports: htmltools (>= 0.3.6), htmlwidgets (>= 1.3), httpuv, jsonlite (>= 0.9.16), magrittr, crosstalk, jquerylib, promises
+# Suggests: knitr (>= 1.8), rmarkdown, shiny (>= 1.6), bslib, future, testit, tibble
+# VignetteBuilder: knitr
+# RoxygenNote: 7.2.3
+# Encoding: UTF-8
+# NeedsCompilation: no
+# Packaged: 2023-10-04 20:26:15 UTC; yihui
+# Author: Yihui Xie [aut, cre], Joe Cheng [aut], Xianying Tan [aut], JJ Allaire [ctb], Maximilian Girlich [ctb], Greg Freedman Ellis [ctb], Johannes Rauh [ctb], SpryMedia Limited [ctb, cph] (DataTables in htmlwidgets/lib), Brian Reavis [ctb, cph] (selectize.js in htmlwidgets/lib), Leon Gersen [ctb, cph] (noUiSlider in htmlwidgets/lib), Bartek Szopka [ctb, cph] (jquery.highlight.js in htmlwidgets/lib), Alex Pickering [ctb], William Holmes [ctb], Mikko Marttila [ctb], Andres Quintero [ctb], Stephane Laurent [ctb], Posit Software, PBC [cph, fnd]
+# Repository: CRAN
+# Date/Publication: 2023-10-05 13:10:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

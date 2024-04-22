@@ -1,0 +1,42 @@
+{% set name = "pytest-clarity" %}
+{% set version = "1.0.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 505fe345fad4fe11c6a4187fe683f2c7c52c077caa1e135f3e483fe112db7772
+
+build:
+  noarch: python
+  number: 0
+  script: '{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv '
+
+requirements:
+  host:
+    - pip
+    - python =2.7|>=3.5
+    - setuptools
+  run:
+    - pprintpp >=0.4.0
+    - pytest >=3.5.0
+    - python =2.7|>=3.5
+    - setuptools
+    - rich >=8.0.0
+
+test:
+  imports:
+    - pytest_clarity
+
+about:
+  home: https://github.com/darrenburns/pytest-clarity
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A plugin providing an alternative, colourful diff output for failing assertions.
+
+extra:
+  recipe-maintainers:
+    - nicoddemus

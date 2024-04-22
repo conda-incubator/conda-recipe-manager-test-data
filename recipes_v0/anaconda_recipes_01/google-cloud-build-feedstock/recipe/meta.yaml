@@ -1,0 +1,53 @@
+{% set name = "google-cloud-build" %}
+{% set version = "3.12.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/google-cloud-build-{{ version }}.tar.gz
+  sha256: 2fbfd9f5c5fa363acfbdec1a9dc9ae2d1d33bac098a2e08496c27e04e50bac0b
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - python >=3.7
+    - google-api-core-grpc >=1.34.0,<3.0.0dev,!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*,!=2.8.*,!=2.9.*,!=2.10.*
+    - proto-plus >=1.22.0,<2.0.0dev
+    - protobuf >=3.19.5,<5.0.0dev,!=3.20.0,!=3.20.1,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5
+    - grpc-google-iam-v1 >=0.12.4,<1.0.0dev
+
+test:
+  imports:
+    - grpc
+    - google.cloud.devtools.cloudbuild
+    - google.cloud.devtools.cloudbuild_v1
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/googleapis/python-cloudbuild
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Google Cloud Build API client library
+  description: "Google Cloud Build API is a Google Cloud service that lets client applications create and manage builds on Google Cloud Platform. Cloud Build lets you build software quickly across all languages. Get complete control over defining custom workflows for building, testing, and deploying across multiple environments\
+    \ such as VMs, serverless, Kubernetes, or Firebase.\nSee the [quick start guide](https://googleapis.dev/python/cloudbuild/latest/index.html#quick-start)."
+
+  doc_url: https://googleapis.dev/python/cloudbuild/latest/index.html
+  dev_url: https://github.com/googleapis/python-cloudbuild
+
+extra:
+  recipe-maintainers:
+    - xylar
+    - parthea

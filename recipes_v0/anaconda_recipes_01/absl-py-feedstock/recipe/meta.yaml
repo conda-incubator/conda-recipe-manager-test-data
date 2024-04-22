@@ -1,0 +1,52 @@
+{% set name = "absl-py" %}
+{% set version = "1.4.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d2c244d01048ba476e7c080bd2c6df5e141d211de80223460d5b3b8a2a58433d
+
+build:
+  number: 0
+  skip: True  # [py<36]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv 
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+
+test:
+  imports:
+    - absl
+    - absl.flags
+    - absl.logging
+    - absl.testing
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://abseil.io/
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Abseil Common Libraries (Python)
+  description: |
+    This repository is a collection of Python library code for building Python applications. 
+    The code is collected from Google's own Python code base,
+    and has been extensively tested and used in production.
+  doc_url: https://abseil.io/docs/python/
+  dev_url: https://github.com/abseil/abseil-py
+
+extra:
+  recipe-maintainers:
+    - jjhelmus

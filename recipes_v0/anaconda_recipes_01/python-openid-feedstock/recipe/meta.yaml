@@ -1,0 +1,44 @@
+{% set name = "python-openid" %}
+{% set version = "2.2.5" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: "{{ name }}-{{ version }}.tar.gz"
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 92c51c3ecec846cbec4aeff11f9ff47303d4a63f93b0e6ac0ec02a091fed70ef
+
+build:
+  skip: True  # [py3k]
+  number: 1000
+  script: "{{ PYTHON }} -m pip install . -vvv"
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - openid
+    - openid.consumer
+    - openid.extensions
+    - openid.extensions.draft
+    - openid.server
+    - openid.store
+    - openid.yadis
+
+about:
+  home: http://github.com/openid/python-openid
+  license: Apache 2.0
+  license_file: LICENSE
+  license_family: Apache
+  summary: 'OpenID support for servers and consumers.'
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr

@@ -1,0 +1,90 @@
+{% set name = "cufflinks" %}
+{% set version = "0.17.3" %}
+
+package:
+  name: python-{{ name|lower }}-suite
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 48c1b3406dc030004121966489eebc5518cea70fd4e3f16379b491328501a644
+  patches:
+    # `pandas.DataFrame.ix` was deprecated and removed from pandas 1.0.0, https://github.com/pandas-dev/pandas/pull/26438
+    - 83ef352c821f6f5092d4132e3ecd5d5eb6b4e9e8.patch
+    - fix_df_loc.patch
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - m2-patch  # [win]
+    - patch     # [not win]
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+
+outputs:
+  - name: python-cufflinks
+    build:
+      script: python -m pip install . --no-deps --no-build-isolation -vv
+    requirements:
+      build:
+        - m2-patch  # [win]
+        - patch     # [not win]
+      host:
+        - python
+        - pip
+        - setuptools
+        - wheel
+      run:
+        - python
+        - chart-studio >=1.0.0
+        - colorlover >=0.2.1
+        - ipython >=5.3.0
+        - ipywidgets >=7.0.0
+        - numpy >=1.9.2
+        # Removed Series.ix and DataFrame.ix in pandas 1.0.0, https://github.com/pandas-dev/pandas/pull/26438
+        - pandas >=1.0.0
+        - plotly >=4.1.1
+        - six >=1.9.0
+    test:
+      imports:
+        - cufflinks
+      source_files:
+        - tests.py
+      requires:
+        - pip
+        - nose
+      commands:
+        - pip check
+        - nosetests -xv tests.py
+
+  - name: cufflinks-py
+    requirements:
+      host:
+        - python
+      run:
+        - python
+        - {{ pin_subpackage('python-cufflinks', exact=True) }}
+    test:
+      imports:
+        - cufflinks
+
+about:
+  home: https://github.com/santosjorge/cufflinks
+  dev_url: https://github.com/santosjorge/cufflinks
+  doc_url: https://github.com/santosjorge/cufflinks
+  license: MIT
+  license_family: MIT
+  license_file: license.txt
+  summary: Productivity Tools for Plotly + Pandas
+  description: |
+    This library binds the power of plotly with the flexibility of pandas for easy plotting.
+
+extra:
+  recipe-maintainers:
+    - dhirschfeld
+    - timkpaine

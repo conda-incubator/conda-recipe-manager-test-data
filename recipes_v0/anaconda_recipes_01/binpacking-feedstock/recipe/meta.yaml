@@ -1,0 +1,46 @@
+{% set name = "binpacking" %}
+{% set version = "1.5.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 4935a4a2ca3949c6bf870e8a2c00dce03e345177d879d61a736e4d7cd17f89ee
+
+build:
+  number: 0
+  entry_points:
+    - binpacking = binpacking.binpacking_binary:main
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir
+
+requirements:
+  host:
+    - pip
+    - python
+    - pytest-runner
+  run:
+    - pip
+    - python
+    - numpy
+    - future
+
+test:
+  imports:
+    - binpacking
+  commands:
+    - binpacking --help
+
+about:
+  home: https://www.github.com/benmaier/binpacking
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.in
+  summary: Heuristic distribution of weighted items to bins (either a fixed number of bins or a fixed number of volume per bin). Data may be in form of list, dictionary, list of tuples or csv-file.
+
+extra:
+  recipe-maintainers:
+    - benmaier
+    - pirovc

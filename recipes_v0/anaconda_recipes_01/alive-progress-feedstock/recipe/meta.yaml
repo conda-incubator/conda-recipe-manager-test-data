@@ -1,0 +1,44 @@
+{% set name = "alive-progress" %}
+{% set version = "3.0.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 3245114253b6adb4b38f2a2a1828edfcd9e8c012f7e30a5cef1932ca7344eb44
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7,<4
+  run:
+    - python >=3.7,<4
+    - about-time ==4.2.1
+    - grapheme ==0.6.0
+
+test:
+  imports:
+    - alive_progress
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/rsalmei/alive-progress
+  summary: A new kind of Progress Bar, with real-time throughput, ETA, and very cool animations!
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - Brainor
+    - marcelotrevisani

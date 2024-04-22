@@ -1,0 +1,44 @@
+{% set name = "findspark" %}
+{% set version = "2.0.1" %}
+{% set bundle = "tar.gz" %}
+{% set sha256 = "aa10a96cb616cab329181d72e8ef13d2dc453b4babd02b5482471a0882c1195e" %}
+{% set build = 0 %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.{{ bundle }}
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.5
+
+  run:
+    - python >=3.5
+
+test:
+  imports:
+    - findspark
+
+about:
+  home: https://github.com/minrk/findspark
+  license_file: LICENSE.md
+  license: BSD-3-clause
+  license_family: BSD
+  summary: Find pyspark to make it importable.
+  dev_url: https://github.com/minrk/findspark
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk
+    - minrk

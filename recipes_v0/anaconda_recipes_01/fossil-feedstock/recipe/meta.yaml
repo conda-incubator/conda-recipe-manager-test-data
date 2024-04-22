@@ -1,0 +1,52 @@
+{% set name = "fossil" %}
+{% set version = "2.10" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://www.fossil-scm.org/xfer/uv/{{ name }}-src-{{ version }}.tar.gz
+  sha256: d8a3776d2ce77385ed5ff20a2776d13bb534fb2508e87351e14e94f91cd12b10
+
+build:
+  number: 0
+  skip: true  # [win and vc<14]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - ccache  # [unix]
+    - cmake  # [win]
+    - make  # [unix]
+    - perl  # [win]
+  host:
+    - openssl
+    - sqlite  # [unix]
+    - tk
+    - zlib
+  run:
+    - openssl
+    - sqlite  # [unix]
+    - tk
+    - zlib
+
+test:
+  commands:
+    - fossil --help
+
+about:
+  home: https://fossil-scm.org
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: COPYRIGHT-BSD2.txt
+  summary: >
+    Fossil is a simple, high-reliability, distributed software configuration
+    management system with these advanced features:
+
+  doc_url: https://fossil-scm.org/index.html/doc/trunk/www/permutedindex.html
+  dev_url: https://fossil-scm.org/index.html/dir?ci=tip
+
+extra:
+  recipe-maintainers:
+    - bollwyvl

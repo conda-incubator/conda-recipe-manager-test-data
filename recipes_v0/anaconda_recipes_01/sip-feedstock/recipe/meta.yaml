@@ -1,0 +1,75 @@
+{% set name = "sip" %}
+{% set version = "6.7.12" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/sip-{{ version }}.tar.gz
+  sha256: 08e66f742592eb818ac8fda4173e2ed64c9f2d40b70bee11db1c499127d98450
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  run_exports:
+    - {{ pin_subpackage('sip', max_pin='x.x') }}
+  entry_points:
+    - sip-distinfo = sipbuild.distinfo.main:main
+    - sip-module = sipbuild.module.main:main
+    - sip-build = sipbuild.tools.build:main
+    - sip-install = sipbuild.tools.install:main
+    - sip-sdist = sipbuild.tools.sdist:main
+    - sip-wheel = sipbuild.tools.wheel:main
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - packaging
+    - ply
+    - tomli  # [py<311]
+    - setuptools
+
+test:
+  requires:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - make  # [not win]
+    - pip
+  imports:
+    - sipbuild
+  files:
+    - test
+
+about:
+  home: https://www.riverbankcomputing.com/software/sip/
+  license: LicenseRef-SIP_License OR GPL-2.0-or-later OR GPL-3.0-or-later
+  license_family: GPL
+  license_file: 
+    - LICENSE
+    - LICENSE-GPL2
+    - LICENSE-GPL3
+  summary: A Python bindings generator for C/C++ libraries
+  description: |
+    SIP is a collection of tools that makes it very easy to create Python
+    bindings for C and C++ libraries. It was originally developed in 1998
+    to create PyQt, the Python bindings for the Qt toolkit, but can be
+    used to create bindings for any C or C++ library. For example it is
+    also used to generate wxPython, the Python bindings for wxWidgets.
+  doc_url: https://www.riverbankcomputing.com/software/sip/
+  dev_url: https://www.riverbankcomputing.com/software/sip/
+
+extra:
+  recipe-maintainers:
+    - andfoy
+    - ccordoba12
+    - mingwandroid
+    - msarahan
+    - ocefpaf

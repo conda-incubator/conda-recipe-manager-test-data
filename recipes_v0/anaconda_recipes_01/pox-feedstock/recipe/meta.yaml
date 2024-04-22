@@ -1,0 +1,53 @@
+{% set name = "pox" %}
+{% set version = "0.3.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e1ced66f2a0c92a58cf3646bc7ccb8b4773d40884b76f85eeda0670474871667
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - setuptools
+    - wheel
+    - python
+  run:
+    - python
+
+test:
+  requires:
+    - pip
+  imports:
+    - pox
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/uqfoundation/pox
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: utilities for filesystem exploration and automated builds
+  description: |
+    pox provides a collection of utilities for navigating and manipulating filesystems. 
+    This module is designed to facilitate some of the low level operating system interactions 
+    that are useful when exploring a filesystem on a remote host, where queries such as “what 
+    is the root of the filesystem?”, “what is the user’s name?”, and “what login shell is 
+    preferred?” become essential in allowing a remote user to function as if they were logged 
+    in locally.
+  doc_url: https://pox.readthedocs.io
+  dev_url: https://github.com/uqfoundation/pox
+
+extra:
+  recipe-maintainers:
+    - jschueller
+    - synapticarbors

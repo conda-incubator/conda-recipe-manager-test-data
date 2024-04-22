@@ -1,0 +1,62 @@
+{% set name = "mahotas" %}
+{% set version = "1.4.13" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: a78dfe15045a20a0d9e01538b80f874580cd3525ae3eaa2c83ced51eb455879c
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+  entry_points:
+    - mahotas-features = mahotas.features_cli:main
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - numpy {{ numpy }}
+    - setuptools
+    - wheel
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+
+test:
+  imports:
+    - mahotas
+  requires:
+    - pytest
+    - scipy
+    - pillow
+    - pip
+  commands:
+    - mahotas-features --help
+    - pip check
+    # Seems like test_negative_values_haralick fails with the Segmentation Fault error on linux-aarch64,
+    # it's expected that you can run out of memory computing Haralick features on 16 bit images on some machines,
+    # see https://github.com/luispedro/mahotas/blob/v1.4.13/docs/source/faq.rst#i-ran-out-of-memory-computing-haralick-features-on-16-bit-images-is-it-not-supported 
+    - pytest -vv --pyargs mahotas -k "not test_negative_values_haralick"  # [linux and aarch64]
+
+about:
+  home: https://mahotas.readthedocs.io/
+  license: MIT
+  license_family: MIT
+  license_file: COPYING
+  summary: 'Mahotas: Computer Vision Library'
+  description: |
+    Mahotas is a library of fast computer vision algorithms
+    (all implemented in C++) operating over numpy arrays.
+  doc_url: https://mahotas.readthedocs.io/
+  dev_url: https://github.com/luispedro/mahotas
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - luispedro

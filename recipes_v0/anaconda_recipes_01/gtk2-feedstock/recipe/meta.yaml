@@ -1,0 +1,85 @@
+{% set major_minor = "2.24" %}
+{% set version = major_minor + ".33" %}
+
+package:
+  name: gtk2
+  version: {{ version }}
+
+source:
+  url: http://ftp.gnome.org/pub/GNOME/sources/gtk+/{{ major_minor }}/gtk+-{{ version }}.tar.xz
+  sha256: ac2ac757f5942d318a311a54b0c80b5ef295f299c2a73c632f6bfb1ff49cc6da
+
+build:
+  number: 2
+  skip: true  # [win]
+  missing_dso_whitelist:         # [linux]
+    - '**/libc.so.6'             # [linux]
+    - '**/libpthread.so.0'       # [linux]
+    - '**/libdl.so.2'            # [linux]
+    - '**/librt.so.1'            # [linux]
+    - '**/libm.so.6'             # [linux]
+    - '**/ld-linux-x86-64.so.2'  # [linux]
+    - '**/ld64.so.1'             # [linux]
+  ignore_run_exports:
+    - pixman
+    - harfbuzz                   # [osx]; (quartz used on osx)
+    - fontconfig                 # [osx]; (quartz used on osx)
+    - freetype                   # [osx]; (quartz used on osx)
+
+requirements:
+  build:
+    - make
+    - pkg-config
+    - perl *
+    - gnuconfig  # [unix]
+    - gobject-introspection >=0.9.3
+    - {{ compiler('c') }}
+    - pthread-stubs                                       # [linux]
+    - {{ cdt('libxau-devel') }}                           # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}                   # [linux]
+    - {{ cdt('libxrender-devel') }}                       # [linux]
+    - {{ cdt('libx11-devel') }}                           # [linux]
+    - {{ cdt('libxext-devel') }}                          # [linux]
+  host:
+    - atk-1.0 >=1.29.2
+    - cairo >=1.6
+    - gdk-pixbuf >=2.21.0
+    - gettext                                             # [osx]
+    - glib >=2.28.0
+    - pango >=1.20
+    - harfbuzz                                            # [linux]; (quartz used on osx)
+    - fontconfig                                          # [linux]; (quartz used on osx)
+    - freetype                                            # [linux]; (quartz used on osx)
+  run:
+    - atk-1.0 >=1.29.2
+    - cairo >=1.6
+    - gdk-pixbuf >=2.21.0
+    - gettext                                             # [osx]
+    - glib >=2.28.0
+    - pango >=1.20    
+    - harfbuzz                                            # [linux]; (quartz used on osx)
+    - fontconfig                                          # [linux]; (quartz used on osx)
+    - freetype                                            # [linux]; (quartz used on osx)
+
+test:
+  commands:
+    - test -f ${PREFIX}/lib/libgtk-x11-2.0{{ SHLIB_EXT }}  # [linux]
+    - test -f ${PREFIX}/lib/libgtk-quartz-2.0{{ SHLIB_EXT }}  # [osx]
+
+about:
+  home: https://www.gtk.org/
+  license: LGPL-2.1-or-later
+  license_file: COPYING
+  license_family: LGPL
+  summary: Primary library used to construct user interfaces in GNOME applications.
+  description: | 
+    GTK is a free and open-source cross-platform widget toolkit for creating graphical user interfaces. 
+    It is one of the most popular toolkits for the Wayland and X11 windowing systems.
+  dev_url: https://gitlab.gnome.org/GNOME/gtk
+  doc_url: https://developer-old.gnome.org/gtk2/stable/index.html
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - pkgw
+    - xhochy

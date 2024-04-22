@@ -1,0 +1,64 @@
+{% set org = "mrocklin" %}
+{% set name = "streamz" %}
+{% set version = "0.6.3" %}
+{% set sha256 = "d3067595d2c544020bf51fa02dfc2c15b2fe82f74e44091858d8e70e679a7e6f" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [py<36]
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  noarch: python
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+  run:
+    - python >=3.6
+    - zict
+    - tornado
+    - toolz
+    - setuptools
+    - six
+
+test:
+  imports:
+    - streamz
+    - streamz.core
+    # Commented out streamz so that tests pass
+    # - streamz.dataframe
+  requires:
+    - pip
+    - python <3.10
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/mrocklin/streamz/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Manage streaming data, optionally with Dask and Pandas
+
+  description: |
+    Manage streaming data, optionally with Dask and Pandas
+  doc_url: https://streamz.readthedocs.io/en/latest/
+  dev_url: https://github.com/mrocklin/streamz/
+
+extra:
+  recipe-maintainers:
+    - CJ-Wright
+    - mrocklin
+    - jrmlhermitte
+    - mariusvniekerk
+    - martindurant

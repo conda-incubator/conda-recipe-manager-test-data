@@ -1,0 +1,52 @@
+{% set name = "mtcnn" %}
+{% set version = "0.1.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d0957274584be62cb83d4a089041f8ee3cf3b1893e45f01ed3356f94a381302b
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - keras
+    - opencv
+    - python >=3.6
+    - h5py
+    - numpy
+    - scipy
+    - pyyaml
+    - six
+ 
+
+test:
+  imports:
+    - mtcnn
+    - mtcnn.exceptions
+    - mtcnn.network
+
+about:
+  home: http://github.com/ipazc/mtcnn
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: "Multi-task Cascaded Convolutional Neural Networks for Face Detection, based on TensorFlow"
+  dev_url: http://github.com/ipazc/mtcnn
+
+extra:
+  recipe-maintainers:
+    - mxr-conda
+    - Tata17
+    - oblute
+    - benhuff
+    - rluria14

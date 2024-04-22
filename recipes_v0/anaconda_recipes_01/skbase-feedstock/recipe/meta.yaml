@@ -1,0 +1,54 @@
+{% set name = "skbase" %}
+{% set version = "0.6.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/sktime/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 085a97b1a5acb649a836b88ee5c30c8b9a8258baaee86c6ac73d366c2bae480f
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+    - toml
+  run:
+    - python
+
+test:
+  source_files:
+    - skbase/tests
+  imports:
+    - skbase
+  commands:
+    - pip check
+    - pytest skbase/tests
+  requires:
+    - pip
+    - pytest
+    - numpy
+    - scipy
+    - pandas
+
+about:
+  home: https://github.com/sktime/skbase
+  license: BSD-3-Clause
+  license_file: LICENSE
+  license_family: BSD
+  summary: Base classes for sklearn-like parametric objects
+  description: |
+    skbase provides base classes for creating scikit-learn-like parametric objects, along with tools to make it easier
+    to build your own packages that follow these design patterns.
+  doc_url: https://github.com/sktime/skbase
+  dev_url: https://github.com/sktime/skbase
+
+extra:
+  recipe-maintainers:
+    - boldorider4

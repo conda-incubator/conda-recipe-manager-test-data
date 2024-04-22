@@ -1,0 +1,50 @@
+{% set name = "gspread" %}
+{% set version = "5.12.1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: eb1e657fe27869fb8a75ba71a88adb69285be9c6ed9a8fabd4386b059ada69d9
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - flit-core >=3.2,<4
+  run:
+    - python
+    # requests isn't explicitly listed upstream, but they do use it directly.
+    - requests
+    - google-auth >=1.12.0
+    - google-auth-oauthlib >=0.4.1
+
+test:
+  imports:
+    - gspread
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/burnash/gspread
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Google Sheets Python API.
+  description: gspread is a Python API for Google Sheets.
+  dev_url: https://github.com/burnash/gspread
+  doc_url: https://docs.gspread.org
+
+extra:
+  recipe-maintainers:
+    - akashvyom
+    - burnash

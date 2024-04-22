@@ -1,0 +1,59 @@
+{% set name = "pyexcel" %}
+{% set version = "0.7.0" %}
+{% set sha256 = "fbf0eee5d93b96cef6f19a9f00703f22c0a64f19728d91b95428009a52129709" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+
+  run:
+    - python >=3.6
+    - lml >=0.0.4
+    - pyexcel-io >=0.6.2
+    - texttable >=0.8.2
+    - chardet
+
+test:
+  imports:
+    - pyexcel
+    - pyexcel.docstrings
+    - pyexcel.internal
+    - pyexcel.internal.sheets
+    - pyexcel.plugins
+    - pyexcel.plugins.parsers
+    - pyexcel.plugins.renderers
+    - pyexcel.plugins.sources
+    - pyexcel.plugins.sources.pydata
+
+about:
+  home: https://github.com/pyexcel/pyexcel
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Single API for reading, manipulating and writing data in csv, ods, xls, xlsx and xlsm files
+  description: |
+    'A wrapper library that provides one API to read, manipulate and write ' +
+    'data in different excel formats' +
+    ''
+  doc_url: http://pyexcel.readthedocs.io/en/latest/
+  dev_url: https://github.com/pyexcel/pyexcel
+
+extra:
+  recipe-maintainers:
+    - williamjamir
+    - nicoddemus

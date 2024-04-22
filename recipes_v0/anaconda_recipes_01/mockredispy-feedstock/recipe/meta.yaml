@@ -1,0 +1,41 @@
+{% set version = "2.9.3" %}
+
+package:
+  name: mockredispy
+  version: {{ version }}
+
+source:
+  fn: mockredispy-{{ version}}.tar.gz
+  url: https://github.com/locationlabs/mockredis/archive/{{ version }}.tar.gz
+  sha256: 3bacb3f03f91d62b3b0214479716108211e164357dba32959abbfaf4a28e06f0
+
+build:
+  noarch: python
+  number: 2
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  build:
+    - python
+    - pip
+    - nose
+
+  run:
+    - python
+
+test:
+  imports:
+    - mockredis
+
+about:
+  home: https://www.github.com/locationlabs/mockredis
+  summary: 'Mock for redis-py'
+  license: Apache2
+  license_file: LICENSE
+  license_family: APACHE
+  dev_url: https://www.github.com/locationlabs/mockredis
+  doc_url: https://www.github.com/locationlabs/mockredis
+
+extra:
+  recipe-maintainers:
+    - kwilcox

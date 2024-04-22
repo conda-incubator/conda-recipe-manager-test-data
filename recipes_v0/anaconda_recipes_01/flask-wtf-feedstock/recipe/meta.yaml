@@ -1,0 +1,56 @@
+{% set name = "Flask-WTF" %}
+{% set version = "1.0.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 34fe5c6fee0f69b50e30f81a3b7ea16aa1492a771fe9ad0974d164610c09a6c9
+
+build:
+  skip: True  # [py<36]
+  number: 0
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  host:
+    - pip
+    - python 
+    - wheel
+    - setuptools
+
+  run:
+    - python 
+    - flask
+    - werkzeug
+    - wtforms
+    - itsdangerous
+    - email-validator
+
+test:
+  imports:
+    - flask_wtf
+    - flask_wtf.recaptcha
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/lepture/flask-wtf
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.rst
+  summary: 'Simple integration of Flask and WTForms'
+  description: |
+    Flask-WTF is a simple integration of Flask and WTForms including CSRF,
+    file upload and reCAPTCHA.
+  dev_url: https://github.com/lepture/flask-wtf
+  doc_url: https://github.com/wtforms/flask-wtf/tree/v{{ version }}/docs
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - xylar

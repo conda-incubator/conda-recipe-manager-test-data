@@ -1,0 +1,62 @@
+{% set name = "localstack" %}
+{% set version = "1.0.4" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/localstack-{{ version }}.tar.gz
+  sha256: 40dab8fef08ae5069657d375fe3fabf02767023cb25303038721027a2b7c7278
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  skip: true  # [python_impl == 'pypy']
+
+requirements:
+  host:
+    - pip
+    - python
+    - localstack-plugin-loader
+
+  run:
+    - boto3 >=1.20
+    - click >=7.0
+    - dataclasses  # [py<37]
+    - docker-py ==5.0.0
+    - localstack-client >=1.28
+    - localstack-ext
+    - localstack-plugin-loader >=0.1.0
+    - psutil <6.0.0,>=5.4.8
+    - python
+    - python-dotenv >=0.19.1
+    - pyyaml >=5.1
+    - requests <2.26,>=2.20.0
+    - rich >=10.7.0
+    - semver >=2.10
+    - six >=1.12.0
+    - stevedore >=3.4.0
+    - tailer >=0.4.1
+    - typing-extensions  # [py<38]
+
+test:
+  imports:
+    - localstack
+  commands:
+    - python -c "import importlib.util; assert importlib.util.find_spec('localstack')"
+
+
+about:
+  home: https://github.com/localstack/localstack
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE.txt
+  summary: An easy-to-use test/mocking framework for developing Cloud applications
+  doc_url: https://pypi.org/project/localstack/
+  dev_url: https://github.com/localstack/localstack
+
+extra:
+  recipe-maintainers:
+    - mxr-conda

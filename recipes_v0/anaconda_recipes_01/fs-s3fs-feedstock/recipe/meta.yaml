@@ -1,0 +1,50 @@
+{% set name = "fs-s3fs" %}
+{% set version = "1.1.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/fs-s3fs-{{ version }}.tar.gz
+  sha256: b57f8c7664460ff7b451b4b44ca2ea9623a374d74e1284c2d5e6df499dc7976c
+
+build:
+  number: 4
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - boto3 ~=1.9
+    - fs ~=2.4
+    - python >=3.6
+    - six ~=1.10
+
+test:
+  imports:
+    - fs_s3fs
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: http://fs-s3fs.readthedocs.io/en/stable
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  summary: Amazon S3 filesystem for PyFilesystem2
+  description: "Amazon S3 filesystem implementation for PyFilesystem2"
+  doc_url: http://fs-s3fs.readthedocs.io/en/stable
+  dev_url: https://github.com/PyFilesystem/s3fs
+
+extra:
+  recipe-maintainers: 
+    - notestaff
+    - willmcgugan

@@ -1,0 +1,45 @@
+{% set name = "single-source" %}
+{% set version = "0.3.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b12705af958ca99d56ea9ce40bd9cc749378f4fe7ad03b1f9067e29daceef27d
+
+build:
+  number: 2
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python
+    - poetry-core >=1.0.0
+    - pip
+  run:
+    - python
+    - importlib-metadata >=3.0.0, <4.0.0  # [py<38]
+
+test:
+  imports:
+    - single_source
+
+about:
+  home: https://github.com/rabbit72/single-source
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A library which helps to reduce the entropy in your Python project by keeping single source of truth
+
+  description: |
+    single-source helps to reduce the entropy in your Python project by keeping single source of truth.
+    The targets of this library are modern Python projects which want to have
+    one source of truth for version, name and etc.
+  doc_url: https://github.com/rabbit72/single-source/blob/master/README.md
+  dev_url: https://github.com/rabbit72/single-source
+
+extra:
+  recipe-maintainers:
+    - rabbit72

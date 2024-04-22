@@ -1,0 +1,78 @@
+{% set version = "1.1.46" %}
+{% set name = "whylogs" %}
+{% set sha256 = "f73307893960ed8460544d3b3efeb53b53a943d7c0caf3a749279690f034f51d" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }}  -m pip install --no-deps --ignore-installed --no-build-isolation .
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+    - poetry-core
+  run:
+    - python
+    - whylogs-sketching >=3.4.1.dev3
+    - protobuf >=3.19.4
+    - importlib-metadata <4.3  # [py<38]
+    - typing-extensions >=3.10
+    - whylabs-client >=0.5.1,<1
+  run_constrained:
+    # viz module
+    - pybars3 >=0.9,<1
+    - scipy >=1.5  # [py<311]
+    - scipy >=1.9.2  # [py>310]
+    - numpy >=1.23.2  # [py>310]
+    # Integrations
+    - boto3 >=1.22.13,<2
+    - mlflow-skinny >=1.26.1,<2
+    - google-cloud-storage >=2.5.0,<3
+    # Pyspark
+    - pyarrow >=8.0.0,<13
+    - pyspark >=3.0.0,<4
+    # Image support
+    - pillow >=9.2.0,<10
+    # Embeddings support
+    - scikit-learn >=1.0.2,<2  # [py<311]
+    - scikit-learn >=1.1.2,<2  # [py>310]
+    # Fugue
+    - fugue >=0.8.1,<0.9
+    - requests >=2.27,<3
+
+
+test:
+  imports:
+    - whylogs
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://whylabs.ai
+  license: Apache-2.0
+  license_family: Apache
+  license_url: https://github.com/whylabs/whylogs/blob/mainline/LICENSE
+  summary: Profile and monitor your ML data pipeline end-to-end
+  description: |
+    whylogs is an open source library for logging any kind of data. 
+    With whylogs, users are able to generate summaries of their 
+    datasets (called _whylogs profiles_) which they can use to:
+    1. Track changes in their dataset
+    2. Create _data constraints_ to know whether their data looks the 
+    way it should
+    3. Quickly visualize key summary statistics about their datasets
+  dev_url: https://github.com/whylabs/whylogs/
+  doc_url: https://docs.whylabs.ai/docs

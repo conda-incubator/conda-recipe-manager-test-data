@@ -1,0 +1,49 @@
+{% set name = "intelhex" %}
+{% set version = "2.3.0" %}
+{% set sha256 = "892b7361a719f4945237da8ccf754e9513db32f5628852785aea108dcd250093" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 1
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.5
+    - setuptools
+  run:
+    - python >=3.5
+
+test:
+  imports:
+    - intelhex
+  commands:
+    - pip check
+    # Double check that intelhex is included in the pip list
+    - pip list
+  requires:
+    - pip
+
+about:
+  home: https://pypi.python.org/pypi/IntelHex
+  license: BSD-3-Clause
+  license_file: LICENSE.txt
+  summary: Python library for Intel HEX files manipulations
+  doc_url: http://python-intelhex.readthedocs.org/en/latest
+  dev_url: https://github.com/bialix/intelhex
+
+extra:
+  recipe-maintainers:
+    - windelbouwman
+    - abloemert
+    - avrahamshukron

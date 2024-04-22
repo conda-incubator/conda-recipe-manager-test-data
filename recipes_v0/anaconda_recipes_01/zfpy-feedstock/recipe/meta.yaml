@@ -1,0 +1,105 @@
+{% set version = "1.0.0" %}
+
+# This package builds 2 outputs
+#    zfp     --- C headers
+#    zfpy    --- Python package
+#
+
+package:
+  name: zfp-split
+  version: {{ version }}
+
+source:
+  url: https://github.com/LLNL/zfp/archive/{{ version }}.tar.gz
+  sha256: fe13b03141ee9b571692aed42ff76cf37c9dcda40f9a43a808870dca3558a57c
+
+build:
+  number: 1
+
+outputs:
+  - name: zfp
+    build:
+      script: source ${RECIPE_DIR}/build_zfp.sh  # [unix]
+      script: {{ RECIPE_DIR }}\bld_zfp.bat       # [win]
+      run_exports:
+        # No real information, for now, let keep the defaults
+        - {{ pin_subpackage('zfp') }}
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        - cmake
+        - make     # [unix]
+        # For defaults, this is included in libgcc-ng
+        # - libgomp  # [linux]
+        - llvm-openmp  # [osx]
+      run:
+        - _openmp_mutex  # [linux]
+    test:
+      commands:
+        - test -f $PREFIX/include/zfp.h                # [unix]
+        - test -f ${PREFIX}/lib/cmake/zfp/zfp-config.cmake  # [unix]
+        - if not exist %LIBRARY_INC%\zfp.h exit 1      # [win]
+        - test -f $PREFIX/lib/libzfp.so.{{ version }}  # [linux]
+        - test -f $PREFIX/lib/libzfp${SHLIB_EXT}       # [unix]
+        - if not exist %LIBRARY_BIN%\zfp.dll exit 1    # [win]
+        - if not exist %LIBRARY_LIB%\zfp.lib exit 1    # [win]
+        - if not exist %LIBRARY_PREFIX%\lib\cmake\zfp\zfp-config.cmake exit 1  # [win]
+        - test -f $PREFIX/bin/zfp                      # [unix]
+        - if not exist %LIBRARY_BIN%\zfp.exe exit 1    # [win]
+        - if not exist %LIBRARY_BIN%\zfpcmd.exe exit 1 # [win]
+        # Command always returns 1
+        - which zfp  # [unix]
+        - where zfpcmd  # [win]
+        - where zfp  # [win]
+  - name: zfpy
+    build:
+      script: source ${RECIPE_DIR}/build_zfpy.sh  # [unix]
+      script: {{ RECIPE_DIR }}\bld_zfpy.bat       # [win]
+    requirements:
+      build:
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        - cmake
+        - make     # [unix]
+        - ninja    # [win]
+      host:
+        - python
+        - numpy {{ numpy }}
+        - cython 0.29
+        - {{ pin_subpackage('zfp', exact=True) }}
+      run:
+        - python
+        - {{ pin_compatible('numpy') }}
+        - {{ pin_subpackage('zfp', exact=True) }}
+    test:
+      imports:
+        - zfpy
+      requires:
+        - pip
+      commands:
+        - pip check
+
+about:
+  home: https://computing.llnl.gov/projects/zfp
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: 'Library for compressed numerical arrays that support high throughput read and write random access'
+  description: |
+    zfp is an open source C/C++ library for compressed numerical arrays
+    that support high throughput read and write random access. zfp also
+    supports streaming compression of integer and floating-point data,
+    e.g., for applications that read and write large data sets to and
+    from disk. zfp is primarily written in C and C++ but also includes
+    Python and Fortran bindings.
+  doc_url: https://zfp.readthedocs.io/
+  dev_url: https://github.com/LLNL/zfp
+
+extra:
+  recipe-maintainers:
+    - kmpaul
+    - ToreAad
+    - lindstro
+    - GarrettDMorrison
+    - hmaarrfk

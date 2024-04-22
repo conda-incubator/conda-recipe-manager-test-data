@@ -1,0 +1,64 @@
+# There is no gnu version of orjson on Windows
+# because the simdutf8 does not get properly linked
+{% set name = "orjson" %}
+{% set version = "3.9.15" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 95cae920959d772f30ab36d3b25f83bb0f3be671e986c72ce22f8fa700dae061
+
+build:
+  number: 0
+  skip: true  # [py<38]
+  missing_dso_whitelist:  # [s390x]
+    - '$RPATH/ld64.so.1'  # [s390x]
+
+requirements:
+  build:
+    - rust_win-64  # [win]
+    - {{ compiler('rust') }}  # [not win]
+    - {{ compiler('c') }}
+    - cargo-bundle-licenses
+  host:
+    - maturin >=1,<2
+    - python
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - orjson
+  requires:
+    - pip
+    - mypy
+  commands:
+    - pip check
+    - mypy -m orjson
+
+about:
+  home: https://github.com/ijl/orjson
+  license: Apache-2.0
+  license_family: Apache
+  license_file:
+    - LICENSE-APACHE
+    - LICENSE-MIT
+    - THIRDPARTY.yml
+  summary: orjson is a fast, correct JSON library for Python.
+  description: |
+    orjson is a fast, correct JSON library for Python. It benchmarks as the fastest Python
+    library for JSON and is more correct than the standard json library or other third-party
+    libraries. It serializes dataclass, datetime, numpy, and UUID instances natively.
+  doc_url: https://github.com/ijl/orjson/blob/{{ version }}/README.md
+  dev_url: https://github.com/ijl/orjson
+
+extra:
+  recipe-maintainers:
+    - EntPyle
+    - nehaljwani
+    - synapticarbors
+    - bkreider

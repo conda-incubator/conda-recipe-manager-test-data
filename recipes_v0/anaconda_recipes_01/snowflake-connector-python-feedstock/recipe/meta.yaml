@@ -1,0 +1,91 @@
+{% set name = "snowflake-connector-python" %}
+{% set version = "3.7.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b2bfaec64059307b08caadad40214d488fefb4a23fcd7553ac75f5ea758a9169
+  
+build:
+  number: 0
+  # s390x not needed for snowflake
+  skip: true  # [s390x or py<38]
+  script:
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - snowflake-dump-ocsp-response = snowflake.connector.tool.dump_ocsp_response:main
+    - snowflake-dump-ocsp-response-cache = snowflake.connector.tool.dump_ocsp_response_cache:main
+    - snowflake-dump-certs = snowflake.connector.tool.dump_certs:main
+    - snowflake-export-certs = snowflake.connector.tool.export_certs:main
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - cython
+    - setuptools
+    - wheel
+  run:
+    - python
+    - asn1crypto >0.24.0,<2.0.0
+    - cffi >=1.9,<2.0.0
+    - cryptography >=3.1.0,<42.0.0
+    - pyopenssl >=16.2.0,<24.0.0
+    - pyjwt <3.0.0
+    - pytz
+    - requests <3.0.0
+    - importlib-metadata  # [py<38]
+    - packaging
+    - charset-normalizer >=2,<4
+    - idna >=2.5,<4
+    - urllib3 >=1.21.1,<2.0.0  # [py<310]
+    - certifi >=2017.4.17
+    - typing-extensions >=4.3.0,<5
+    - filelock >=3.5,<4
+    - sortedcontainers >=2.4.0
+    - platformdirs >=2.6.0,<4.0.0
+    - tomlkit
+  run_constrained:
+    - pandas >=1.0.0,<2.2.0
+    - keyring !=16.1.0,<25.0.0
+
+test:
+  imports:
+    - snowflake
+    - snowflake.connector
+    - snowflake.connector.nanoarrow_arrow_iterator
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/snowflakedb/snowflake-connector-python
+  license: Apache-2.0
+  license_family: Apache
+  license_file:
+    - LICENSE.txt
+    - NOTICE
+  summary: Snowflake Connector for Python
+  description: |
+    The Snowflake Connector for Python provides an interface for
+    developing Python applications that can connect to Snowflake
+    and perform all standard operations. It provides a programming
+    alternative to developing applications in Java or C/C++ using
+    the Snowflake JDBC or ODBC drivers.
+  doc_url: https://docs.snowflake.net/manuals/user-guide/python-connector.html
+  dev_url: https://github.com/snowflakedb/snowflake-connector-python
+
+extra:
+  recipe-maintainers:
+    - hajapy
+    - talues
+    - xhochy
+    - mariusvniekerk
+    - fhoehle

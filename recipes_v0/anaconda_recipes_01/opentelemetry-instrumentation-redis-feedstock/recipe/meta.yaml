@@ -1,0 +1,46 @@
+{% set name = "opentelemetry-instrumentation-redis" %}
+{% set version = "0.36b0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/opentelemetry_instrumentation_redis-{{ version }}.tar.gz
+  sha256: 388bd9656bd7474e90c47a09be22ca7a8d044264745cd3202ee6c1ad83c4fc38
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - hatchling
+  run:
+    - python >=3.7
+    - opentelemetry-api >=1.12,<2.dev0
+    - opentelemetry-instrumentation ==0.36b0
+    - opentelemetry-semantic-conventions ==0.36b0
+    - wrapt >=1.12.1
+
+test:
+  imports:
+    - opentelemetry
+    - opentelemetry.instrumentation
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-redis
+  summary: OpenTelemetry Redis instrumentation
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk

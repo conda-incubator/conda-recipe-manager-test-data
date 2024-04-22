@@ -1,0 +1,60 @@
+{% set name = "aws-c-cal" %}
+{% set version = "0.5.20" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/awslabs/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: acc352359bd06f8597415c366cf4ec4f00d0b0da92d637039a73323dd55b6cd0
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage("aws-c-cal", max_pin="x.x.x") }}
+
+requirements:
+  build:
+    - cmake !=3.19.0,!=3.19.1
+    - {{ compiler('c') }}
+    - ninja-base
+  host:
+    - aws-c-common 0.8.5
+    - openssl {{ openssl }}  # [not win and not osx]
+
+test:
+  requires:
+    # cmake needs compiler to be able to run package detection, see
+    # https://discourse.cmake.org/t/questions-about-find-package-cli-msvc/6194
+    - {{ compiler('c') }}
+    - cmake
+    - ninja
+    - pkg-config
+  files:
+    - cmake_test/
+  commands:
+    - test -f $PREFIX/lib/libaws-c-cal${SHLIB_EXT}  # [unix]
+    - test -f $PREFIX/include/aws/cal/cal.h  # [unix]
+    - if not exist %LIBRARY_INC%\\aws\\cal\\cal.h exit 1          # [win]
+    - if not exist %PREFIX%\\Library\\bin\\aws-c-cal.dll exit 1  # [win]
+
+    # CMake integration
+    - cd cmake_test
+    - cmake -GNinja $CMAKE_ARGS .   # [unix]
+    - cmake -GNinja %CMAKE_ARGS% .  # [win]
+
+about:
+  home: https://github.com/awslabs/aws-c-cal
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: 'Aws Crypto Abstraction Layer'
+  description: 'AWS Crypto Abstraction Layer: Cross-Platform, C99 wrapper for cryptography primitives.'
+  dev_url: https://github.com/awslabs/aws-c-cal/
+  doc_url: https://github.com/awslabs/aws-c-cal/
+
+extra:
+  recipe-maintainers:
+    - xhochy
+    - conda-forge/aws-sdk-cpp

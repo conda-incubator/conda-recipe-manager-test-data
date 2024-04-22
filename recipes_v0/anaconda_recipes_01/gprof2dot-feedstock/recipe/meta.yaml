@@ -1,0 +1,39 @@
+{% set name = "gprof2dot" %}
+{% set version = "2019.11.30" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b43fe04ebb3dfe181a612bbfc69e90555b8957022ad6a466f0308ed9c7f22e99
+
+build:
+  number: 0
+  entry_points:
+    - gprof2dot=gprof2dot:main
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv "
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - python
+
+test:
+  commands:
+    - gprof2dot --help
+
+about:
+  home: https://github.com/jrfonseca/gprof2dot
+  license: LGPL-2.1
+  license_family: LGPL
+  license_file: LICENSE.txt
+  summary: Generate a dot graph from the output of several profilers.
+
+extra:
+  recipe-maintainers:
+    - pmgrafe

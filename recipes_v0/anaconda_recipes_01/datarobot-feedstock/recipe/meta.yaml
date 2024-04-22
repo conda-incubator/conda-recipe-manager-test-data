@@ -1,0 +1,60 @@
+{% set name = "datarobot" %}
+{% set version = "3.0.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 1727d6c4b4b502f90655439267e3115cf619ea1ec7bc2e83be3d67b295bef38c
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.6,<3.10
+    - pip
+    - pytest-runner
+  run:
+    - python >=3.6,<3.10
+    - pandas >=0.15
+    - pyyaml >=3.11
+    - requests >=2.21
+    - requests-toolbelt >=0.6
+    - trafaret <2.0,>=0.7,!=1.1.0
+    - urllib3 >=1.23
+    - attrs >=19.1.0,<20.0
+    - contextlib2 >=0.5.5
+    - numpy
+    - python-dateutil
+    - pytz
+    - six
+
+test:
+  imports:
+    - datarobot
+
+about:
+  home: https://www.datarobot.com/
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE.txt
+  summary: This client library is designed to support the DataRobot API.
+  description: |
+    datarobot is a client library for working with the <https://www.datarobot.com/> platform API.
+  doc_url: https://datarobot-public-api-client.readthedocs-hosted.com
+
+extra:
+  recipe-maintainers:
+    - dsakagi
+    - alexalokhinrobot
+    - axik
+    - mbromanowsky
+    - AndrewSonwat
+    - lperri
+    - ahjota

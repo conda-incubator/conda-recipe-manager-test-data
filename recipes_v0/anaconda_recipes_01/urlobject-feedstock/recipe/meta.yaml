@@ -1,0 +1,42 @@
+{% set name = "URLObject" %}
+{% set version = "2.4.3" %}
+{% set compress_type = "tar.gz" %}
+{% set hash_type = "sha256" %}
+{% set hash_val = "47b2e20e6ab9c8366b2f4a3566b6ff4053025dad311c4bb71279bbcfa2430caa" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ compress_type }}
+  {{ hash_type }}: {{ hash_val }}
+
+build:
+  number: 1
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+
+requirements:
+  host:
+    - python
+    - pip
+
+  run:
+    - python
+
+test:
+  imports:
+    - urlobject
+
+about:
+  home: https://github.com/zacharyvoase/urlobject
+  license: PUBLIC-DOMAIN
+  license_file: UNLICENSE
+  summary: 'A utility class for manipulating URLs.'
+  dev_url: https://github.com/zacharyvoase/urlobject
+  doc_url: https://urlobject.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr

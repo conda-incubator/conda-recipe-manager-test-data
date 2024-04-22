@@ -1,0 +1,67 @@
+{% set name = "rope" %}
+{% set version = "1.12.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 93a1bb991fbf0426e8d415102d1c092ccc42e826ce9a42c4d61ce53d7786d9d9
+
+build:
+  number: 0
+  skip: True # [py<38]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+    - pytoolconfig >=1.2.2
+    # platformdirs dependency is on pytoolconfig global
+    # at time of build, pytoolconfig 1.2.6 is on main, which requires platformdirs >=1.4.4 
+    - platformdirs >=1.4.4 
+
+test:
+  imports:
+    - rope
+    - rope.base
+    - rope.base.oi
+    - rope.base.oi.type_hinting
+    - rope.base.oi.type_hinting.providers
+    - rope.base.oi.type_hinting.resolvers
+    - rope.base.utils
+    - rope.contrib
+    - rope.contrib.autoimport
+    - rope.refactor
+    - rope.refactor.importutils
+  requires:
+    - pip
+    - pytest >=7.0.1
+    - pytest-timeout >=2.1.0
+  source_files:
+    - ropetest
+  commands:
+    - pip check
+    - pytest -v
+
+about:
+  home: https://github.com/python-rope/rope
+  license_file: COPYING
+  license: LGPL-3.0-or-later
+  license_family: LGPL
+  summary: A python refactoring library
+  description: |
+    Rope is the world's most advanced open source Python refactoring library (yes, I totally stole that tagline from Postgres).
+  dev_url: https://github.com/python-rope/rope
+  doc_url: https://rope.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - jjhelmus

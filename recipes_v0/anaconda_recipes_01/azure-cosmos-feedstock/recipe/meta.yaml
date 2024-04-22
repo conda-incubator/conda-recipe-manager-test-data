@@ -1,0 +1,44 @@
+{% set name = "azure-cosmos" %}
+{% set version = "3.1.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 7f8ac99e4e40c398089fc383bfadcdc83376f72b88532b0cac0b420357cd08c7
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - pip
+  run:
+    - python
+    - setuptools
+    - requests >=2.10.0
+    - six >=1.6
+
+test:
+  imports:
+    - azure.cosmos
+
+about:
+  home: https://github.com/Azure/azure-cosmos-python
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Microsoft Azure Cosmos Python SDK'
+  description: Microsoft Azure Cosmos Python SDK
+  doc_url: https://docs.microsoft.com/en-us/azure/cosmos-db/sql-api-sdk-python
+  dev_url: https://github.com/Azure/azure-cosmos-python
+
+extra:
+  recipe-maintainers:
+    - yehoshuadimarsky

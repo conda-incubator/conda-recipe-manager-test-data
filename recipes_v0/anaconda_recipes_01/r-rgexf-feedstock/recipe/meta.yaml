@@ -1,0 +1,105 @@
+{% set version = '0.16.2' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-rgexf
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/rgexf_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/rgexf/rgexf_{{ version }}.tar.gz
+  sha256: 6ee052b0de99d0c7492366b991d345a51b3d0cc890d10a68b8670e1bd4fc8201
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: knitr, rmarkdown, tinytest, covr
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-xml
+    - r-igraph
+    - r-servr
+
+  run:
+    - r-base
+    - r-xml
+    - r-igraph
+    - r-servr
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('rgexf')"           # [not win]
+    - "\"%R%\" -e \"library('rgexf')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://gvegayon.github.io/rgexf/
+  license: MIT
+  summary: Create, read and write 'GEXF' (Graph Exchange 'XML' Format) graph files (used in 'Gephi'
+    and others). Using the 'XML' package, it allows the user to easily build/read graph
+    files including attributes, 'GEXF' visual attributes (such as color, size, and position),
+    network dynamics (for both edges and nodes) and edge weighting. Users can build/handle
+    graphs element-by-element or massively through data-frames, visualize the graph
+    on a web browser through 'gexf-js' (a 'javascript' library) and interact with the
+    'igraph' package.
+  license_family: MIT
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/MIT'
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: rgexf
+# Type: Package
+# Encoding: UTF-8
+# Title: Build, Import and Export GEXF Graph Files
+# Version: 0.16.2
+# Date: 2021-08-10
+# Authors@R: c( person("George", "Vega Yon", email="g.vegayon@gmail.com", role=c("aut", "cre"), comment = structure("0000-0002-3171-0844", .Names = "ORCID")), person("Jorge", "Fabrega Lacoa", role=c("ctb")), person("Joshua", "Kunst", role=c("ctb")), person("Raphael", "Velt", role=c("cph"), comment="gexf-js library"), person(family="Gephi Consortium", role=c("cph"), comment="GEXF language"), person("Cornelius", "Fritz", role = "rev", comment = c(what = "JOSS reviewer")), person("Jonathan", "Cardoso Silva", role = "rev", comment = c(what = "JOSS reviewer")) )
+# Description: Create, read and write 'GEXF' (Graph Exchange 'XML' Format) graph files (used in 'Gephi' and others). Using the 'XML' package, it allows the user to easily build/read graph files including attributes, 'GEXF' visual attributes (such as color, size, and position), network dynamics (for both edges and nodes) and edge weighting. Users can build/handle graphs element-by-element or massively through data-frames, visualize the graph on a web browser through 'gexf-js' (a 'javascript' library) and interact with the 'igraph' package.
+# URL: https://gvegayon.github.io/rgexf/
+# BugReports: https://github.com/gvegayon/rgexf/issues
+# Imports: XML, igraph, grDevices, utils, servr
+# License: MIT + file LICENSE
+# LazyLoad: yes
+# RoxygenNote: 7.1.1
+# Suggests: knitr, rmarkdown, tinytest, covr
+# VignetteBuilder: knitr
+# NeedsCompilation: no
+# Packaged: 2021-08-12 21:08:01 UTC; george
+# Author: George Vega Yon [aut, cre] (<https://orcid.org/0000-0002-3171-0844>), Jorge Fabrega Lacoa [ctb], Joshua Kunst [ctb], Raphael Velt [cph] (gexf-js library), Gephi Consortium [cph] (GEXF language), Cornelius Fritz [rev] (JOSS reviewer), Jonathan Cardoso Silva [rev] (JOSS reviewer)
+# Maintainer: George Vega Yon <g.vegayon@gmail.com>
+# Repository: CRAN
+# Date/Publication: 2021-08-12 21:30:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

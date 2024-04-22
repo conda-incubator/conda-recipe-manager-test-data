@@ -1,0 +1,69 @@
+{% set version = "0.6.1" %}
+
+package:
+  name: torchdata
+  version: {{ version }}
+
+source:
+  url: https://github.com/pytorch/data/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: c596db251c5e6550db3f00e4308ee7112585cca4d6a1c82a433478fd86693257
+
+build:
+  number: 0
+  # pytorch 2.0.x not available on ppc64le
+  skip: true  # [py<37 or ppc64le]
+  script:
+    - set USE_SYSTEM_LIBS=TRUE  # [win]
+    - export USE_SYSTEM_LIBS=TRUE  # [unix]
+    - {{ PYTHON }} -m pip install --no-deps --ignore-installed --no-build-isolation . -vv
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - cmake
+    - ninja
+  host:
+    - pip
+    - python
+    - pytorch 2.0.1
+    - setuptools
+    - wheel
+  run:
+    - python
+    - requests
+    - urllib3 >=1.25
+    - portalocker >=2.0.0
+    - pytorch >=2.0.0
+
+test:
+  imports:
+    - torchdata
+  requires:
+    - pip
+    - pytest
+    - datasets  # [not s390x]
+    - expecttest
+    - fsspec
+    - {{ pin_compatible('numpy') }}
+    - s3fs
+  source_files:
+    - test/
+
+about:
+  home: https://pytorch.org/
+  summary: A PyTorch repo for data loading and utilities to be shared by the PyTorch domain libraries.
+  description: |
+    torchdata is a library of common modular data loading primitives for easily constructing flexible 
+    and performant data pipelines. It aims to provide composable Iterable-style and Map-style building
+    blocks called DataPipes that work well out of the box with the PyTorch's DataLoader.
+  license_family: BSD
+  license: BSD-3-Clause
+  license_file: LICENSE
+  dev_url: https://github.com/pytorch/data
+  doc_url: https://pytorch.org/data/beta/index.html
+
+extra:
+  recipe-maintainers:
+    - BastianZim
+    - Tobias-Fischer
+    - h-vetinari

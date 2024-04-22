@@ -1,0 +1,44 @@
+{% set name = "django-elasticsearch-dsl" %}
+{% set version = "7.3" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/django-elasticsearch-dsl-{{ version }}.tar.gz
+  sha256: 084a790edf26131a7897d13a3b5c08a6e129ca145b2b3fcbc2b2d4e902a919c1
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - elasticsearch-dsl >=7.2.0
+    - django >=1.9.6
+    - python >=3.6
+    - six
+
+test:
+  imports:
+    - django_elasticsearch_dsl
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/django-es/django-elasticsearch-dsl
+  summary: Wrapper around elasticsearch-dsl-py for django models
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - MichelML

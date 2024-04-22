@@ -1,0 +1,63 @@
+{% set name = "nginx" %}
+{% set version = "1.25.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://nginx.org/download/{{ name }}-{{ version }}.tar.gz
+  sha256: 5ed44d45943272a4e8a5bcf4434237210f2de31b903fca5e381c1bbd7eee1e8c
+  patches:
+    - pcre-config.patch  # find pcre in PREFIX instead of /usr
+
+build:
+  number: 0
+  no_link:
+    - etc/*
+    - var/log/nginx/*
+  # nginx and libgd currently isn't available on s390x 
+  skip: true  # [win or s390x]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('fortran') }}  # [not osx]
+    - make
+    - m2-patch  # [win]
+    - patch  # [not win] 
+  host:
+    - libgd {{ libgd }}
+    - libxslt 1.1.*
+    - openssl 3.0.8
+    - pcre2 10.42
+    - zlib {{ zlib }}
+  run:
+    - libgd {{ libgd }}
+    - libxml2
+    - libxslt 1.1.*
+    - openssl 3.*
+    - pcre2
+
+test:
+  requires:
+    - curl
+
+about:
+  home: https://nginx.org
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Nginx is an HTTP and reverse proxy server
+  description: |
+    Nginx can act as a reverse proxy server for TCP, UDP, HTTP, HTTPS, SMTP,
+    POP3, IMAP, and gRPC protocols, as well as a load balancer and an HTTP cache.
+    Nginx uses an asynchronous event-driven approach to handling requests.
+  doc_url: https://nginx.org/en/docs
+  dev_url: https://hg.nginx.org/nginx
+
+extra:
+  recipe-maintainers:
+    - sodre

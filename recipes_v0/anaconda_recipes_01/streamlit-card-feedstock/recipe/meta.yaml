@@ -1,0 +1,49 @@
+{% set name = "streamlit-card" %}
+{% set version = "0.0.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/streamlit-card-{{ version }}.tar.gz
+  sha256: 5fe81450310f1e2b6660c83eb6d82f1a5b671d5d42b5e46b3bc654120c481a2c
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+  # s390x is missing streamlit
+  skip: true  # [py<38 or s390x]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - streamlit >=0.63
+
+test:
+  imports:
+    - streamlit_card
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/gamcoh/st-card
+  dev_url: https://github.com/gamcoh/st-card
+  doc_url: https://github.com/gamcoh/st-card/blob/v0.0.4/README.md
+  summary: A streamlit component, to make UI cards
+  description: |
+    A streamlit component, to make UI cards
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+
+extra:
+  recipe-maintainers:
+    - ELundby45

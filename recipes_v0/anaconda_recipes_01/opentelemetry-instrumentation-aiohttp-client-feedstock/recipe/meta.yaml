@@ -1,0 +1,48 @@
+{% set name = "opentelemetry-instrumentation-aiohttp-client" %}
+{% set version = "0.36b0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/opentelemetry_instrumentation_aiohttp_client-{{ version }}.tar.gz
+  sha256: 41522cedfa858130e58312a0f28b1afb66420a9dc8f615ba63d8055a24bdae23
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - hatchling
+  run:
+    - python >=3.7
+    - aiohttp >=3
+    - opentelemetry-api >=1.12,<2.dev0
+    - opentelemetry-instrumentation ==0.36b0
+    - opentelemetry-semantic-conventions ==0.36b0
+    - opentelemetry-util-http ==0.36b0
+    - wrapt <2.0.0,>=1.0.0
+
+test:
+  imports:
+    - opentelemetry.instrumentation.aiohttp_client
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-aiohttp-client
+  summary: OpenTelemetry aiohttp client instrumentation
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - twoodwark
+    - mariusvniekerk

@@ -1,0 +1,46 @@
+{% set name = "pytest-base-url" %}
+{% set version = "2.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pytest-base-url-{{ version }}.tar.gz
+  sha256: e1e88a4fd221941572ccdcf3bf6c051392d2f8b6cef3e0bc7da95abec4b5346e
+
+build:
+  number: 0
+  script: pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - python
+    - poetry-core >=1.0.0
+    - pip
+  run:
+    - python
+    - pytest >=3.0.0,<8.0.0
+    - requests >=2.9
+
+test:
+  imports:
+    - pytest_base_url
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/pytest-dev/pytest-base-url
+  license: MPL-2.0
+  license_family: OTHER
+  license_file: LICENSE
+  summary: pytest plugin for URL based testing
+  dev_url: https://github.com/pytest-dev/pytest-base-url
+  doc_url: https://github.com/pytest-dev/pytest-base-url
+
+extra:
+  recipe-maintainers:
+    - birdsarah
+    - davehunt

@@ -1,0 +1,82 @@
+{% set name = "qtconsole" %}
+{% set version = "5.5.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/qtconsole-{{ version }}.tar.gz
+  sha256: a0e806c6951db9490628e4df80caec9669b65149c7ba40f9bf033c025a5b56bc
+
+build:
+  number: 0
+  skip: True  # [py<38]
+  # Not available on s390x, ppc64le due to missing qt.
+  skip: True  # [ppc64le or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - jupyter-qtconsole = qtconsole.qtconsoleapp:main
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+    - ipykernel >=4.1  # not a real dependency, but require the reference kernel
+    - jupyter_core
+    - jupyter_client >=4.1
+    - pygments
+    - pyqt  # not a dependency listed in setup.py but is still a runtime requirement for qtconsole https://qtconsole.readthedocs.io/en/stable/installation.html#installing-qt-if-needed
+    - pyzmq >=17.1
+    - qtpy >=2.4.0
+    - traitlets !=5.2.1, !=5.2.2  # Skip traitlets versions that break Qtconsole on Windows
+    - packaging
+
+app:
+  entry: jupyter-qtconsole
+  summary: Jupyter Qt Console
+  type: desk
+
+test:
+  imports:
+    - qtconsole
+    - qtconsole.tests
+  requires:
+    - pip
+  commands:
+    - pip check
+    # 2022/8/1: Could not find the Qt platform plugin "xcb" in ""
+    # This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
+    # Available platform plugins are: eglfs, minimal, minimalegl, offscreen, vnc, webgl.
+    # - DISPLAY=localhost:1.0 xvfb-run -a bash -c 'jupyter qtconsole --help'
+    - jupyter qtconsole --help # [win or osx]
+
+about:
+  home: https://jupyter.org
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Jupyter Qt console
+  description: |
+    A rich Qt-based console for working with Jupyter kernels, supporting rich
+    media output, session export, and more. The Qt console is a very
+    lightweight application that largely feels like a terminal, but provides
+    a number of enhancements only possible in a GUI, such as inline figures,
+    proper multiline editing with syntax highlighting, graphical calltips, and
+    more.
+  doc_url: https://qtconsole.readthedocs.io
+  dev_url: https://github.com/jupyter/qtconsole
+
+
+extra:
+  recipe-maintainers:
+    - Carreau
+    - ccordoba12
+    - jakirkham
+    - minrk
+    - takluyver
+    - ocefpaf

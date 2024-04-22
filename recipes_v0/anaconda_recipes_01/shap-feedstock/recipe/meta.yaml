@@ -1,0 +1,81 @@
+{% set author = "slundberg" %}
+{% set name = "shap" %}
+{% set version = "0.42.1" %}
+{% set sha256 = "3cba8049c36b41c2319270ab62e1d54135b7a6d76705cffbda3c6067aacadb29" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/{{ author }}/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir --no-build-isolation -vv
+  missing_dso_whitelist:  # [win]
+   - $RPATH/cudart64_101.dll  # [win]
+  skip: true # [py<37 or s390x]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - numpy {{ numpy }}
+    - packaging >20.9
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+    - scipy
+    - scikit-learn
+    - pandas
+    - tqdm >=4.27.0
+    - packaging >20.9
+    - slicer 0.0.7
+    - numba
+    - cloudpickle
+
+test:
+  requires:
+    - pip
+    - matplotlib
+  commands:
+    - pip check
+  imports:
+    - shap
+    - shap.explainers
+    - shap.explainers.other
+    - shap.explainers._deep
+    - shap.plots
+    - shap.plots.colors
+    - shap.benchmark
+    - shap.maskers
+    - shap.utils
+    - shap.actions
+    - shap.models
+
+about:
+  home: https://github.com/slundberg/shap
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A unified approach to explain the output of any machine learning model.
+  description: |
+    SHAP (SHapley Additive exPlanations) is a unified approach to explain the output
+    of any machine learning model. SHAP connects game theory with local explanations, 
+    uniting several previous methods and representing the only possible consistent 
+    and locally accurate additive feature attribution method based on expectations.
+  doc_url: https://shap.readthedocs.io/en/latest/
+  dev_url: https://github.com/slundberg/shap
+
+extra:
+  recipe-maintainers:
+    - mrandrewandrade
+    - slundberg
+    - xhochy

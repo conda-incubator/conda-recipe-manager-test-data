@@ -1,0 +1,49 @@
+{% set name = "lttng-ust" %}
+{% set version = "2.13.4" %}
+
+package:
+  name: lttng-ust
+  version: {{ version }}
+
+source:
+  - url: http://lttng.org/files/lttng-ust/lttng-ust-{{ version }}.tar.bz2
+    sha256: 698f82ec5dc56e981c0bb08c46ebabaf31c60e877c2e365b9fd6d3a9fff8b398
+
+build:
+  skip: true  # [win or osx]
+  number: 0
+  run_exports:
+    - '{{ pin_subpackage(name, max_pin="x.x") }}'
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ cdt('numactl') }}
+    - make
+    - pkg-config
+    - libuuid
+    - popt
+    - libxml2
+  host:
+    - liburcu
+  run:
+    - liburcu
+
+test:
+  commands:
+    - test -e $PREFIX/include/lttng/tracepoint.h
+    - test -e $PREFIX/lib/liblttng-ust.so
+
+about:
+  home: https://lttng.org/
+  license: LGPL-2.1-only
+  license_family: LGPL
+  license_file: LICENSE
+  summary: The LTTng User Space Tracing (LTTng-UST) library allows any C/C++ application to be instrumented for and traced by LTTng.
+  doc_url: https://lttng.org/docs/v{{ version }}/
+  dev_url: https://github.com/lttng/lttng-ust
+
+extra:
+  recipe-maintainers:
+    - ZimmerA
+    - wolfv

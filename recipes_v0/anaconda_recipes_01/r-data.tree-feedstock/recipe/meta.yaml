@@ -1,0 +1,50 @@
+{% set version = "1.0.0" %}
+
+package:
+  name: r-data.tree
+  version: {{ version }}
+
+source:
+  fn: data.tree_{{ version }}.tar.gz
+  url:
+    - https://cran.r-project.org/src/contrib/data.tree_{{ version }}.tar.gz
+    - https://cran.r-project.org/src/contrib/Archive/data.tree/data.tree_{{ version }}.tar.gz
+  sha256: 40674c90a5bd00f5185db9adbd221c6f1114043e69095249f5fa8b3044af3f5e
+
+build:
+  noarch: generic
+  number: 0
+  # slipping Windows b/c we are missing: r-diagrammer -> r-igraph
+  script: R CMD INSTALL --build .
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  host:
+    - r-base
+    - r-diagrammer >=1.0.0
+    - r-r6
+    - r-stringr
+  run:
+    - r-base
+    - r-diagrammer >=1.0.0
+    - r-r6
+    - r-stringr
+
+test:
+  commands:
+    - $R -e "library('data.tree')"  # [not win]
+    - "\"%R%\" -e \"library('data.tree')\""  # [win]
+
+about:
+  home: https://github.com/tidyverse/data.tree
+  license: GPL-2.0-or-later
+  summary: Create tree structures from hierarchical data, and traverse the tree in various orders. Aggregate, cumulate, print, plot, convert to and from data.frame and more. Useful for decision trees, machine learning, finance, conversion from and to JSON, and many other applications.
+
+  license_file:
+    - {{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - conda-forge/r

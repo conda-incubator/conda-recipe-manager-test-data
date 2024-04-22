@@ -1,0 +1,58 @@
+{%set name = "leather" %}
+{% set version = "0.3.4" %}
+{%set compress_type = "tar.gz" %}
+{%set hash_type = "sha256" %}
+{% set hash_val = "b43e21c8fa46b2679de8449f4d953c06418666dc058ce41055ee8a8d3bb40918" %}
+{%set build_num = "1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.{{ compress_type }}
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ compress_type }}
+  {{ hash_type }}: {{ hash_val }}
+
+build:
+  number: {{ build_num }}
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - pip
+    - wheel
+  run:
+    - python
+    - six >=1.6.1
+
+test:
+  imports:
+    - leather
+    - leather.scales
+    - leather.series
+    - leather.shapes
+    - leather.ticks
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://leather.readthedocs.io/
+  license: MIT
+  license_family: MIT
+  license_file: COPYING
+  summary: Python charting for 80% of humans.
+  description: |
+    Leather is the Python charting library for those who need charts now and don't care if they're perfect.
+    Leather isn't picky. It's rough. It gets dirty. It looks sexy just hanging on the back of a chair. 
+    Leather doesn't need your accessories. Leather is how Snake Plissken would make charts.
+  doc_url: https://leather.readthedocs.io/
+  dev_url: https://github.com/wireservice/leather
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr

@@ -1,0 +1,56 @@
+{% set name = "dython" %}
+{% set version = "0.7.3" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 6dab0e7fe177b4c8686e369e9fcadc5af37439a1f728c6023774c84e4051291e
+
+build:
+  number: 0
+  noarch: python
+  script:
+    - cp ${RECIPE_DIR}/VERSION .  # [not win]
+    - cp ${RECIPE_DIR}/DESCRIPTION.md .  # [not win]
+    - copy %RECIPE_DIR%\VERSION .  # [win]
+    - copy %RECIPE_DIR%\DESCRIPTION.md .  # [win]
+    - {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - matplotlib-base
+    - numpy
+    - pandas >=0.23.4
+    - python >=3.6
+    - scikit-learn
+    - scikit-plot >=0.3.7
+    - scipy
+    - seaborn
+    - psutil >=5.9.1
+
+test:
+  imports:
+    - dython
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: http://shakedzy.xyz/dython
+  summary: A set of data tools in Python
+  license: BSD-3-Clause
+  license_file: LICENSE
+  doc_url: http://shakedzy.xyz/dython/getting_started/installation/
+  dev_url: http://shakedzy.xyz/dython/modules/data_utils/
+
+extra:
+  recipe-maintainers:
+    - sarthakpati

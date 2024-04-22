@@ -1,0 +1,58 @@
+{% set name = "pathspec" %}
+{% set version = "0.10.3" %}
+{% set checksum = "56200de4077d9d0791465aa9095a01d421861e405b5096955051deefd697d6f6" %}
+{% set build = "0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ checksum }}
+
+build:
+  number: {{ build }}
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: True  # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools >=40.8.0
+    - wheel
+  run:
+    - python
+
+test:
+  source_files:
+    - tests
+  requires:
+    - pytest
+    - pip
+  imports:
+    - pathspec
+  commands:
+    - pip check
+    - pytest --verbose
+
+about:
+  home: https://github.com/cpburnz/python-path-specification
+  license: MPL-2.0
+  license_file: LICENSE
+  license_family: Other
+  summary: 'Utility library for gitignore style pattern matching of file paths.'
+
+  description: |
+    pathspec is a utility library for pattern matching of file paths. So far
+    this only includes Git's wildmatch pattern matching which itself is derived
+    from Rsync's wildmatch. Git uses wildmatch for its gitignore files.
+  doc_url: https://python-path-specification.readthedocs.io
+  doc_source_url: https://github.com/cpburnz/python-path-specification/blob/master/doc/source/index.rst
+  dev_url: https://github.com/cpburnz/python-path-specification
+
+extra:
+  recipe-maintainers:
+    - bollwyvl
+    - proinsias

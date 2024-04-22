@@ -1,0 +1,68 @@
+{% set name = "setuptools_scm" %}
+{% set name_var = name|replace("_", "-") %}
+{% set version = "8.0.4" %}
+
+package:
+  name: setuptools_scm-split
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name_var }}/{{ name_var }}-{{ version }}.tar.gz
+  sha256: b5f43ff6800669595193fd09891564ee9d1d7dcb196cab4b2506d53a2e1c95c7
+
+build:
+  number: 0
+  skip: True  # [py<38]
+
+outputs:
+  - name: setuptools-scm
+    script: build_base.bat  # [win]
+    script: build_base.sh  # [not win]
+    requirements:
+      host:
+        - python
+        - pip
+        - setuptools
+        - wheel
+        - tomli  # [py<311]
+      run:
+        - python
+        - packaging >=20.0
+        - setuptools
+        - tomli >=1.0.0  # [py<311]
+        - typing-extensions
+    test:
+      imports:
+        - setuptools_scm
+      requires:
+        - pip
+      commands:
+        - pip check
+
+  - name: setuptools_scm
+    build:
+      noarch: generic
+    requirements:
+      run:
+        - {{ pin_subpackage('setuptools-scm', max_pin="x.x.x") }}
+    test:
+      imports:
+        - setuptools_scm
+
+about:
+  home: https://github.com/pypa/setuptools_scm
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: The blessed package to manage your versions by scm tags
+  description: |
+    setuptools_scm extracts Python package versions from git or hg metadata 
+    instead of declaring them as the version argument or in a SCM managed file.
+  dev_url: https://github.com/pypa/setuptools_scm
+  doc_url: https://github.com/pypa/setuptools_scm
+
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - kwilcox
+    - astaric

@@ -1,0 +1,49 @@
+{% set name = "altgraph" %}
+{% set version = "0.17.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/altgraph-{{ version }}.tar.gz
+  sha256: ad33358114df7c9416cdb8fa1eaa5852166c505118717021c6a8c7c7abbd03dd
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - altgraph
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://pypi.org/project/altgraph/
+  summary: Python graph (network) package
+  description: |
+      altgraph is a fork of graphlib: a graph (network)
+      package for constructing graphs, BFS and DFS traversals,
+      topological sort, shortest paths, etc. with graphviz output.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  dev_url: https://github.com/ronaldoussoren/altgraph/
+  doc_url: https://altgraph.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - anthchirp
+    - rth

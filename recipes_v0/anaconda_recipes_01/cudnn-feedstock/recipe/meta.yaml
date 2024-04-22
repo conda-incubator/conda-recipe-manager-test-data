@@ -1,0 +1,52 @@
+{% set cudnn_version= "8.9.2.26" %}
+{% set build_number= "0" %}
+# The cuDNN installers can be downloaded from https://developer.nvidia.com/rdp/cudnn-download
+# The download requires a manual sign-in to Nvidia's website. For this recipe to work, download the
+# packages to a local location and adjust src_dir to this location. Remember to escape backslashes
+# (i.e., on Windows).
+{% set src_dir = "file:///home/builder/nvidia" %}
+
+package:
+  name: cudnn
+  version: {{ cudnn_version }}
+
+source:
+  url: {{ src_dir }}/cudnn-linux-x86_64-{{ cudnn_version }}_cuda{{ cuda_maj_version }}-archive.tar.xz     # [linux and x86_64]
+  sha256: 39883d1bcab4bd2bf3dac5a2172b38533c1e777e45e35813100059e5091406f6                                # [linux and x86_64]
+  url: {{ src_dir }}/cudnn-windows-x86_64-{{ cudnn_version }}_cuda{{ cuda_maj_version }}-archive.zip      # [win and x86_64]
+  sha256: d3daa2297917333857eaaba1213dd9fc05c099d94e88663274a0f37a4e9baf9d                                # [win and x86_64]
+
+build:
+  skip: True  # [not (linux and x86_64) and not (win and x86_64)]
+  number: {{ build_number }}
+  string: cuda{{ cuda_maj_version }}_{{ build_number }}
+  missing_dso_whitelist:
+    - '*'
+  run_exports:
+    - {{ pin_subpackage('cudnn', min_pin='x.x', max_pin='x') }}
+
+requirements:
+  run:
+    - cudatoolkit {{ cuda_maj_version }}
+
+test:
+  commands:
+    - test -f ${PREFIX}/lib/libcudnn.so                                                             # [linux and x86_64]
+    - test -f ${PREFIX}/lib/libcudnn.so.{{ '.'.join(cudnn_version.split('.')[0:1]) }}               # [linux and x86_64]
+    - test -f ${PREFIX}/lib/libcudnn.so.{{ '.'.join(cudnn_version.split('.')[0:3]) }}               # [linux and x86_64]
+    - test -f ${PREFIX}/include/cudnn.h                                                             # [linux and x86_64]
+    - if not exist %LIBRARY_INC%\\cudnn.h exit 1                                                    # [win and x86_64]
+    - if not exist %LIBRARY_BIN%\\cudnn64_{{ '.'.join(cudnn_version.split('.')[0:1]) }}.dll exit 1  # [win and x86_64]
+
+about:
+  home: https://developer.nvidia.com/cudnn
+  license_file: LICENSE
+  license_family: PROPRIETARY
+  license: Proprietary
+  summary: "NVIDIA's cuDNN deep neural network acceleration library"
+  description: |
+    The NVIDIA CUDA® Deep Neural Network library (cuDNN) is a GPU-accelerated library of primitives for deep neural
+    networks. cuDNN provides highly tuned implementations for standard routines such as forward and backward
+    convolution, pooling, normalization, and activation layers.
+  doc_url: https://docs.nvidia.com/deeplearning/cudnn
+  dev_url: https://developer.nvidia.com/rdp/cudnn-download

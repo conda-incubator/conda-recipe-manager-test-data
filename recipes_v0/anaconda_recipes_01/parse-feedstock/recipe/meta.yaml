@@ -1,0 +1,47 @@
+{% set name = "parse" %}
+{% set version = "1.19.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: cc3a47236ff05da377617ddefa867b7ba983819c664e1afe46249e5b469be464
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - parse
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/r1chardj0n3s/parse
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  summary: parse() is the opposite of format()
+  description: |
+    Parse strings using a specification based on the Python format() syntax.
+  doc_url: https://github.com/r1chardj0n3s/parse/blob/master/README.rst
+  dev_url: https://github.com/r1chardj0n3s/parse
+
+extra:
+  recipe-maintainers:
+    - stuertz

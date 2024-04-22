@@ -1,0 +1,82 @@
+{% set version = "2.5.6" %}
+
+package:
+  name: conda-lock
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/c/conda-lock/conda_lock-{{ version }}.tar.gz
+  sha256: 323db8b6438b46648c4ba4dab81547851ee8266dbe913680f7837c94cc5f1023
+
+build:
+  number: 0
+  skip: True  # [py<38]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  entry_points:
+    - conda-lock = conda_lock:main
+
+requirements:
+  host:
+    - python
+    - pip
+    - hatchling
+    - hatch-vcs
+  run:
+    - python
+    - click >=8.0
+    - click-default-group
+    - ensureconda >=1.4.4
+    - gitpython >=3.1.30
+    - jinja2
+    - pydantic >=1.10
+    - pyyaml >=5.1
+    - tomli  # [py<311]
+    - typing_extensions
+    - ruamel.yaml
+    - toolz >=0.12.0,<1.0.0
+    - cachecontrol-with-filecache >=0.12.9
+    - cachy >=0.3.0
+    - clikit >=0.6.2
+    - crashtest >=0.3.0
+    - html5lib >=1.0
+    - keyring >=21.2.0
+    - packaging >=20.4
+    - pkginfo >=1.4
+    - requests >=2.18
+    - tomlkit >=0.7.0
+    - virtualenv >=20.0.26
+    - urllib3 >=1.26.5,<2.0
+
+test:
+  imports:
+    - conda_lock
+    - conda_lock.models
+    - conda_lock.src_parser
+  requires:
+    - pip
+  commands:
+    - pip check
+    - conda-lock --help
+
+about:
+  home: https://github.com/conda/conda-lock
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Lightweight lockfile for conda environments
+  description: |
+    Conda lock is a lightweight library that can be used to generate fully
+    reproducible lock files for conda environments.
+    It does this by performing multiple solves for conda targeting a set of
+    platforms you desire lockfiles for.
+    This also has the added benefit of acting as an external presolve for conda
+    as the lockfiles it generates results in the conda solver not being invoked
+    when installing the packages from the generated lockfile.
+  doc_url: https://conda.github.io/conda-lock/
+  dev_url: https://github.com/conda/conda-lock
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk
+    - ocefpaf
+    - bollwyvl

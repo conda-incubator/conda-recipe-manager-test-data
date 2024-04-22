@@ -1,0 +1,41 @@
+{% set name = "conllu" %}
+{% set version = "4.4.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 0029fb83ca225dd7e9ac342aabdb4717c0227d3b1d4497abf97b7dbc2cc04dd1
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python ==2.7|>=3.4
+    - pip
+  run:
+    - python ==2.7|>=3.4
+
+test:
+  imports:
+    - conllu
+
+about:
+  home: https://github.com/EmilStenstrom/conllu/
+  license: MIT
+  license_family: MIT
+  license_file: {{ environ["RECIPE_DIR"] }}/LICENSE
+  summary: CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary
+  description: CoNLL-U Parser parses a CoNLL-U formatted string into a nested python dictionary
+  doc_url: https://github.com/EmilStenstrom/conllu/
+  dev_url: https://github.com/EmilStenstrom/conllu/
+
+extra:
+  recipe-maintainers:
+    - nelson-liu

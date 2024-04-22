@@ -1,0 +1,114 @@
+{% set name = "kubernetes" %}
+{% set version = "1.24.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/kubernetes/kubernetes/archive/v{{ version }}.tar.gz  # [not win]
+  sha256: 38331986b729a2ceaa87a42388c6de7852ad073267276238a6d6c6272e4769a6  # [not win]
+  patches:   # [not win]
+    - 0001-unset-conda-go-compiler.diff  # [not win]
+
+  url: https://dl.k8s.io/v{{ version }}/kubernetes-node-windows-amd64.tar.gz  # [win]
+  sha256: 9c0f6839b9c9085292d4aa4705807d81c4d8b2270fc8cd7ccb5c5ffac9defed8  # [win]
+
+build:
+  skip: true  # [osx and not arm64]
+  number: 0
+
+requirements:
+  run:
+    - {{ pin_subpackage('kubernetes-client', exact=True) }}
+    - {{ pin_subpackage('kubernetes-node', exact=True) }}
+    - {{ pin_subpackage('kubernetes-server', exact=True) }}  # [unix]
+
+
+test:
+  commands:
+    - kubectl
+
+    - kubelet --help
+    - kube-proxy --help
+    - kubeadm --help
+
+    - kube-apiserver --help  # [unix]
+    - kube-controller-manager --help  # [unix]
+    - kube-scheduler --help  # [unix]
+
+outputs:
+  - name: {{ name }}-client
+    script: client/build.sh  # [unix]
+    script: client/bld.bat  # [win]
+    test:
+      script: client/test.sh
+    requirements:
+      build:
+        - {{ compiler('cgo') }}  # [unix]
+        - {{ compiler('c') }}  # [unix]
+        - bash >=4.2  # [unix]
+        - make  # [unix]
+        - rsync  # [unix]
+        - jq  # [unix]
+    about:
+      license: Apache-2.0
+      license_file: LICENSE
+      license_file: LICENSES/  # [win]
+      summary: Kubernetes client binaries
+
+  - name: {{ name }}-node
+    script: node/build.sh  # [unix]
+    script: node/bld.bat  # [win]
+    test:
+      script: node/test.sh
+    requirements:
+      build:
+        - {{ compiler('cgo') }}  # [unix]
+        - {{ compiler('c') }}  # [unix]
+        - bash >=4.2  # [unix]
+        - make  # [unix]
+        - rsync  # [unix]
+        - jq  # [unix]
+    about:
+      license: Apache-2.0
+      license_file: LICENSE
+      license_file: LICENSES/  # [win]
+      summary: Kubernetes node binaries
+
+  - name: {{ name }}-server
+    build:
+      skip: true  # [not unix]
+    script: server/build.sh
+    test:
+      script: server/test.sh
+    requirements:
+      build:
+        - {{ compiler('cgo') }}
+        - {{ compiler('c') }}
+        - bash >=4.2
+        - make
+        - rsync
+        - jq
+      run:
+        - {{ pin_subpackage('kubernetes-node', exact=True) }}
+    about:
+      license: Apache-2.0
+      license_file: LICENSE
+      summary: Kubernetes server binaries
+
+about:
+  home: https://www.kubernetes.io
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE  # [not win]
+  license_file: LICENSES/  # [win]
+  summary: Production-Grade Container Orchestration
+  doc_url: https://docs.kubernetes.io
+  dev_url: https://github.com/kubernetes/kubernetes
+
+extra:
+  recipe-maintainers:
+    - mxr-conda
+    - sodre
+    - dhirschfeld

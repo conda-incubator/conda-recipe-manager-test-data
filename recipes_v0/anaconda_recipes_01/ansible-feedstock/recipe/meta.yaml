@@ -1,0 +1,64 @@
+{% set name = "ansible" %}
+{% set version = "5.7.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e80c0e74de1774adae7c0233b247ff72b8fbd8b5f107077db5d0b7f0370d6b86
+
+build:
+  number: 0
+  skip: true  # [win or py<38]
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+  host:
+    - pip
+    - python
+    - setuptools
+  run:
+    - python
+    - setuptools
+    - ansible-core
+    - paramiko
+    - jinja2
+    - pyyaml
+    - httplib2
+    - cryptography
+    - six
+    - openstacksdk
+    - boto
+
+test:
+  commands:
+    - ansible --version
+  imports:
+    - ansible
+    - ansible.constants
+    - ansible.errors
+    - ansible.utils
+
+about:
+  home: http://github.com/ansible/ansible
+  license: GPL-3.0-only
+  license_file: COPYING
+  summary: Ansible is a radically simple IT automation platform
+
+  description: |
+    Ansible is a radically simple IT automation platform
+    that makes your applications and systems easier to deploy.
+    Includes support for OpenStack (shade) and EC2 (AWS), extra
+    batteries included.
+  doc_url: https://www.ansible.com/
+  dev_url: https://github.com/ansible/ansible
+
+extra:
+  recipe-maintainers:
+    - brainstorm
+    - tschoonj

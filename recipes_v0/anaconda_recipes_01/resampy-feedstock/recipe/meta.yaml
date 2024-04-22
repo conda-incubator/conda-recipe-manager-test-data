@@ -1,0 +1,43 @@
+{% set version = "0.4.2" %}
+{% set hash_type = "md5" %}
+{% set hash_val = "6d008e8a4ee3f5abc1a9070d7c9b311b" %}
+
+package:
+  name: resampy
+  version: {{ version }}
+
+source:
+  fn: resampy-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/r/resampy/resampy-{{ version }}.tar.gz
+  {{ hash_type }}: {{ hash_val }}
+
+build:
+  noarch: python
+  number: 0
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools >=48
+    - wheel >=0.29.0
+
+  run:
+    - python >=3.6
+    - setuptools >=48 # necessary for pkg_resources at runtime
+    - numpy >=1.17.0
+    - numba >=0.53
+
+test:
+  imports:
+    - resampy
+
+about:
+  home: https://github.com/bmcfee/resampy
+  license: ISC
+  summary: 'Efficient signal resampling'
+
+extra:
+  recipe-maintainers:
+    - bmcfee

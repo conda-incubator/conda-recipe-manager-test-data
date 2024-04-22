@@ -1,0 +1,48 @@
+{% set name = "weakrefmethod" %}
+{% set version = "1.0.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 37bc1fbb5575acf82172d4eb7b6fc4412d77d5a1d70dff2c1f8a4574301cda66
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - weakrefmethod
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/twang817/weakrefmethod
+  license: PSF-2.0
+  license_family: PSF
+  license_file: LICENSE
+  summary: A WeakMethod class for storing bound methods using weak references.
+  description: |
+    A WeakMethod class for storing bound methods using weak references.
+  dev_url: https://github.com/twang817/weakrefmethod
+  doc_url: https://github.com/twang817/weakrefmethod
+
+extra:
+  recipe-maintainers:
+    - mrakitin
+    - kbeeperez
+    - conda-forge/event-model

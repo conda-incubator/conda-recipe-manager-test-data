@@ -1,0 +1,45 @@
+{% set name = "fpdf2" %}
+{% set version = "2.6.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/fpdf2-{{ version }}.tar.gz
+  sha256: c5196b1a5ef5ecb8769d3407db460c08842eb9f96ee9e2558a7d787239dd65b3
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7,<4.0
+  run:
+    - defusedxml
+    - fonttools >=4.34.0
+    - pillow >=6.2.2
+    - python >=3.7,<4.0
+
+test:
+  imports:
+    - fpdf
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://pyfpdf.github.io/fpdf2/
+  dev_url: https://github.com/PyFPDF/fpdf2
+  summary: Simple PDF generation for Python
+  license: LGPL-3.0-or-later
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - conda-forge/rpaframework-core
+    - thewchan

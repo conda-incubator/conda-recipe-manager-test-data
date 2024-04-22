@@ -1,0 +1,45 @@
+{% set name = "opentelemetry-instrumentation-botocore" %}
+{% set version = "0.36b0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/opentelemetry_instrumentation_botocore-{{ version }}.tar.gz
+  sha256: fcb5bed8689401bc4fba5a4b72a1051858cd62601e1aea9d8d013867dc131443
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - hatchling
+  run:
+    - python >=3.7
+    - opentelemetry-api >=1.12,<2.dev0
+    - opentelemetry-instrumentation ==0.36b0
+    - opentelemetry-semantic-conventions ==0.36b0
+
+test:
+  imports:
+    - opentelemetry
+    - opentelemetry.instrumentation
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-botocore
+  summary: OpenTelemetry Botocore instrumentation
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk

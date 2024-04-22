@@ -1,0 +1,51 @@
+{% set name = "mashumaro" %}
+{% set version = "3.10" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 0248a5c8574aa6cd20696621502d38a7ea66af3d6d93c5d03f93b33298edc878
+
+build:
+  number: 1
+  skip: True  # [py<38]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - typing-extensions >=4.1.0
+
+test:
+  imports:
+    - mashumaro
+    - mashumaro.core
+    - mashumaro.mixins
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/Fatal1ty/mashumaro
+  dev_url: https://github.com/Fatal1ty/mashumaro
+  doc_url: https://github.com/Fatal1ty/mashumaro
+  summary: Fast serialization framework on top of dataclasses
+  description: |
+    Fast and well tested serialization library on top of dataclasses
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - thewchan
+    - maresb

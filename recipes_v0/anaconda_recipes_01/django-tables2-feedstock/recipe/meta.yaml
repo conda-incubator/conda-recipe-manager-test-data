@@ -1,0 +1,43 @@
+{% set name = "django-tables2" %}
+{% set version = "2.5.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/jieter/django-tables2/archive/v{{ version }}.tar.gz
+  sha256: 0573c656ead815c923e3454257a7c88800e4f470b42ea5d64497e7fbba02ce5c
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - python >=3.7
+    - django >=3.2
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+    - python -c "import django; from django.conf import settings; settings.configure(); django.setup(); import django_tables2;"
+
+about:
+  home: https://github.com/jieter/django-tables2
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: django-tables2 simplifies the task of turning sets of data into HTML tables.
+  doc_url: https://django-tables2.readthedocs.io/en/latest/
+  dev_url: https://github.com/jieter/django-tables2
+
+extra:
+  recipe-maintainers:
+    - gscoppino

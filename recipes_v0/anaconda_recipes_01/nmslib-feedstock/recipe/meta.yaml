@@ -1,0 +1,90 @@
+{% set name = "nmslib" %}
+{% set version = "2.1.1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/{{ name }}/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 1f9cf1b63b5047ac13149abb0a319789db9096f49405020a3322914a151e7dc5
+  patches:
+    # upstream has a cpu-guard that heckles people to compile from source if their
+    # CPU supports more features than the library has been compiled with, see
+    # https://github.com/nmslib/nmslib/blob/v2.1.1/python_bindings/tensorflow/cpu_feature_guard.cc#L158-L161
+    # needless to say, we need to aim for portability here, and want to avoid
+    # people following the instructions to install from pip, which might run
+    # into various problems around ABIs of numpy/C++ etc.
+    # Hopefully, we can provide more specific builds per CPU architecture
+    # in the future, see conda-forge/conda-forge.github.io#1261
+    - patches/0001-silence-log-that-tells-people-to-install-from-pip.patch
+    # Okay to use latest pybind11: https://github.com/nmslib/nmslib/pull/488
+    - patches/0002-Fix-import-on-newer-versions-of-pybind11-fixes-471.patch
+    # Remove compiler flag that causes build failure
+    - patches/0003-remove-march-compiler-flag.patch
+    # Fix pragma message
+    - patches/0004-fix-pragma-message.patch
+    - patches/0005-remove-installation-requirements-handled-by-conda.patch
+    # some weird interaction with pybind11 + quote escapes;
+    # upstream CI need quotes escaped, we (seems to be an issue on win64 only) need them unescaped
+    - patches/0006-do-not-escape-quotes-for-VERSION_INFO.patch  # [win]
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install ./python_bindings --no-deps --no-build-isolation -vv
+  missing_dso_whitelist:  # [s390x]
+    - '$RPATH/ld64.so.1'  # [s390x]
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - patch  # [not win]
+    - m2-patch  # [win]
+  host:
+    - python
+    - setuptools
+    - psutil
+    - pip
+    # Upstream specifies <2.6.2, but seems okay to use latest pybind11, see https://github.com/nmslib/nmslib/pull/488
+    - pybind11 2.10.1
+    - numpy {{ numpy }}
+    - wheel
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+    - pybind11 >=2.2.3
+    - psutil
+
+test:
+  imports:
+    - nmslib
+  source_files:
+    - python_bindings/tests
+  requires:
+    - pytest
+    - pip
+  commands:
+    - pip check
+    - pytest -v python_bindings/tests -k "not (testMemoryLeak or testKnnQueryBatch)"
+
+about:
+  home: https://github.com/nmslib/nmslib
+  summary: Non-Metric Space Library (NMSLIB)
+  description: |
+    Non-Metric Space Library (NMSLIB) is an efficient cross-platform similarity search library and a 
+    toolkit for evaluation of similarity search methods. The goal of the project is to create an 
+    effective and comprehensive toolkit for searching in generic and non-metric spaces. Even though 
+    the library contains a variety of metric-space access methods, our main focus is on generic and 
+    approximate search methods, in particular, on methods for non-metric spaces. NMSLIB is possibly 
+    the first library with a principled support for non-metric space searching.
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  doc_url: https://github.com/nmslib/nmslib/blob/master/README.md
+  dev_url: https://github.com/nmslib/nmslib
+
+
+extra:
+  recipe-maintainers:
+    - jzthree
+    - h-vetinari

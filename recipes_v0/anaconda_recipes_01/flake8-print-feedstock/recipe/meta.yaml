@@ -1,0 +1,43 @@
+{% set name = "flake8-print" %}
+{% set version = "5.0.0" %}
+{% set sha256 = "76915a2a389cc1c0879636c219eb909c38501d3a43cc8dae542081c9ba48bdf9" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - poetry-core
+  run:
+    - python >=3.7
+    - flake8 >=3.0
+    - pycodestyle
+
+test:
+  commands:
+    - 'flake8 --version | grep flake8-print:'
+
+about:
+  home: https://github.com/jbkahn/flake8-print
+  license: MIT
+  license_family: MIT
+  license_file: LICENCE
+  summary: Flake8 plugin to check for print statements in python files.
+  dev_url: https://github.com/jbkahn/flake8-print
+
+extra:
+  recipe-maintainers:
+    - dopplershift

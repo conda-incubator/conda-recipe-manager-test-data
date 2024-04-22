@@ -1,0 +1,53 @@
+{% set name = "python-glanceclient" %}
+{% set version = "4.2.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: f8298e87d0ebe86c7c30b911d6efd836949c3b120eece5086c9022a3ea263a98
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - glance = glanceclient.shell:main
+
+requirements:
+  host:
+    - pbr
+    - pip
+    - python >=3.8
+    - setuptools
+  run:
+    - keystoneauth1
+    - oslo.i18n
+    - oslo.utils
+    - pbr
+    - prettytable
+    - python >=3.8
+    - requests
+    - setuptools
+    - warlock
+    - wrapt
+    - pyopenssl
+
+test:
+  imports:
+    - glanceclient
+
+about:
+  home: https://docs.openstack.org/python-glanceclient/latest/
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
+  summary: OpenStack Image API Client Library
+  doc_url: https://docs.openstack.org/python-glanceclient/latest/
+  dev_url: https://git.openstack.org/cgit/openstack/python-glanceclient
+
+extra:
+  recipe-maintainers:
+    - tschoonj

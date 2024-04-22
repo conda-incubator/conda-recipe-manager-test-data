@@ -1,0 +1,56 @@
+{% set name = "opt_einsum" %}
+{% set version = "3.3.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 59f6475f77bbc37dcf7cd748519c0ec60722e91e63ca114e68821c0c54a46549
+
+build:
+  noarch: python
+  number: 1
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - python >=3.5
+    - setuptools
+    - pip
+    - wheel
+  run:
+    - python >=3.5
+    - numpy
+
+test:
+  requires:
+    - python >=3.5
+    - pytest
+    - pytest-cov
+    - pytest-pep8
+    - pip
+  commands:
+    - pytest --verbose --pyargs opt_einsum
+    - pip check
+
+about:
+  home: http://github.com/dgasmith/opt_einsum
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Optimizing einsum functions in NumPy, Tensorflow, Dask, and more with contraction order optimization.
+
+  description: >
+    Einsum is a very powerful function for contracting tensors of arbitrary dimension and index. However, it is typically only optimized to contract two terms at a time resulting in non-optimal scaling. This package optimizes the contraction order for arbitrarily large speedups.
+
+    See the docs for more information: http://optimized-einsum.readthedocs.io
+
+  dev_url: https://github.com/dgasmith/opt_einsum
+
+extra:
+  recipe-maintainers:
+    - dgasmith
+    - loriab
+    - xhochy

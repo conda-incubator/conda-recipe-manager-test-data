@@ -1,0 +1,513 @@
+# NOTES:
+
+#  This is a binary repack from Intel's packages. We wil reuse Intel's version and build number where possible. In the
+#  case where we need to rebuild a package for any reason (for example, we need to rebuild because of our error or
+#  because Intel did not update a package), we will update the integer value used to calculate <X>_buildnum from 0 to 1
+#  (or as needed). This value should be reset to zero for every version roll build.
+
+# Remember to reset buildnum when you update <X>_version or <X>_fetch_buildnum.
+
+
+# Bump all build numbers here. (Note: it may be appropriate to use selectors here.)
+{% set bump_all_buildnum = "1" %}
+# Bump specific package build numbers here. (Note: it may be appropriate to use selectors here.)
+{% set bump_mkl_buildnum = "1" %}
+{% set bump_openmp_buildnum = "0" %}
+{% set bump_dal_buildnum = "0" %}
+
+{% set tbb_version = "2021.8.0" %}
+
+# Linux
+{% set mkl_version = "2023.1.0" %}          # [linux]
+{% set mkl_fetch_buildnum = "46342" %}      # [linux]
+
+{% set openmp_version = mkl_version %}      # [linux]
+{% set openmp_fetch_buildnum = "46305" %}   # [linux]
+
+{% set dal_version = "2023.1.1" %}          # [linux]
+{% set dal_fetch_buildnum = "48679" %}      # [linux]
+
+{% set mkl_hash = "3820a9053b1c028b3d9f62448f7d0d53a57ca6d6d38c2279faec8663f27d0a5c" %}           # [linux]
+{% set mkl_devel_hash = "823830abb452aaf52672508b6327798f08db4b5876e7d5b35f53a7c1cf8202f0" %}     # [linux]
+{% set mkl_include_hash = "b24d12a8e18ba23de5c659a33fb184a7ac6019d4b159e78f628d7c8de225f77a" %}   # [linux]
+{% set intel_openmp_hash = "5b56c0d16860d678d082f38c7349e52d00969ea1ca788027880529c3c03a2b68" %}  # [linux]
+{% set dal_hash = "4d5012613a0388f1fe618f1f1690366c3477645401613502752be117836e2c4e" %}           # [linux]
+{% set dal_include_hash = "0c49db04bbc988afc7127fe5c5aeae0833be0c4911e8a9d1d46dd6c802658c0f" %}   # [linux]
+{% set dal_static_hash = "e71b58d08c405c8fc190f4f9a83eb8ce34087997f4fee39d3f5d3f56e5a5fd3d" %}    # [linux]
+{% set dal_devel_hash = "79d96b0fa706dfc532b371e04b71539ce4761e1c072778ce0a82557df8b02b6e" %}     # [linux]
+
+
+# OSX
+{% set mkl_version = "2023.1.0" %}          # [osx]
+{% set mkl_fetch_buildnum = "43558" %}      # [osx]
+
+{% set openmp_version = mkl_version %}      # [osx]
+{% set openmp_fetch_buildnum = "43547" %}   # [osx]
+
+{% set dal_version = "2023.1.1" %}          # [osx]
+{% set dal_fetch_buildnum = "48680" %}      # [osx]
+
+{% set mkl_hash = "a4c7a5e322ebb988aa914c3dbdc88afd241c1f50d2fac3f919d3ebca4df4727d" %}           # [osx]
+{% set mkl_devel_hash = "93b11bf7e9b4e1642b3500d2b84d5c4c67788a3831b11c687524c42b97657fc8" %}     # [osx]
+{% set mkl_include_hash = "f7522e05e61d083e06a802d864c3cefcac8b7bcca35fd08b6cb95a2691808e43" %}   # [osx]
+{% set intel_openmp_hash = "b2e60feb9fe22c59cdde8996e83b3a5c60e72748903e23fa05f6f2e26233641a" %}  # [osx]
+{% set dal_hash = "f2633dcccaf5f4204d73fcc217b4c9c2ad5b3a2bc7d9be5892745e34b067c8e9" %}           # [osx]
+{% set dal_include_hash = "a22e8cc55b466646fc1397af4be96994f32f174295d92b4f36645e2df7a672ad" %}   # [osx]
+{% set dal_static_hash = "92edc65d9b73bcb71da51a0611553bc0e94a092fb090ba065a6a74b999198dde" %}    # [osx]
+{% set dal_devel_hash = "4f59335ea44f17f119488af084e023985ec98f367ccba44cdebd15a3a087007d" %}     # [osx]
+
+
+# Windows
+{% set mkl_version = "2023.1.0" %}          # [win]
+{% set mkl_fetch_buildnum = "46356" %}      # [win]
+
+{% set openmp_version = mkl_version %}      # [win]
+{% set openmp_fetch_buildnum = "46319" %}   # [win]
+
+{% set dal_version = "2023.1.1" %}          # [win]
+{% set dal_fetch_buildnum = "48681" %}      # [win]
+
+{% set mkl_hash = "767fbbe50157e9f365eca77d42a1495b66661b5845a1c13b8e33fe79d3b4a9f4" %}           # [win]
+{% set mkl_devel_hash = "078060b6d4aacd32f9cda2657fcd9b0f7575a084223d82388d169825eb90289f" %}     # [win]
+{% set mkl_include_hash = "19eb554a8c9c75325e26f4f4a8b9b80538d420016065d5ec918fd9c10354c96b" %}   # [win]
+{% set intel_openmp_hash = "e38a929816dbaa01ff338b4f0792ce9034f9c6497905dd479d9ee580065d9967" %}  # [win]
+{% set dal_hash = "ed825bfd4bbbce1600a5f2cda11b81f7927c7a54111133fd3c9b5e6a7401e474" %}           # [win]
+{% set dal_include_hash = "5cc36b5653dcce33c7f7fbee9590f46441f44043a570f684968b67ac9f388eb6" %}   # [win]
+{% set dal_static_hash = "a6c48ef1bfc9c7eccd098cecff64d72c12d5f6229b71ec043899ef1812d8b747" %}    # [win]
+{% set dal_devel_hash = "c92c58ef9b1aa66ac22b63d74174b7edf98851996ec7099d32a4653359da8d14" %}     # [win]
+
+
+# Set the actual build numbers here. These should not be changed nor should selectors be used.
+{% set mkl_buildnum = mkl_fetch_buildnum|int + bump_all_buildnum|int + bump_mkl_buildnum|int %}
+{% set openmp_buildnum = openmp_fetch_buildnum|int + bump_all_buildnum|int + bump_openmp_buildnum|int %}
+{% set dal_buildnum = dal_fetch_buildnum|int + bump_all_buildnum|int + bump_dal_buildnum|int %}
+
+
+package:
+  name: intel_repack
+  version: {{ mkl_version }}
+
+source:
+  - url: https://anaconda.org/intel/mkl/{{ mkl_version }}/download/{{ target_platform }}/mkl-{{ mkl_version }}-intel_{{ mkl_fetch_buildnum }}.tar.bz2
+    folder: mkl
+    sha256: {{ mkl_hash }}
+  - url: https://anaconda.org/intel/mkl-devel/{{ mkl_version }}/download/{{ target_platform }}/mkl-devel-{{ mkl_version }}-intel_{{ mkl_fetch_buildnum }}.tar.bz2
+    folder: mkl-devel
+    sha256: {{ mkl_devel_hash }}
+    patches:                                  # [win]
+      - patches/0001-MKLConfig-windows.patch  # [win]
+  - url: https://anaconda.org/intel/mkl-include/{{ mkl_version }}/download/{{ target_platform }}/mkl-include-{{ mkl_version }}-intel_{{ mkl_fetch_buildnum }}.tar.bz2
+    folder: mkl-include
+    sha256: {{ mkl_include_hash }}
+  - url: https://anaconda.org/intel/intel-openmp/{{ openmp_version }}/download/{{ target_platform }}/intel-openmp-{{ openmp_version }}-intel_{{ openmp_fetch_buildnum }}.tar.bz2
+    folder: intel-openmp
+    sha256: {{ intel_openmp_hash }}
+  - url: https://anaconda.org/intel/dal/{{ dal_version }}/download/{{ target_platform }}/dal-{{ dal_version }}-intel_{{ dal_fetch_buildnum }}.tar.bz2
+    folder: dal
+    sha256: {{ dal_hash }}
+  - url: https://anaconda.org/intel/dal-include/{{ dal_version }}/download/{{ target_platform }}/dal-include-{{ dal_version }}-intel_{{ dal_fetch_buildnum }}.tar.bz2
+    folder: dal-include
+    sha256: {{ dal_include_hash }}
+  - url: https://anaconda.org/intel/dal-static/{{ dal_version }}/download/{{ target_platform }}/dal-static-{{ dal_version }}-intel_{{ dal_fetch_buildnum }}.tar.bz2
+    folder: dal-static
+    sha256: {{ dal_static_hash }}
+  - url: https://anaconda.org/intel/dal-devel/{{ dal_version }}/download/{{ target_platform }}/dal-devel-{{ dal_version }}-intel_{{ dal_fetch_buildnum }}.tar.bz2
+    folder: dal-devel
+    sha256: {{ dal_devel_hash }}
+
+build:
+  number: {{ mkl_buildnum }}
+  binary_relocation: false
+  detect_binary_files_with_prefix: false
+  skip: True             # [not (x86 and (linux or osx or win))]
+  runpath_whitelist:     # <---------------------------------------------------------------------------------------------------------------------------------   Do a trial remove
+    - $ORIGIN
+
+requirements:
+  build:
+    - m2-patch  # [win]
+
+outputs:
+  - name: mkl
+    script: repack.sh   # [unix]
+    script: repack.bat  # [win]
+    build:
+      number: {{ mkl_buildnum }}
+      missing_dso_whitelist:
+        # tbb
+        - "$RPATH/libtbb.12.dylib"        # [osx]
+        # oneAPI ?
+        - "$RPATH/impi.dll"               # [win]
+        - "$RPATH/msmpi.dll"              # [win]
+        # PGI tools?
+        - "$RPATH/pgc.dll"                # [win]
+        - "$RPATH/pgf90.dll"              # [win]
+        - "$RPATH/pgmath.dll"             # [win]
+    requirements:
+      build:
+        - {{ compiler('cxx') }}           # Compiler added for automatic inclusion of `missing_dso_whitelist` values.
+      host:
+        - intel-openmp {{ openmp_version.split('.')[0] }}.*
+        - tbb {{ tbb_version.split('.')[0] }}.*
+      run:
+        - intel-openmp {{ openmp_version.split('.')[0] }}.*
+        - tbb {{ tbb_version.split('.')[0] }}.*
+      run_constrained:      # [linux or osx]
+        # intel-openmp 2021.1.1 and newer is built with a newer GLIBC
+        - __glibc >=2.17    # [linux]
+        - __osx >=10.13     # [osx]
+    test:
+      commands:
+        - test -f $PREFIX/lib/libmkl_core${SHLIB_EXT}           # [unix]
+        - test -f $PREFIX/lib/libmkl_rt${SHLIB_EXT}             # [unix]
+        - IF NOT EXIST %PREFIX%\Library\bin\mkl*.dll EXIT /B 1  # [win]
+    about:
+      home: https://software.intel.com/en-us/mkl
+      license: LicenseRef-ProprietaryIntel
+      license_family: Proprietary
+      license_file: mkl/info/licenses/license.txt
+      summary: Math library for Intel and compatible processors
+      description: |
+        Intel Math Kernel Library is a BLAS implementation tuned for high performance on Intel CPUs.
+        This package is a repackaged set of binaries obtained directly from Intel\'s anaconda.org channel.
+      doc_url: https://software.intel.com/en-us/mkl/documentation
+
+  - name: mkl-include
+    script: repack.sh   # [unix]
+    script: repack.bat  # [win]
+    # An empty requirements/build to satisfy anaconda-linter.
+    requirements:
+      build:
+    test:
+      commands:
+        - test -f $PREFIX/include/mkl.h                           # [unix]
+        - test -f $PREFIX/include/mkl_blas.h                      # [unix]
+        - test -f $PREFIX/include/mkl_cblas.h                     # [unix]
+        - test -f $PREFIX/include/mkl_df.h                        # [unix]
+        - test -f $PREFIX/include/mkl_lapack.h                    # [unix]
+        - test -f $PREFIX/include/mkl_service.h                   # [unix]
+        - test -f $PREFIX/include/mkl_solvers_ee.h                # [unix]
+        - test -f $PREFIX/include/mkl_trans.h                     # [unix]
+        - test -f $PREFIX/include/mkl_types.h                     # [unix]
+        - test -f $PREFIX/include/mkl_version.h                   # [unix]
+        - IF NOT EXIST %PREFIX%\Library\include\mkl*.h EXIT /B 1  # [win]
+    about:
+      home: https://software.intel.com/en-us/mkl
+      license: LicenseRef-ProprietaryIntel
+      license_family: Proprietary
+      license_file: mkl/info/licenses/license.txt
+      summary: MKL headers for developing software that uses MKL
+      description: |
+        Intel Math Kernel Library is a BLAS implementation tuned for high performance on Intel CPUs.
+        This package is a repackaged set of binaries obtained directly from Intel\'s anaconda.org channel.
+      doc_url: https://software.intel.com/en-us/mkl/documentation
+
+  - name: mkl-devel
+    script: install-devel.sh   # [unix]
+    script: install-devel.bat  # [win]
+    build:
+      number: {{ mkl_buildnum }}
+      # when stuff is built with MKL, ensure that constraint makes mkl runtime libs as new or
+      #     newer than build version
+      run_exports:
+        - {{ pin_subpackage('mkl') }}
+        - {{ pin_subpackage('blas', exact=True) }}
+        # this was added to prior mkl-devel releases but not in the feedstock. This is used by
+        # various downstreams (mkl_fft, mkl_random) to include the mkl-service wrapper as a dependency.
+        - mkl-service >=2.3.0,<3.0a0
+    requirements:
+      build:
+        - m2-sed  # [win]
+      run:
+        - {{ pin_subpackage('mkl', exact=True) }}
+        - {{ pin_subpackage('mkl-include', exact=True) }}
+        - blas * mkl
+    test:
+      requires:
+        - {{ compiler('c') }}
+        - cmake
+        - ninja
+        - pkg-config
+        # This is to get the omp.h header.
+        - llvm-openmp  # [osx]
+      files:
+        - tests
+      commands:
+        - IF NOT EXIST %PREFIX%\Library\lib\mkl*dll.lib EXIT /B 1  # [win]
+        # Verify that the mkl library can be located through pkg-config
+        - test -f `pkg-config --variable=libdir --dont-define-prefix mkl-sdl`/libmkl_rt${SHLIB_EXT}  # [unix]
+        - for /f "usebackq tokens=*" %%a in (`pkg-config --variable=libdir --dont-define-prefix mkl-sdl`) do if not exist "%%a/mkl_rt.lib" exit 1  # [win]
+        - cmake -S tests/mkl-devel -B build -G Ninja -DCMAKE_VERBOSE_MAKEFILE=ON
+        - cmake --build build -v
+        - ./build/myapp  # [not win]
+        - build\myapp    # [win]
+    about:
+      home: https://software.intel.com/en-us/mkl
+      summary: Metapackage of MKL headers and libraries for developing software that uses MKL
+      license: LicenseRef-ProprietaryIntel
+      license_family: Proprietary
+      license_file: mkl/info/licenses/license.txt
+
+  - name: intel-openmp
+    version: {{ openmp_version }}
+    script: repack.sh   # [unix]
+    script: repack.bat  # [win]
+    build:
+      number: {{ openmp_buildnum }}
+      missing_dso_whitelist:
+        # OS specific:
+        - "$RPATH/libelf.so.1"            # [linux] - OS file.
+        # Optional intel-cmplr-lib-rt
+        - "$RPATH/libimf.so"              # [linux] - intel-cmplr-lib-rt.
+        - "$RPATH/libintlc.so.5"          # [linux] - intel-cmplr-lib-rt.
+        - "$RPATH/libirng.so"             # [linux] - intel-cmplr-lib-rt.
+        - "$RPATH/libirng.so"             # [linux] - intel-cmplr-lib-rt.
+        - "$RPATH/libsvml.so"             # [linux] - intel-cmplr-lib-rt.
+        # Optional `intel-opencl-rt`:
+        - "$RPATH/libOpenCL.so.1"         # [linux] - optional `intel-opencl-rt`.
+        - "$RPATH/OpenCL.dll"             # [win]   - optional `intel-opencl-rt`.
+        # Optional oneAPI Level Zero Loader:
+        - "$RPATH/libze_loader.so.1"      # [linux] - optional oneAPI Level Zero loader.
+        - "$RPATH/ze_loader.dll"          # [win]   - optional oneAPI Level Zero loader.
+        # Optional dpcpp_cpp_rt
+        - "$RPATH/libsycl.so.6"           # [linux]
+        - "$RPATH/sycl6.dll"              # [win]
+    requirements:
+      build:
+        - {{ compiler('cxx') }}           # Compiler added for automatic inclusion of `missing_dso_whitelist` values.
+      host:
+        - libffi 3.4                      # [linux]
+        - zlib 1.2.13                           # [linux]
+      run:
+        - libffi >=3.4,<3.5               # [linux]
+        - zlib >=1.2.13,<1.2.14           # [linux]
+      run_constrained:                    # [linux]
+        - __glibc >=2.17                  # [linux] - intel-openmp 2021.1.1 and newer is built with a newer GLIBC
+    test:
+      commands:
+        - test -f $PREFIX/lib/libiomp5${SHLIB_EXT}                        # [unix]
+        - test -f $PREFIX/lib/libomptarget${SHLIB_EXT}                    # [linux]
+        - IF NOT EXIST %PREFIX%\Library\bin\libiomp*.dll EXIT /B 1        # [win]
+        - IF NOT EXIST %PREFIX%\Library\bin\omp*.dll EXIT /B 1            # [win]
+        - IF NOT EXIST %PREFIX%\Library\lib\libiomp5md.lib echo "%PREFIX%\Library\lib\libiomp5md.lib is missing" & EXIT /B 1  # [win]
+    about:
+      home: https://software.intel.com/en-us/node/522690
+      license: LicenseRef-ProprietaryIntel
+      license_family: Proprietary
+      license_file: mkl/info/licenses/license.txt
+      summary: Math library for Intel and compatible processors
+      description: |
+        Intel openmp runtime implementation
+        This package is a repackaged set of binaries obtained directly from Intel\'s anaconda.org channel.
+      doc_url: https://software.intel.com/en-us/node/522690
+
+  # mutex package to keep only one blas implementation in a given env
+  - name: blas
+    version: 1.0
+    build:
+      string: mkl
+    # An empty requirements/build to satisfy anaconda-linter.
+    requirements:
+      build:
+    test:
+      commands:
+        - echo 'works!'
+    about:
+      home: https://github.com/conda-forge/intel-repack-feedstock
+      license: BSD-3-Clause
+      license_file: ANACONDA_LICENSE
+      summary: 'BLAS mutex for MKL'
+
+  - name: dal
+    version: {{ dal_version }}
+    script: repack.sh   # [unix]
+    script: repack.bat  # [win]
+    build:
+      number: {{ dal_buildnum }}
+      binary_relocation: false
+      detect_binary_files_with_prefix: false
+      missing_dso_whitelist:
+        # tbb: Since tbb version is wildcarded in run, so we need to call it out here:
+        - "$RPATH/libtbb.so.12"           # [linux]
+        - "$RPATH/libtbbmalloc.so.2"      # [linux]
+        # Optional intel-cmplr-lib-rt.
+        - "$RPATH/libimf.so"              # [linux]
+        - "$RPATH/libintlc.so.5"          # [linux]
+        - "$RPATH/libirng.so"             # [linux]
+        - "$RPATH/libsvml.so"             # [linux]
+        - "$RPATH/libmmd.dll"             # [win]
+        # Optional `intel-opencl-rt`:
+        - "$RPATH/libOpenCL.so.1"         # [linux]
+        - "$RPATH/OpenCL.dll"             # [win]
+        # # this comes from Intel's optional dpcpp_cpp_rt
+        - "$RPATH/libsycl.so.6"           # [linux]
+        # these two really shouldn't be here.  See mkl_repack_and_patchelf.sh
+        - libiomp5.so
+        - libcoi_device.so.0
+        # hooray, windows
+        - "C:\\Windows\\System32\\WINTRUST.dll" # [win]
+        # optional dpcpp runtime that we do not yet provide.
+        - "$RPATH/sycl6.dll"              # [win]
+        - "$RPATH/svml_dispmd.dll"        # [win]
+    requirements:
+      build:
+        - {{ compiler('cxx') }}           # Compiler added for automatic inclusion of `missing_dso_whitelist` values.
+      host:
+        - tbb {{ tbb_version.split('.')[0] }}.*
+      run:
+        - tbb {{ tbb_version.split('.')[0] }}.*
+    test:
+      commands:
+        - test -f $PREFIX/lib/libonedal.so.1                       # [linux]
+        - test -f $PREFIX/lib/libonedal_core.so.1                  # [linux]
+        - test -f $PREFIX/lib/libonedal_dpc.so.1                   # [linux]
+        - test -f $PREFIX/lib/libonedal_thread.so.1                # [linux]
+        - test -f $PREFIX/lib/libonedal.1.dylib                    # [osx]
+        - test -f $PREFIX/lib/libonedal_core.1.dylib               # [osx]
+        - test -f $PREFIX/lib/libonedal_thread.1.dylib             # [osx]
+        - IF NOT EXIST %PREFIX%\Library\bin\onedal*.dll EXIT /B 1  # [win]
+    about:
+      home: https://software.intel.com/content/www/us/en/develop/tools.html
+      summary: Intel® oneDAL runtime libraries
+      description: |
+        Intel® Data Analytics Acceleration Library (Intel® oneDAL) is the library of Intel® architecture
+        optimized building blocks covering all stages of data analytics: data acquisition from a data
+        source, preprocessing, transformation, data mining, modeling, validation, and decision making.
+        This package is a repackaged set of binaries obtained directly from Intel\'s anaconda.org channel.
+      license: Intel Simplified Software License
+      license_family: Proprietary
+      license_file:
+        - dal/info/licenses/license.txt
+        - dal/info/licenses/tpp.txt
+      license_url: https://software.intel.com/content/www/us/en/develop/articles/end-user-license-agreement.html
+      doc_url: https://software.intel.com/content/www/us/en/develop/tools.html
+      dev_url: https://github.com/oneapi-src/oneDAL
+
+  - name: dal-include
+    version: {{ dal_version }}
+    script: repack.sh   # [unix]
+    script: repack.bat  # [win]
+    build:
+      number: {{ dal_buildnum }}
+    # An empty requirements/build to satisfy anaconda-linter.
+    requirements:
+      build:
+    test:
+      commands:
+        - test -f $PREFIX/include/daal.h                   # [unix]
+        - test -f $PREFIX/include/daal_sycl.h              # [unix]
+        - IF NOT EXIST %PREFIX%\include\daal*.h EXIT /B 1  # [win]
+    about:
+      home: https://software.intel.com/content/www/us/en/develop/tools.html
+      summary: Headers for building against Intel® oneDAL libraries
+      description: |
+        Intel® Data Analytics Acceleration Library (Intel® oneDAL) is the library of Intel® architecture
+        optimized building blocks covering all stages of data analytics: data acquisition from a data
+        source, preprocessing, transformation, data mining, modeling, validation, and decision making.
+        This package is a repackaged set of binaries obtained directly from Intel\'s anaconda.org channel.
+      license: Intel Simplified Software License
+      license_family: Proprietary
+      license_file:
+        - dal-include/info/licenses/license.txt
+        - dal-include/info/licenses/tpp.txt
+      license_url: https://software.intel.com/content/www/us/en/develop/articles/end-user-license-agreement.html
+      doc_url: https://software.intel.com/content/www/us/en/develop/tools.html
+      dev_url: https://github.com/oneapi-src/oneDAL
+
+  - name: dal-static
+    version: {{ dal_version }}
+    script: repack.sh   # [unix]
+    script: repack.bat  # [win]
+    build:
+      number: {{ dal_buildnum }}
+      missing_dso_whitelist:
+        - $RPATH/sycld.dll            # [win]
+        - $RPATH/libmmdd.dll          # [win]
+        - "*\\tbb12.dll"              # [win]
+        - "*\\tbbmalloc.dll"          # [win]
+        - $RPATH/tbb12_debug.dll      # [win]
+        - $RPATH/tbbmalloc_debug.dll  # [win]
+        - $RPATH/svml_dispmd.dll      # [win]
+    requirements:
+      build:
+        - {{ compiler('cxx') }}           # Compiler added for automatic inclusion of `missing_dso_whitelist` values.
+      run:
+        - {{ pin_subpackage('dal-include', exact=True) }}
+        - tbb {{ tbb_version.split('.')[0] }}.*
+    test:
+      commands:
+        - test -f $PREFIX/lib/libonedal.a                          # [unix]
+        - test -f $PREFIX/lib/libonedal_core.a                     # [unix]
+        - test -f $PREFIX/lib/libonedal_dpc.a                      # [linux]
+        - test -f $PREFIX/lib/libonedal_thread.a                   # [unix]
+        - test -f $PREFIX/lib/libdaal_thread.a                     # [unix]
+        - test -f $PREFIX/lib/libdaal_core.a                       # [unix]
+        - IF NOT EXIST %PREFIX%\Library\lib\onedal*.lib EXIT /B 1  # [win]
+    about:
+      home: https://software.intel.com/content/www/us/en/develop/tools.html
+      summary: Static libraries for Intel® oneDAL
+      description: |
+        Intel® Data Analytics Acceleration Library (Intel® oneDAL) is the library of Intel® architecture
+        optimized building blocks covering all stages of data analytics: data acquisition from a data
+        source, preprocessing, transformation, data mining, modeling, validation, and decision making.
+        This package is a repackaged set of binaries obtained directly from Intel\'s anaconda.org channel.
+      license: Intel Simplified Software License
+      license_family: Proprietary
+      license_file:
+        - dal-static/info/licenses/license.txt
+        - dal-static/info/licenses/tpp.txt
+      license_url: https://software.intel.com/content/www/us/en/develop/articles/end-user-license-agreement.html
+      doc_url: https://software.intel.com/content/www/us/en/develop/tools.html
+      dev_url: https://github.com/oneapi-src/oneDAL
+
+  - name: dal-devel
+    version: {{ dal_version }}
+    script: repack.sh   # [unix]
+    script: repack.bat  # [win]
+    build:
+      number: {{ dal_buildnum }}
+      run_exports:
+        - {{ pin_subpackage('dal') }}
+    requirements:
+      build:
+        - {{ compiler('cxx') }}           # Compiler added for automatic inclusion of `missing_dso_whitelist` values.
+      run:
+        - {{ pin_subpackage('dal-include', exact=True) }}
+        - {{ pin_subpackage('dal', exact=True) }}
+    test:
+      commands:
+        - test -f $PREFIX/lib/libonedal_sycl.a                     # [linux]
+        # 2023/4/13: 2023.1.0-intel_43558 dooes not provide SYCL support for osx-64, see https://anaconda.org/intel/dal-devel/files?version=2023.1.1
+        - IF NOT EXIST %PREFIX%\Library\lib\onedal*.lib EXIT /B 1  # [win]
+    about:
+      home: https://software.intel.com/content/www/us/en/develop/tools.html
+      summary: Devel package for building things linked against Intel® oneDAL shared libraries
+      description: |
+        Intel® Data Analytics Acceleration Library (Intel® oneDAL) is the library of Intel® architecture
+        optimized building blocks covering all stages of data analytics: data acquisition from a data
+        source, preprocessing, transformation, data mining, modeling, validation, and decision making.
+        This package is a repackaged set of binaries obtained directly from Intel\'s anaconda.org channel.
+      license: Intel Simplified Software License
+      license_family: Proprietary
+      # 2023/4/13: An error on osx-64:
+      # ValueError: License file given in about/license_file ([...]recipe/dal-devel/info/licenses/license.txt) does not exist in source root dir or in recipe root dir (with meta.yaml)
+      #license_file:
+      #  - dal-devel/info/licenses/license.txt
+      #  - dal-devel/info/licenses/tpp.txt
+      license_url: https://software.intel.com/content/www/us/en/develop/articles/end-user-license-agreement.html
+      doc_url: https://software.intel.com/content/www/us/en/develop/tools.html
+      dev_url: https://github.com/oneapi-src/oneDAL
+
+# Satisfy the linter
+about:
+  home: https://github.com/conda-forge/intel_repack-feedstock
+  license: LicenseRef-ProprietaryIntel
+  license_family: Proprietary
+  summary: 'repackaged intel libraries'
+
+extra:
+  recipe-maintainers:
+    - isuruf
+    - beckermr
+  skip-lints:
+    - missing_tests

@@ -1,0 +1,60 @@
+{% set name = "matrixprofile" %}
+{% set version = "1.1.10" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/matrixprofile-{{ version }}.tar.gz
+  sha256: d6d7dd13c2d1a1a725ce09c621960ee309ebac0b7b3cab680c4d91c683fff1b5
+  #path: ../../src/matrixprofile
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - llvm-openmp  # [osx]
+    - libgomp      # [linux and not (ppc64le)]
+  host:
+    - cython
+    - numpy
+    - pip
+    - python
+    - setuptools >=39.1.0
+    - wheel
+  run:
+    - matplotlib-base >=3.0.3  # [py3k]
+    - {{ pin_compatible('numpy') }}
+    - protobuf >=3.11.2,<4.0.0
+    - python
+    - scipy >=1.3.2,<2.0.0  # [py3k]
+
+test:
+  imports:
+    - matrixprofile
+  # pip check causes an error "matrixprofile 1.1.10 has requirement protobuf==3.11.2, but you have protobuf 3.17.2."
+  # but the upstream https://github.com/matrix-profile-foundation/matrixprofile/blob/v1.1.10/requirements.txt
+  # uses protobuf>=3.11.2,<4.0.0, so pip check was disable
+  #requires:
+    #- pip
+  #commands:
+    #- pip check
+
+about:
+  home: https://matrixprofile.org/
+  summary: An open source time series data mining library based on Matrix Profile algorithms.
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  dev_url: https://github.com/matrix-profile-foundation/matrixprofile
+  doc_url: https://matrixprofile.docs.matrixprofile.org/
+
+extra:
+  recipe-maintainers:
+    - tylerwmarrs
+    - vanbenschoten

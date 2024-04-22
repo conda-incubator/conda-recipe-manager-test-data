@@ -1,0 +1,77 @@
+{% set name = "pysam" %}
+{% set version = "0.22.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/pysam-developers/pysam/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 61b3377c5f889ddc6f6979912c3bb960d7e08407dada9cb38f13955564ea036f
+  patches:
+    - patches/0001-Unvendor-deps.patch
+
+build:
+  number: 0
+  # https://github.com/samtools/htslib/issues/86
+  skip: True  # [win]
+  script_env:
+    # This is the default, but it's preferable to be explicit.
+    - HTSLIB_MODE=shared
+  script:
+    # Delete samtools/lz4 just to make sure they are not used/compiled by accident.
+    - rm -rf samtools/lz4
+    - {{ PYTHON }} -m pip install . -v --no-build-isolation --no-deps
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - patch
+    - make
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - cython >=3
+    # These are required for the vendored htslib.
+    - libcurl 8
+    - bzip2 {{ bzip2 }}
+    - xz {{ xz }}
+    - libdeflate 1.17
+    # Only required for libcrypto.
+    # On macOS, links to libSystem
+    - openssl  {{ openssl }}  # [linux]
+    - lz4-c 1.9
+    # These are required for the vendored htslib, bcftools and samtools.
+    - zlib {{ zlib }}
+  run:
+    - python
+    - lz4-c  # pin through run_exports
+    - {{ pin_compatible('libcurl') }}
+    - bzip2  # pin through run_exports
+    - xz  # pin through run_exports
+    - zlib  # pin through run_exports
+    - openssl  # [linux]
+    - libdeflate  # pin through run_exports
+
+test:
+  imports:
+    - pysam
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/pysam-developers/pysam
+  license: MIT
+  license_family: MIT
+  license_file: COPYING
+  summary: Pysam is a Python package for reading, manipulating, and writing genomics data such as SAM/BAM/CRAM and VCF/BCF files. It's a lightweight wrapper of the HTSlib API, the same one that powers samtools, bcftools, and tabix.
+  description: >
+    Pysam is a python module for reading and manipulating files in the SAM/BAM format.
+    The SAM/BAM format is a way to store efficiently large numbers of alignments (Li 2009),
+    such as those routinely created by next-generation sequencing methods.
+  dev_url: https://github.com/pysam-developers/pysam
+  doc_url: https://pysam.readthedocs.io

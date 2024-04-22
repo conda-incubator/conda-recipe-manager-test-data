@@ -1,0 +1,42 @@
+{% set name = "ifaddr" %}
+{% set version = "0.2.0" %}
+{% set sha256 = "cc0cbfcaabf765d44595825fb96a99bb12c79716b73b44330ea38ee2b0c4aed4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - ifaddr
+
+about:
+  home: https://github.com/pydron/ifaddr
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: 'Python Library to enumerate all network interfaces '
+  doc_url: https://pythonhosted.org/ifaddr/
+  dev_url: https://github.com/pydron/ifaddr
+
+extra:
+  recipe-maintainers:
+    - abloemert
+    - niecore
+    - mariusvniekerk

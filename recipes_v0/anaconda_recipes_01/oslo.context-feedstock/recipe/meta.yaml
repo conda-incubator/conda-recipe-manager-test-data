@@ -1,0 +1,41 @@
+{% set name = "oslo.context" %}
+{% set version = "5.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 88c0c6d076681c60d560f7d66565e42ac116c5aa8a28a04db7c0ac0025133224
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pbr !=2.1.0,>=2.0.0
+    - pip
+  run:
+    - python >=3.6
+    - pbr !=2.1.0,>=2.0.0
+    - debtcollector >=1.2.0
+
+test:
+  imports:
+    - oslo_context
+
+about:
+  home: https://docs.openstack.org/oslo.context/latest/
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
+  summary: The Oslo context library has helpers to maintain useful information about a request context.
+  dev_url: https://docs.openstack.org/infra/manual/developers.html
+
+extra:
+  recipe-maintainers:
+    - tschoonj

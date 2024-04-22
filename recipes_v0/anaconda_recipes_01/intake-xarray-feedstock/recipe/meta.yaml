@@ -1,0 +1,59 @@
+{% set name = "intake-xarray" %}
+{% set version = "0.6.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 63dc2a8b937d8f956255d8f8641f08ea654b2d9e88687ec3d1ccc66462fabf9e
+
+build:
+  number: 0
+  # intake, zarr, namcodecs, and python-snappy currently aren't available on s390x
+  # xarray and zarr are available only for py>=3.8
+  skip: True  # [py<38 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - dask-core >=2.2
+    - fsspec >=2022
+    - intake >=0.6.6
+    - msgpack-python
+    - netcdf4
+    - requests
+    - xarray >=2022
+    - zarr
+
+test:
+  imports:
+    - intake_xarray
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/intake/intake-xarray
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: xarray plugins for Intake
+  description:
+    This package enables the set of data-loading methods from Xarray to be used within the Intake data access and cataloging system.
+  doc_url: https://intake-xarray.readthedocs.io/
+  dev_url: https://github.com/intake/intake-xarray
+
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - jsignell
+    - martindurant

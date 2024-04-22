@@ -1,0 +1,46 @@
+{% set name = "types-aiobotocore-ec2" %}
+{% set version = "2.4.2" %}
+{% set lib_version = version.split(".post")[0] %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: fc3f32632b35f45e450528cd5d328e4d8989c7d7494a897464b7df1a394b42b5
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+  noarch: python
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - python >=3.7
+    - aiobotocore
+    - typing_extensions
+
+test:
+  imports:
+    - types_aiobotocore_ec2
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/youtype/mypy_boto3_builder
+  summary: Type annotations for aiobotocore.EC2 {{ lib_version }} service generated with mypy-boto3-builder
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  doc_url: https://youtype.github.io/types_aiobotocore_docs/
+  dev_url: https://github.com/youtype/mypy_boto3_builder
+
+extra:
+  recipe-maintainers:
+    - vemel

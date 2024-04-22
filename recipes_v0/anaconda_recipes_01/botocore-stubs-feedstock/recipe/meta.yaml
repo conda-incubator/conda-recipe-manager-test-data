@@ -1,0 +1,43 @@
+{% set name = "botocore-stubs" %}
+{% set version = "1.29.66" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
+  sha256: 66eb9182d3204d303c8704ec4c491cb78116249fa46cc0bc98efcbe065062490
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - poetry-core >=1.0.0
+    - python >=3.6
+  run:
+    - python >=3.6
+    - types-awscrt
+    - typing_extensions
+
+test:
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/vemel/mypy_boto3_builder
+  summary: Type annotations for botocore.
+  dev_url: https://github.com/vemel/mypy_boto3_builder/tree/main/types_botocore
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - thewchan

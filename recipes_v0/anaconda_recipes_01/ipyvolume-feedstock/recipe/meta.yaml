@@ -1,0 +1,66 @@
+{% set version = "0.6.0a8" %}
+
+package:
+  name: ipyvolume
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/i/ipyvolume/ipyvolume-{{ version }}.tar.gz
+  sha256: d8f3da5c803c0e8e1ee051841ad8bf35595cddac272d13a4d210aa98cc4e4168
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install -vv .
+
+requirements:
+  host:
+    - jupyter-packaging >=0.7.9,<0.8
+    - jupyterlab >=3.0,<4
+    - pip
+    - python >=3.6
+  run:
+    - python >=3.6
+    - traittypes
+    - traitlets
+    - ipywidgets >=7.4
+    # We need constraints pillow version on Windows, but due to noarch will require it for all os
+    # as it seems to trigger some DLL errors. See
+    # here for more informations:
+    #   - https://github.com/conda-forge/ipyvolume-feedstock/pull/28
+    #   - https://github.com/maartenbreddels/ipyvolume/issues/208#issuecomment-442877181
+    #   - https://github.com/conda-forge/pillow-feedstock/issues/45
+    - pillow >5.2
+    - scipy
+    - numpy
+    - scikit-image >=0.13
+    - requests
+    - ipywebrtc >=0.4
+    - pythreejs >=1.0
+    - bqplot >=0.12
+
+test:
+  imports:
+    - ipyvolume
+  requires:
+    - pip
+    - jupyterlab >=3,<4.0
+  commands:
+    - pip check
+    - jupyter labextension list
+    - jupyter labextension list 1>labextensions 2>&1
+    - cat labextensions | grep "ipyvolume.*OK"  # [unix]
+
+about:
+  home: https://github.com/maartenbreddels/ipyvolume
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'IPython widget for rendering 3d volumes in the Jupter notebook'
+  doc_url: https://ipyvolume.readthedocs.io/
+  dev_url: https://github.com/maartenbreddels/ipyvolume
+
+extra:
+  recipe-maintainers:
+    - maartenbreddels
+    - bollwyvl

@@ -1,0 +1,52 @@
+{% set name = "anaconda-cloud-cli" %}
+{% set version = "0.2.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/anaconda_cloud_cli-{{ version }}.tar.gz
+  sha256: 62f897a83641340599c908874b0a31903ff79881d693ddbaade2905f526ac231
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python
+    - hatchling
+    - hatch-vcs >=0.3
+    - setuptools-scm >=7.1
+    - pip
+  run:
+    - python
+    - anaconda-cli-base >=0.2
+    - anaconda-cloud-auth >=0.3
+    - anaconda-client >=1.12.2
+
+test:
+  imports:
+    - anaconda_cloud_cli
+    - binstar_client
+  commands:
+    - python -c "from anaconda_cloud_cli import __version__; assert __version__ == \"{{ version }}\""
+    #- pip check # anaconda-anon-usage 0.4.3 requires conda, which is not installed.
+  requires:
+    - pip
+
+about:
+  summary: The Anaconda Cloud CLI
+  description: The Anaconda Cloud CLI
+  home: https://anaconda.cloud
+  license: BSD-3-Clause
+  license_file: LICENSE
+  license_family: BSD
+  doc_url: https://pypi.org/project/anaconda-cloud-cli/
+  dev_url: https://pypi.org/project/anaconda-cloud-cli/
+
+extra:
+  recipe-maintainers:
+    - albertdefusco
+    - mattkram

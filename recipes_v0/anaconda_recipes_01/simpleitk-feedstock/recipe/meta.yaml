@@ -1,0 +1,52 @@
+{% set name = "simpleitk" %}
+{% set version = "2.2.1" %}
+{% set sha256 = "304e2dc676e456542bff5e466e2184a7aaa6e01e4c190a8c070e59c520c6b425" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/SimpleITK/SimpleITK/releases/download/v{{ version }}/SimpleITK-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:                 # [build_platform != target_platform]
+    # see https://github.com/conda-forge/simpleitk-feedstock/pull/27#issuecomment-1264707645
+    - undefined-lookup-python.patch  # [(build_platform != target_platform) and osx]
+
+build:
+  number: 1
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - cmake   >=3.15
+    - ninja
+    - swig    4.0.*
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+
+  host:
+    - python
+    - libsimpleitk ={{ version }}
+    - fftw
+
+  run:
+    - vs2015_runtime  # [win]
+    - {{ pin_compatible('libitk', exact=True) }}
+    - python
+
+test:
+  imports:
+    - SimpleITK
+
+about:
+  home: http://www.simpleitk.org
+  license: Apache-2.0
+  license_file: LICENSE
+  summary: Simplified interface to the Insight Toolkit for image registration and segmentation
+
+extra:
+  recipe-maintainers:
+    - blowekamp
+    - zivy

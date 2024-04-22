@@ -1,0 +1,49 @@
+{% set name = "streamlit-embedcode" %}
+{% set version = "0.1.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 22a50eb43407bab3d0ed2d4b58e89819da477cd0592ef87edbd373c286712e3a
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+  # s390x is missing streamlit
+  skip: true  # [py<36 or s390x]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - streamlit >=0.63
+
+test:
+  imports:
+    - streamlit_embedcode
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/randyzwitch/streamlit-embedcode
+  dev_url: https://github.com/randyzwitch/streamlit-embedcode
+  doc_url: https://github.com/randyzwitch/streamlit-embedcode/blob/master/README.md
+  summary: Streamlit component for embedded code snippets
+  description: |
+    streamlit-embedcode is the easiest way to embed code snippets into your Streamlit app! 
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+
+extra:
+  recipe-maintainers:
+    - ELundby45

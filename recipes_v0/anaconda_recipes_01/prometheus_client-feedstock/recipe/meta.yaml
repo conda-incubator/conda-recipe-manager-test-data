@@ -1,0 +1,52 @@
+{% set name = "prometheus_client" %}
+{% set version = "0.14.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/prometheus/client_python/archive/v{{ version }}.tar.gz
+  sha256: db2b212c690fb1dbd0da807753af9247da28610c1d93fa12fa0b43bd30d22964
+
+build:
+  number: 0
+  skip: True  # [py<36]
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+
+test:
+  imports:
+    - prometheus_client
+    - prometheus_client.bridge
+    - prometheus_client.openmetrics
+    - prometheus_client.twisted
+  commands:
+    - pip check
+  requires:
+    - pip
+    - python
+    - twisted
+
+about:
+  home: https://github.com/prometheus/client_python
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Python client for the Prometheus monitoring system
+  dev_url: https://github.com/prometheus/client_python
+  doc_url: https://github.com/prometheus/client_python#readme
+
+extra:
+  recipe-maintainers:
+    - jessicaaustin
+    - kwilcox
+    - ocefpaf

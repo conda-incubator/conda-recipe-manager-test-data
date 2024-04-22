@@ -1,0 +1,96 @@
+{% set version = "3.14.0" %}
+{% set sha256 = "a8f9caba03e0d57d8452c08505cf96be5f6949adaa266e819382162c03ddb9c5" %}
+
+{% set mpi = mpi or 'mpich' %}
+
+package:
+  name: petsc
+  version: {{ version }}
+
+source:
+  fn: petsc-{{ version }}.tar.gz
+  url: http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - ignore-not-invalid.patch
+    - no-cppflags-in-pkgconfig-cflags.patch
+
+build:
+  skip: true  # [win]
+  number: 0
+  run_exports:
+    - {{ pin_subpackage('petsc', max_pin='x.x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('fortran') }}
+    - make
+    - pkg-config
+    - python
+  host:
+    - libblas
+    - libcblas
+    - liblapack
+    - cmake
+    - {{ mpi }}
+    - hypre
+    - metis
+    - parmetis
+    - ptscotch
+    - scalapack
+    - superlu
+{% if mpi == "mpich" %}
+    - superlu_dist
+{% endif %}
+    - scotch
+    - mumps-mpi
+    - suitesparse
+    - hdf5
+  run:
+    - {{ mpi }}
+    - hypre
+    - metis
+    - parmetis
+    - ptscotch
+    - scalapack
+    - superlu
+{% if mpi == "mpich" %}
+    - superlu_dist
+{% endif %}
+    - scotch
+    - mumps-mpi
+    - suitesparse
+    - hdf5
+
+test:
+  requires:
+    - pkg-config
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ compiler('fortran') }}
+    - make
+  files:
+    - tests/ex1.c
+    - tests/ex1f.F90
+    - tests/makefile
+  commands:
+    - pkg-config --validate PETSc
+    - pkg-config --cflags PETSc
+    - pkg-config --libs PETSc
+
+about:
+  home: http://www.mcs.anl.gov/petsc/
+  summary: 'PETSc: Portable, Extensible Toolkit for Scientific Computation'
+  license: BSD-2-Clause
+  license_file: LICENSE
+  license_family: BSD
+
+extra:
+  recipe-maintainers:
+    - dalcinl
+    - minrk
+    - davidbrochart
+    - SylvainCorlay
+    - martinRenou

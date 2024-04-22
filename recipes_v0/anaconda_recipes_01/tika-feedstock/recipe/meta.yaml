@@ -1,0 +1,53 @@
+{% set name = "tika" %}
+{% set version = "2.6.0" %}
+{% set compress_type = "tar.gz" %}
+{% set hash = "56670eb812944eb25ed73f1b3b075aa41e7a135b74b240822f28b819e5b373da" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.{{ compress_type }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ compress_type }}
+  sha256: {{ hash }}
+
+build:
+  noarch: python
+  preserve_egg_dir: true
+  entry_points:
+    - tika-python = tika.tika:main
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  host:
+    - pip
+    - python
+
+  run:
+    - python
+    - setuptools
+    - requests
+
+test:
+  imports:
+    - tika
+    - tika.tests
+
+  commands:
+    - tika-python --help
+
+about:
+  home: http://github.com/chrismattmann/tika-python
+  license_file: LICENSE.txt
+  license: Apache 2.0
+  license_family: Apache
+  summary: Apache Tika Python library
+  doc_url: https://github.com/chrismattmann/tika-python
+  dev_url: https://github.com/chrismattmann/tika-python
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - chrismattmann

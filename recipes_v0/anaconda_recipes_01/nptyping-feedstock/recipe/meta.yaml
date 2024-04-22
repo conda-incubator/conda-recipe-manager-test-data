@@ -1,0 +1,63 @@
+{% set name = "nptyping" %}
+{% set version = "2.4.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/ramonhagenaars/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: 1c1b2b08220d271f3e52dbf2bd9190e4dd15b3c04abfcf7a04ec533d3cc9fdab
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+    - numpy >=1.20.0
+    - typing-extensions  # [py<310]
+
+# skipping because not building latest release
+{% set tests_to_skip = "test_pandas_stubs_fork_is_synchronized or test_version_bump" %}
+# skip wheel tests since we are relying on conda-build
+{% set tests_to_skip = tests_to_skip + " or test_wheel_is_built_correctly or test_wheel_can_be_installed" %}
+# skip tests where type argument is necessary (only working on py311)
+{% set tests_to_skip = tests_to_skip + " or test_mypy_accepts_dataframe or test_mypy_disapproves_dataframe_with_wrong_function_arguments" %}  # [py<311]
+{% set tests_to_skip = tests_to_skip + " or test_mypy_knows_of_dataframe_methods or test_basic_nptyping_code" %}                              # [py<311]
+
+test:
+  source_files:
+    - tests
+  imports:
+    - nptyping
+  commands:
+    - pip check
+    # ignoring test file with missing packages, also skipping s390x since feedparser not available
+    - pytest --ignore=tests/test_beartype.py --ignore=tests/test_pyright.py --ignore=tests/test_mypy.py --ignore=tests/pandas_/test_mypy_dataframe.py -k "not ({{ tests_to_skip }})" tests  # [not s390x]
+  requires:
+    - pip
+    - pytest
+    - pandas
+    - feedparser    # [not s390x]
+    - typeguard
+
+about:
+  home: https://github.com/ramonhagenaars/nptyping
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Type hints for Numpy
+  description: nptyping.NDArray lets you define the shape and type of your numpy.ndarray.
+  doc_url: https://github.com/ramonhagenaars/nptyping
+  dev_url: https://github.com/ramonhagenaars/nptyping
+
+extra:
+  recipe-maintainers:
+    - jan-janssen

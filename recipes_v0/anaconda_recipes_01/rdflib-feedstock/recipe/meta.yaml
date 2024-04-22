@@ -1,0 +1,69 @@
+{% set version = "6.2.0" %}
+{% set test_skips = "not (dawg_data_sparql or definednamespace_creator or prepare_query)" %}
+{% set cov_fail_under = 72 %}
+
+package:
+  name: rdflib
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/r/rdflib/rdflib-{{ version }}.tar.gz
+  sha256: 62dc3c86d1712db0f55785baf8047f63731fa59b2682be03219cb89262065942
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  noarch: python
+  entry_points:
+    - csv2rdf = rdflib.tools.csv2rdf:main
+    - rdf2dot = rdflib.tools.rdf2dot:main
+    - rdfgraphisomorphism = rdflib.tools.graphisomorphism:main
+    - rdfpipe = rdflib.tools.rdfpipe:main
+    - rdfs2dot = rdflib.tools.rdfs2dot:main
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - html5lib  # from extras
+    - importlib-metadata
+    - isodate
+    - pyparsing
+    - python >=3.7
+    - setuptools
+
+test:
+  source_files:
+    - test
+    - setup.cfg
+  requires:
+    - pip
+    # berkeleydb -> bsddb3
+    # html5lib included in run
+    - bsddb3
+    - networkx
+    - pytest
+    - pytest-cov
+    - pytest-subtests
+    - tabulate  # undeclared, might be removed in >=6.1.2
+  imports:
+    - rdflib
+  commands:
+    - pip check
+    # some missing file not in repo
+    - pytest test -vv --cov rdflib --cov-report term-missing:skip-covered --no-cov-on-fail -k "{{ test_skips }}" --cov-fail-under {{ cov_fail_under }}
+
+about:
+  home: https://github.com/RDFLib/rdflib
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information.
+  dev_url: https://github.com/RDFLib/rdflib
+  doc_url: https://rdflib.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - satra
+    - nicholascar
+    - bollwyvl

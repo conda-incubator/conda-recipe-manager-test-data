@@ -1,0 +1,59 @@
+# !!!! This package (xorg-xcb-proto) has been deprecated in favor of
+# `xcb-proto` for compatibility with Anaconda `defaults` !!!!
+
+{% set xorg_name = "xcb-proto" %}
+{% set xorg_category = "xcb" %}
+{% set name = "xorg-" ~ xorg_name %}
+{% set version = "1.13" %}
+{% set sha256 = "7b98721e669be80284e9bbfeab02d2d0d54cd11172b72271e47a2fe875e2bde1" %}
+{% set am_version = "1.15" %} # keep synchronized with build.sh
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.bz2
+  url: https://www.x.org/releases/individual/{{ xorg_category }}/{{ xorg_name }}-{{ version }}.tar.bz2
+  sha256: {{ sha256 }}
+  patches:
+    - python-35x-fixes.patch
+    - windows-pythondir.patch  # [win]
+
+build:
+  skip: true # !!!!!!!
+  number: 0
+  detect_binary_files_with_prefix: true
+
+requirements:
+  build:
+    - m2-autoconf  # [win]
+    - m2-automake{{ am_version }}  # [win]
+    - m2-libtool  # [win]
+    - m2w64-pkg-config  # [win]
+    - m2w64-toolchain  # [win]
+    - pkg-config  # [not win]
+    - posix  # [win]
+    - python
+    - toolchain
+    - xorg-util-macros
+  run:
+    - python
+
+test:
+  imports:
+    - xcbgen
+  commands:
+    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
+    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
+
+about:
+  home: https://www.x.org/
+  license: MIT
+  license_family: MIT
+  license_file: COPYING
+  summary: 'C prototypes for the X.org XCB libraries.'
+
+extra:
+  recipe-maintainers:
+    - pkgw

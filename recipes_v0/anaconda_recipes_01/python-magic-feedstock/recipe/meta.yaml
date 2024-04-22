@@ -1,0 +1,48 @@
+{% set name = "python-magic" %}
+{% set version = "0.4.27" %}
+{% set hash_val = "c1ba14b08e4a5f5c31a302b7721239695b2f0f058d125bd5ce1ee36b9d9d3c3b" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ hash_val }}
+  patches:
+    # - discover-libmagic-dylib.patch  # [osx]
+      - 0001-load-magic-file.patch
+
+build:
+  number: 3
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: true  # [win]
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+  host:
+    - pip
+    - python
+  run:
+    - libmagic
+    - python
+
+test:
+  imports:
+    - magic
+  commands:
+    - python -c "import magic; magic.Magic()"
+
+about:
+  home: http://github.com/ahupp/python-magic
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  summary: File type identification using libmagic
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk

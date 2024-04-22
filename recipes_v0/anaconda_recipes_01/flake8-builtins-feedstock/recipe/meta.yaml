@@ -1,0 +1,41 @@
+{% set name = "flake8-builtins" %}
+{% set version = "2.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 12ff1ee96dd4e1f3141141ee6c45a5c7d3b3c440d0949e9b8d345c42b39c51d4
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.7
+    - setuptools
+    - pip
+  run:
+    - python >=3.7
+    - flake8
+
+test:
+  commands:
+    - 'flake8 --version | grep flake8-builtins:'
+
+about:
+  home: https://github.com/gforcada/flake8-builtins
+  license: GPL-2.0-only
+  license_family: GPL2
+  license_file: LICENSE
+  summary: Check for python builtins being used as variables or parameters.
+  dev_url: https://github.com/gforcada/flake8-builtins
+
+extra:
+  recipe-maintainers:
+    - dopplershift

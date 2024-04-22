@@ -1,0 +1,47 @@
+{% set name = "types-pytz" %}
+{% set version = "2022.4.0.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/types-pytz-{{ version }}.tar.gz
+  sha256: 17d66e4b16e80ceae0787726f3a22288df7d3f9fdebeb091dc64b92c0e4ea09d
+
+build:
+  number: 1
+  script: {{ PYTHON }} -m pip install . -vv
+  skip: True # [py<37]
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+    - test -f $SP_DIR/pytz-stubs/__init__.pyi # [not win]
+    - if not exist %SP_DIR%\pytz-stubs\__init__.pyi exit 1 # [win]
+
+
+about:
+  home: https://github.com/python/typeshed
+  summary: Typing stubs for pytz
+  license: Apache-2.0 AND MIT
+  license_file: LICENSE
+  dev_url: https://github.com/python/typeshed
+  doc_url: https://typing.readthedocs.io/en/latest/
+
+extra:
+  recipe-maintainers:
+    - fhoehle
+    - conda-forge/mypy

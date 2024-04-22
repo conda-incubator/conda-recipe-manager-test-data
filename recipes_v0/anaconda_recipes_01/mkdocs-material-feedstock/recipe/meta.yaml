@@ -1,0 +1,57 @@
+{% set name = "mkdocs-material" %}
+{% set version = "9.0.12" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/mkdocs_material-{{ version }}.tar.gz
+  sha256: 4da07b1390c6b78844f1566d723dd045572e645f31b108a1b5062fa7d11aa241
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - hatch-nodejs-version >=0.3.0
+    - hatch-requirements-txt
+    - hatchling
+    - pip
+    - python >=3.7
+  run:
+    - colorama >=0.4
+    - jinja2 >=3.0
+    - markdown >=3.2
+    - mkdocs >=1.4.2
+    - mkdocs-material-extensions >=1.1
+    - pygments >=2.14
+    - pymdown-extensions >=9.9
+    - python >=3.7
+    - regex >=2022.4.24
+    - requests >=2.26
+
+test:
+  imports:
+    - material
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://squidfunk.github.io/mkdocs-material/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A Material Design theme for mkdocs
+  doc_url: https://squidfunk.github.io/mkdocs-material/
+  dev_url: https://squidfunk.github.io/mkdocs-material/customization/
+
+extra:
+  recipe-maintainers:
+    - monaldoj
+    - marcelotrevisani
+    - thewchan

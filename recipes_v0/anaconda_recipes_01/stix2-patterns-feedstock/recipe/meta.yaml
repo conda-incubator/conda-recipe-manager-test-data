@@ -1,0 +1,61 @@
+{% set name = "stix2-patterns" %}
+{% set version = "2.0.0" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  sha256: 07750c5a5af2c758e9d2aa4dde9d8e04bcd162ac2a9b0b4c4de4481d443efa08
+
+build:
+  number: 0
+  skip: true  # [py>311]
+  script: "{{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+
+requirements:
+  host:
+    - pip
+    - python
+    - wheel
+    - setuptools
+  run:
+    - antlr4-python3-runtime ~=4.9.0
+    - python
+    - six
+
+test:
+  imports:
+    - stix2patterns
+    - stix2patterns.grammars
+    - stix2patterns.test
+    - stix2patterns.test.v20
+    - stix2patterns.test.v21
+    - stix2patterns.v20
+    - stix2patterns.v20.grammars
+    - stix2patterns.v21
+    - stix2patterns.v21.grammars
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+    - validate-patterns --help # [not win]
+    - pytest -v --pyargs stix2patterns
+
+about:
+  home: "https://github.com/oasis-open/cti-pattern-validator"
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: "Validate STIX 2 Patterns."
+  doc_url: https://stix2-patterns.readthedocs.io/en/latest/
+  dev_url: https://github.com/oasis-open/cti-pattern-validator
+  description: |
+     OASIS TC Open Repository: Validate patterns used to express cyber observable content in STIX Indicators
+
+extra:
+  recipe-maintainers:
+    - psteyer
+

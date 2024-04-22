@@ -1,0 +1,45 @@
+{% set name = "dvc-http" %}
+{% set version = "2.30.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d7cf66e8f8359cc9f5ca137de24d259beebdec444516fc7d085ad26fa7d3b34b
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.8
+    - pip
+    - setuptools_scm >=6.3.1
+  run:
+    - python >=3.8
+    - dvc
+    - fsspec
+    - aiohttp-retry >=2.5.0
+
+test:
+  imports:
+    - dvc_http
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/iterative/dvc-http
+  summary: HTTP(s) plugin for DVC
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - efiop
+    - shcheklein

@@ -1,0 +1,51 @@
+{% set name = "azure-storage-file-share" %}
+{% set version = "12.15.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 0098f1cfa9344c4f781ce0cd504ff3a35255751553c01e720dccd0caa8d8aa2a
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - wheel
+    - setuptools
+  run:
+    - python
+    - azure-core >=1.28.0,<2.0.0
+    - cryptography >=2.1.4
+    - typing-extensions >=4.3.0
+    - isodate >=0.6.1
+
+test:
+  imports:
+    - azure.storage.fileshare
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/storage/azure-storage-file-share
+  summary: Azure Storage File Share client library for Python
+  description: Azure Storage File Share client library for Python
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  dev_url: https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/storage/azure-storage-file-share
+  doc_url: https://learn.microsoft.com/en-us/python/api/azure-storage-file-share/?view=azure-python
+
+extra:
+  recipe-maintainers:
+    - davidbrochart

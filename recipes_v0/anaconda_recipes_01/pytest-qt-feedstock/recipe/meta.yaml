@@ -1,0 +1,48 @@
+{% set name = "pytest-qt" %}
+{% set version = "4.2.0" %}
+{% set hash = "00a17b586dd530b6d7a9399923a40489ca4a9a309719011175f55dc6b5dc8f41" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/p/pytest-qt/pytest-qt-{{ version }}.tar.gz
+  sha256: {{ hash }}
+
+build:
+  number: 0
+  script: python -m pip install . --no-deps --ignore-installed
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+    - setuptools
+    - setuptools_scm
+  run:
+    - python >=3.7
+    - pytest
+
+test:
+  requires:
+    - pyqt 5.*
+    - pytest
+  imports:
+    - pytestqt
+  commands:
+    - pytest --help
+
+about:
+  home: https://github.com/pytest-dev/pytest-qt
+  license: MIT
+  license_file: LICENSE
+  summary: pytest support for PyQt and PySide applications
+  doc_url: http://pytest-qt.readthedocs.io/en/latest/
+  dev_url: https://github.com/pytest-dev/pytest-qt
+
+extra:
+  recipe-maintainers:
+    - nicoddemus

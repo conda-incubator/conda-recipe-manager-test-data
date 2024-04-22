@@ -1,0 +1,45 @@
+{% set name = "mando" %}
+{% set version = "0.7.0" %}
+{% set sha256 = "5306a91109096fe2e204a1f5ae141038842193f7210a7930c8ee73ccb7ecbf62" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: python setup.py install --single-version-externally-managed --record record.txt
+
+requirements:
+  build:
+    - python
+    - setuptools
+  run:
+    - six
+    - python
+
+test:
+  imports:
+    - mando
+
+about:
+  home: https://github.com/rubik/mando
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Create Python CLI apps with little to no effort at all!'
+
+  description: |
+    mando is a wrapper around argparse, and allows you to write complete CLI applications 
+    in seconds while maintaining all the flexibility.
+
+extra:
+  recipe-maintainers:
+    - igortg

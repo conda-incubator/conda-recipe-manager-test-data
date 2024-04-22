@@ -1,0 +1,33 @@
+{% set version="0.1.1" %}
+
+package:
+  name: cpr-standalone
+  version: {{ version }}
+
+source:
+  - path: ./
+
+build:
+  number: 0
+
+requirements:
+  host:
+    - conda-prefix-replacement {{ version }}
+    - python
+    - pyinstaller
+
+test:
+  requires:
+    # this is one that we use as a reference source of prefix data. Should work
+    - ncurses
+  commands:
+    - "${PREFIX}/cpr.exe -h"  # [unix]
+    - "cp -R $PREFIX ${PREFIX}_2"
+    - "${PREFIX}/cpr.exe rehome ${PREFIX}_2"  # [unix]
+    - grep "prefix=${PREFIX}_2" ${PREFIX}_2/lib/pkgconfig/*
+    - "%PREFIX%\\cpr.exe -h"  # [win]
+    - "%PREFIX%\\cpr.exe d %PREFIX%"  # [win]
+
+
+about:
+  summary: Entry point repair for moved conda environments

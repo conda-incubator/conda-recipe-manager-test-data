@@ -1,0 +1,57 @@
+{% set name = "clickhouse-cityhash" %}
+{% set version = "1.0.2.4" %}
+{% set sha256 = "7b3125d7d0aa13c2cc4e7583a965a6bfb0aa96a12131475b442552bacb55f4f8" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [win]
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+    - cython
+  run:
+    - python
+
+test:
+  imports:
+    - clickhouse_cityhash
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/xzkostyan/clickhouse-cityhash
+  summary: Python-bindings for CityHash, a fast non-cryptographic hash algorithm
+  description: |
+    A fork of Python wrapper around CityHash with downgraded version of algorithm. 
+    This fork used as 3-rd party library for hashing data in ClickHouse protocol. 
+    Unfortunately ClickHouse server comes with built-in old version of this algorithm.
+    Please use original python-cityhash package for other purposes.
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  dev_url: https://github.com/xzkostyan/clickhouse-cityhash
+  doc_url: https://github.com/xzkostyan/clickhouse-cityhash
+
+extra:
+  recipe-maintainers:
+    - kszucs
+    - xzkostyan

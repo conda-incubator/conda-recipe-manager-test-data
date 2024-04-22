@@ -1,0 +1,52 @@
+{% set name = "unqlite" %}
+{% set version = "0.9.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: c4cfe3d687d34423e543c6284659a57e88988caf1765b800c4d199ad451a671b
+
+build:
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - cython
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    # to satisfy pip check because the maintainer add cython as to install_requires
+    - cython
+
+test:
+  imports:
+    - unqlite
+  requires:
+    - pip
+  commands:
+    - pip check
+    - python -c "from unqlite import UnQLite; db = UnQLite(); db['test'] = 'unqlite db works!'; print(db['test'])"
+
+about:
+  home: https://github.com/coleifer/unqlite-python
+  dev_url: https://github.com/coleifer/unqlite-python
+  doc_url: https://github.com/coleifer/unqlite-python
+  summary: Fast Python bindings for the UnQLite embedded NoSQL database.
+  description: |
+    Fast Python bindings for the UnQLite embedded NoSQL database.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - skupr-anaconda

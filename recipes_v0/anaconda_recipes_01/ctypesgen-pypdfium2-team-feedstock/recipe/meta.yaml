@@ -1,0 +1,55 @@
+{% set name = "ctypesgen" %}
+
+package:
+  name: {{ name|lower }}-pypdfium2-team
+  version: 1.1.1+17_g10b2b4 # this will be later by proper conda jinja vars
+
+source:
+  git_url: https://github.com/pypdfium2-team/{{ name }}.git
+  git_rev: 10b2b4be34c671613b3c4483bc068fa34e0a4d9e
+
+build:
+  entry_points:
+    - ctypesgen = ctypesgen.__main__:main
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 1
+
+requirements:
+  build:
+    - git  # [not win]
+  host:
+    - python
+    - setuptools
+    - wheel
+    - setuptools-scm 7.1.0
+    - toml
+    - pip
+  run:
+    - python
+  run_constrained:
+    - ctypesgen <=0.0.0dev0
+
+test:
+  imports:
+    - ctypesgen
+  commands:
+    - pip check
+    - ctypesgen --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/pypdfium2-team/ctypesgen
+  summary: Python wrapper generator for ctypes
+  description: |
+    ctypesgen is a pure-python ctypes wrapper generator. It parses C header files and creates a wrapper for
+    libraries based on what it finds.
+  license: BSD-2-Clause
+  license_file: LICENSE
+  license_family: BSD
+  doc_url: https://github.com/pypdfium2-team/ctypesgen
+  dev_url: https://github.com/pypdfium2-team/ctypesgen
+
+extra:
+  recipe-maintainers:
+    - boldorider4

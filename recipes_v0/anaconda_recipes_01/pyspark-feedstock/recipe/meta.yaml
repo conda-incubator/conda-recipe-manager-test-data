@@ -1,0 +1,86 @@
+{% set name = "pyspark" %}
+{% set version = "3.4.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 72cd66ab8cf61a75854e5a753f75bea35ee075c3a96f9de4e2a66d02ec7fc652
+
+build:
+  number: 0
+  # pyarrow isn't available on s390x.
+  skip: True  # [py<38 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - py4j ==0.10.9.7
+    # extras_require dependencies
+    - numpy >=1.15
+    - pandas >=1.0.5
+    - pyarrow >=1.0.0
+
+test:
+  imports:
+    - pyspark
+    - pyspark.cloudpickle
+    - pyspark.ml
+    - pyspark.ml.linalg
+    - pyspark.ml.param
+    - pyspark.mllib
+    - pyspark.mllib.linalg
+    - pyspark.mllib.stat
+    - pyspark.pandas
+    - pyspark.pandas.data_type_ops
+    - pyspark.pandas.indexes
+    - pyspark.pandas.missing
+    - pyspark.pandas.plot
+    - pyspark.pandas.spark
+    - pyspark.pandas.typedef
+    - pyspark.pandas.usage_logging
+    - pyspark.python.pyspark
+    - pyspark.python.lib
+    - pyspark.sql
+    - pyspark.sql.avro
+    - pyspark.sql.pandas
+    - pyspark.streaming
+    - pyspark.bin
+    - pyspark.sbin
+    - pyspark.jars
+    - pyspark.data
+    - pyspark.licenses
+    - pyspark.resource
+  requires:
+    - pip
+  commands:
+    - pip check
+    - bash -c "compgen -c spark && compgen -c pyspark"  # [not win]
+    - where *spark*                                     # [win]
+
+about:
+  home: https://spark.apache.org/
+  license: Apache-2.0
+  license_family: Apache
+  # Not yet available in the pypi release
+  license_file: {{ environ["RECIPE_DIR"] }}/LICENSE
+  summary: Apache Spark Python API
+  description: Apache Spark is a fast and general engine for large-scale data processing.
+  dev_url: https://github.com/apache/spark/tree/master/python
+  doc_url: https://spark.apache.org/documentation.html
+
+extra:
+  recipe-maintainers:
+    - parente
+    - ericdill
+    - quasiben
+    - dbast
+    - mariusvniekerk

@@ -1,0 +1,57 @@
+{% set version = "0.2.0" %}
+{% set gh_org = "hackebrot" %}
+{% set gh_repo = "jinja2-time" %}
+
+package:
+  name: {{ gh_repo }}
+  version: {{ version }}
+
+source:
+  fn: {{ gh_repo }}-{{ version }}.tar.gz
+  url: https://github.com/{{ gh_org }}/{{ gh_repo }}/archive/{{ version }}.tar.gz
+  sha256: 0e647e525ba47523fa400a58fdec090b1cc6dcec4afbf095ee01e9e589e5a5ef
+  patches:
+    # remove after https://github.com/hackebrot/jinja2-time/pull/19 (or similar)
+    - 0000-replace-replace-shift.patch
+
+build:
+  noarch: python
+  number: 3
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - m2-patch  # [win]
+    - patch     # [not win]
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - arrow
+    - jinja2
+    - python
+
+test:
+  imports:
+    - jinja2_time
+  source_files:
+    - tests
+  requires:
+    - freezegun
+    - pip
+    - pytest-cov
+  commands:
+    - pip check
+    - cd tests && pytest -vv --cov jinja2_time --cov-report term-missing:skip-covered --no-cov-on-fail --cov-fail-under 100
+
+about:
+  home: https://github.com/{{ gh_org }}/{{ gh_repo }}
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Jinja2 Extension for Dates and Times
+
+extra:
+  recipe-maintainers:
+    - bollwyvl

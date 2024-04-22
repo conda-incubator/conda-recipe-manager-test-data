@@ -1,0 +1,41 @@
+{% set name = "sqlalchemy2-stubs" %}
+{% set version = "0.0.2a32" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/sqlalchemy2-stubs-{{ version }}.tar.gz
+  sha256: 2a2cfab71d35ac63bf21ad841d8610cd93a3bd4c6562848c538fa975585c2739
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - python >=3.6
+    - typing_extensions >=3.7.4
+
+test:
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: http://www.sqlalchemy.org
+  dev_url: https://github.com/sqlalchemy/sqlalchemy2-stubs
+  summary: Typing Stubs for SQLAlchemy 1.4
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - thewchan

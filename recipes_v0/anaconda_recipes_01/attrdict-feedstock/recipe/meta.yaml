@@ -1,0 +1,41 @@
+{% set name = "attrdict" %}
+{% set version = "2.0.1" %}
+{% set sha256 = "35c90698b55c683946091177177a9e9c0713a0860f0e049febd72649ccd77b70" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 1
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - python >=3.6,<3.10
+    - setuptools
+
+  run:
+    - python >=3.6,<3.10
+    - six
+
+test:
+  imports:
+    - attrdict
+
+about:
+  home: https://github.com/bcj/AttrDict/
+  license: MIT
+  license_file: LICENSE.txt
+  summary: A dict with attribute-style access
+
+extra:
+  recipe-maintainers:
+    - vamega

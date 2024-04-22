@@ -1,0 +1,46 @@
+{% set name = "kml2geojson" %}
+{% set version = "5.1.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/kml2geojson-{{ version }}.tar.gz
+  sha256: 76a69f598e55d2eff90332e87ee9480c36120f60e6f5d6b5aaeba63ce92a3dfa
+
+build:
+  number: 0
+  noarch: python
+  entry_points:
+    - k2g = kml2geojson.cli:k2g
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6,<4.0
+    - poetry >=1,<2
+  run:
+    - click >=8.0.1,<9.0.0
+    - python >=3.6,<4.0
+
+test:
+  imports:
+    - kml2geojson
+  commands:
+    - pip check
+    - k2g --help
+  requires:
+    - pip
+
+about:
+  home: https://pypi.org/project/kml2geojson/
+  summary: A Python library to covert KML files to GeoJSON files
+  license: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - ickc

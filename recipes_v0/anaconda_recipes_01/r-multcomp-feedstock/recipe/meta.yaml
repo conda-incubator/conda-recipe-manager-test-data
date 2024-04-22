@@ -1,0 +1,101 @@
+{% set version = '1.4-25' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-multcomp
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/multcomp_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/multcomp/multcomp_{{ version }}.tar.gz
+  sha256: 9dfa7821a699e7b6fc99f2b8bf6bc5fecf6e3d83ece814882b5c8ed8faffd282
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: lme4 (>= 0.999375-16), nlme, robustbase, coin, MASS, foreign, xtable, lmtest, coxme (>= 2.2-1), SimComp, ISwR, tram (>= 0.2-5), fixest (>= 0.10), glmmTMB
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-th.data >=1.0_2
+    - r-codetools
+    - r-mvtnorm >=1.0_10
+    - r-sandwich >=2.3_0
+    - r-survival >=2.39_4
+
+  run:
+    - r-base
+    - r-th.data >=1.0_2
+    - r-codetools
+    - r-mvtnorm >=1.0_10
+    - r-sandwich >=2.3_0
+    - r-survival >=2.39_4
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('multcomp')"           # [not win]
+    - "\"%R%\" -e \"library('multcomp')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: http://multcomp.R-forge.R-project.org The publishers web page is http://www.crcpress.com/product/isbn/9781584885740
+  license: GPL-2
+  summary: Simultaneous tests and confidence intervals for general linear hypotheses in parametric
+    models, including linear, generalized linear, linear mixed effects, and survival
+    models. The package includes demos reproducing analyzes presented in the book "Multiple
+    Comparisons Using R" (Bretz, Hothorn, Westfall, 2010, CRC Press).
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: multcomp
+# Title: Simultaneous Inference in General Parametric Models
+# Version: 1.4-25
+# Date: 2023-06-20
+# Authors@R: c(person("Torsten", "Hothorn", role = c("aut", "cre"), email = "Torsten.Hothorn@R-project.org", comment = c(ORCID = "0000-0001-8301-0471")), person("Frank", "Bretz", role = "aut"), person("Peter", "Westfall", role = "aut"), person("Richard M.", "Heiberger", role = "ctb"), person("Andre", "Schuetzenmeister", role = "ctb"), person("Susan", "Scheibe", role = "ctb"))
+# Description: Simultaneous tests and confidence intervals for general linear hypotheses in parametric models, including linear, generalized linear, linear mixed effects, and survival models. The package includes demos reproducing analyzes presented in the book "Multiple Comparisons Using R" (Bretz, Hothorn, Westfall, 2010, CRC Press).
+# Depends: stats, graphics, mvtnorm (>= 1.0-10), survival (>= 2.39-4), TH.data (>= 1.0-2)
+# Imports: sandwich (>= 2.3-0), codetools
+# Suggests: lme4 (>= 0.999375-16), nlme, robustbase, coin, MASS, foreign, xtable, lmtest, coxme (>= 2.2-1), SimComp, ISwR, tram (>= 0.2-5), fixest (>= 0.10), glmmTMB
+# URL: http://multcomp.R-forge.R-project.org The publishers web page is http://www.crcpress.com/product/isbn/9781584885740
+# LazyData: yes
+# License: GPL-2
+# NeedsCompilation: no
+# Packaged: 2023-06-20 14:58:52 UTC; hothorn
+# Author: Torsten Hothorn [aut, cre] (<https://orcid.org/0000-0001-8301-0471>), Frank Bretz [aut], Peter Westfall [aut], Richard M. Heiberger [ctb], Andre Schuetzenmeister [ctb], Susan Scheibe [ctb]
+# Maintainer: Torsten Hothorn <Torsten.Hothorn@R-project.org>
+# Repository: CRAN
+# Date/Publication: 2023-06-20 17:30:06 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

@@ -1,0 +1,52 @@
+{% set name = "asgiref" %}
+{% set version = "3.5.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 4a29362a6acebe09bf1d6640db38c1dc3d9217c68e6f9f6204d72667fc19a424
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: True # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - typing_extensions # [py<38]
+
+test:
+  imports:
+    - asgiref
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/django/asgiref
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  license_url: https://github.com/django/asgiref/blob/main/LICENSE
+  summary: ASGI in-memory channel layer
+  description: |
+    ASGI is a standard for Python asynchronous web apps and servers
+    to communicate with each other, and positioned as an asynchronous
+    successor to WSGI.
+  doc_url: https://asgi.readthedocs.io/
+  dev_url: https://github.com/django/asgiref
+
+extra:
+  recipe-maintainers:
+    - dhirschfeld
+    - carlodri

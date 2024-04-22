@@ -1,0 +1,57 @@
+{% set name = "Beaker" %}
+{% set version = "1.12.1" %}
+{% set sha256 = "57770b40956e6c5cf1d8221dc59519029e470080ed8d3065c4e6ab36ce7e3c81" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools
+
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - beaker
+    - beaker.crypto
+    - beaker.ext
+
+about:
+  home: https://beaker.readthedocs.io/
+  license: BSD-3-Clause
+  license_file: LICENSE
+  license_family: BSD
+  summary: A Session and Caching library with WSGI Middleware
+  description: |
+    Beaker is a web session and general caching library that includes WSGI
+    middleware for use in web applications.
+
+    As a general caching library, Beaker can handle storing for various times
+    any Python object that can be pickled with optional back-ends on a
+    fine-grained basis.
+
+    Beaker includes Cache and Session WSGI middleware to ease integration with
+    WSGI capable frameworks, and is automatically used by Pylons and
+    TurboGears.
+
+  doc_url: http://beaker.groovie.org/
+  dev_url: https://github.com/bbangert/beaker
+
+extra:
+  recipe-maintainers:
+    - stuertz

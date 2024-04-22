@@ -1,0 +1,54 @@
+{% set name = "ldaptor" %}
+{% set version = "21.2.0" %}
+{% set sha256 = "8c49eb19375d4aab3e5b835860614e0cb17e56bb5a20e1874808fa5bec67a358" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - passlib
+    - pip
+    - pyparsing
+    - python >=3.6
+    - setuptools
+    - twisted
+    - zope.interface
+
+  run:
+    - passlib
+    - pyparsing
+    - python >=3.6
+    - twisted
+    - zope.interface
+
+test:
+  imports:
+    - ldaptor
+    - ldaptor.protocols
+    - ldaptor.protocols.ldap
+    - ldaptor.protocols.ldap.autofill
+    - ldaptor.samba
+    - ldaptor.test
+
+about:
+  home: https://github.com/twisted/ldaptor
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  summary: A Pure-Python Twisted library for LDAP
+
+extra:
+  recipe-maintainers:
+    - stuertz

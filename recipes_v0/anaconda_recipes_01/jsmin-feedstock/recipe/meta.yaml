@@ -1,0 +1,42 @@
+{% set name = "jsmin" %}
+{% set version = "3.0.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/jsmin-{{ version }}.tar.gz
+  sha256: c0959a121ef94542e807a674142606f7e90214a2b3d1eb17300244bbb5cc2bfc
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - jsmin
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/tikitu/jsmin/
+  summary: JavaScript minifier.
+  license: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - daf
