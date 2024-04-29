@@ -1,0 +1,78 @@
+{% set version = "5.1.0" %}
+
+package:
+  name: libspatialite
+  version: {{ version }}
+
+source:
+  url: https://www.gaia-gis.it/gaia-sins/libspatialite-sources/libspatialite-{{ version }}.tar.gz
+  sha256: 43be2dd349daffe016dd1400c5d11285828c22fea35ca5109f21f3ed50605080
+  patches:
+    - patches/0001-win_fix_paths_no_gpl.patch    # [win]
+    - patches/0002-osx_fix_lib_ext.patch  # [osx]
+    # skip tests calling InitSpatialMetadataFull (which require GPL dependency RTTOPO through call of CreateVectorCoveragesTables)
+    - patches/0003-skip-GPL-tests.patch   # [unix]
+
+build:
+  number: 0
+  # Missing dependencies freexl and geos on s390x.
+  skip: true  # [(win and vc<14) or s390x]
+  run_exports:
+    - {{ pin_subpackage('libspatialite', max_pin='x.x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - autoconf  # [unix]
+    - automake  # [unix]
+    - libtool   # [unix]
+    - m2-patch    # [win]
+    - make  # [not win]
+    - patch       # [not win]
+    - pkg-config  # [not win]
+  host:
+    # Even though documentation states otherwise during build freexl <2.0.0 throws error in config.
+    - freexl 2.0.0
+    - geos {{ geos }}
+    - libiconv 1.16
+    - libxml2 {{ libxml2 }}
+    - proj {{ proj }}
+    - sqlite {{ sqlite }}
+    - zlib {{ zlib }}
+    - minizip 4.0.3
+  run:
+    # all bounds through run_exports
+    - freexl
+    - geos
+    - libiconv
+    - libxml2
+    - proj
+    - sqlite
+    - zlib
+    - minizip
+
+about:
+  home: https://www.gaia-gis.it/fossil/libspatialite/index
+  license: MPL-1.1 OR GPL-2.0-or-later OR LGPL-2.1-or-later
+  license_family: OTHER
+  license_file: COPYING
+  summary: Extend the SQLite core to support fully fledged Spatial SQL capabilities
+  description: |
+    SpatiaLite is an open source library intended to extend the SQLite core to
+    support fully fledged Spatial SQL capabilities.
+    SQLite is intrinsically simple and lightweight. It implemented as
+    a single lightweight library implementing the full SQL engine
+    standard SQL implementation: almost complete SQL-92.
+    There is no complex client/server architecture.
+    A whole database simply corresponds to a single monolithic file (no size limits)
+    any DB-file can be safely exchanged across different platforms, because the
+    internal architecture is universally portable no installation, no configuration.
+  doc_url: https://www.gaia-gis.it/fossil/libspatialite/index
+  dev_url: https://www.gaia-gis.it/fossil/libspatialite/dir?type=tree
+
+extra:
+  recipe-maintainers:
+    - danclewley
+    - gillins
+    - ocefpaf

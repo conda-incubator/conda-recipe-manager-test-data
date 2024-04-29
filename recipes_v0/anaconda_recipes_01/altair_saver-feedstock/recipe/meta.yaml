@@ -1,0 +1,53 @@
+{% set name = "altair_saver" %}
+{% set version = "0.5.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: c098bcf6868e3ba11db108904dc3b8515b54505b89bca5f69527115487b88795
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+    - setuptools
+  run:
+    - python >=3.6
+    - altair
+    - altair_data_server >=0.4.0
+    - altair_viewer
+    - selenium
+    - nodejs
+    - vega-cli
+    - vega-lite-cli
+
+test:
+  imports:
+    - altair_saver
+    - altair_saver.savers
+  requires:
+    - pip
+  files:
+    - test_node.py
+  commands:
+    - pip check
+    - python test_node.py
+
+about:
+  home: http://github.com/altair-viz/altair_saver/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: A python engine for evaluating Altair transforms.
+
+extra:
+  recipe-maintainers:
+    - xhochy

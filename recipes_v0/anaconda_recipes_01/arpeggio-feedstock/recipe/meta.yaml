@@ -1,0 +1,54 @@
+{% set name = "Arpeggio" %}
+{% set version = "2.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/Arpeggio-{{ version }}.tar.gz
+  sha256: d6b03839019bb8a68785f9292ee6a36b1954eb84b925b84a6b8a5e1e26d3ed3d
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - pytest-runner
+  run:
+    - python >=3.6
+
+
+test:
+  source_files:
+    - perf-tests
+  imports:
+    - arpeggio
+  commands:
+    - pip check
+    - cd perf-tests
+    - python test_speed.py
+    - python test_memory_nomemoization.py
+    - python test_memory_memoization.py
+  requires:
+    - memory_profiler
+    - pip
+    - psutil
+    - pytest
+
+about:
+  home: http://textx.github.io/Arpeggio
+  dev_url: https://github.com/textX/Arpeggio
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Parser interpreter based on PEG grammars written in Python
+
+extra:
+  recipe-maintainers:
+    - raivivek
+    - thewchan

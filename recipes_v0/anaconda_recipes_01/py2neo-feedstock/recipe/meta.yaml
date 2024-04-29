@@ -1,0 +1,56 @@
+{% set name = "py2neo" %} 
+{% set version = "2021.2.3" %}
+{% set sha256 = "92bed6c03ed9c1068085c18e1f5af9313ddb25e9e441525cd856839a34c1e31a" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  entry_points:
+    - py2neo = py2neo.__main__:main
+  number: 0
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - click >=2.0
+    - colorama
+    - neobolt <1.8,>=1.7.3
+    - neotime <1.8,>=1.7.4
+    - prompt_toolkit >=2.0.7
+    - pygments >=2.3.0
+    - urllib3 >=1.21.1
+    - english
+    - interchange
+test:
+  imports:
+    - py2neo
+    - py2neo.cypher
+    - py2neo.data
+    - py2neo.database
+    - py2neo.matching
+    - py2neo.ogm
+  commands:
+    - py2neo 2>&1|grep py2neo
+
+about:
+  home: http://py2neo.org/
+  license: Apache-2.0
+  license_file: LICENSE
+  summary: Python client library and toolkit for Neo4j
+
+extra:
+  recipe-maintainers:
+    - pvanheus
+    - marimeireles

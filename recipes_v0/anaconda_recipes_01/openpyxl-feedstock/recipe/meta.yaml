@@ -1,0 +1,71 @@
+{% set version = "3.0.10" %}
+
+package:
+  name: openpyxl
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/o/openpyxl/openpyxl-{{ version }}.tar.gz
+  sha256: e47805627aebcf860edb4edf7987b1309c1b3632f3750538ed962bbcc3bd7449
+
+build:
+  number: 0
+  skip: True  # [py<36]
+  script: {{ PYTHON }} -m pip install . --no-deps --global-option="--with-cython" -vv
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - cython
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - et_xmlfile
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+  imports:
+    - openpyxl
+    - openpyxl.cell
+    - openpyxl.chart
+    - openpyxl.chartsheet
+    - openpyxl.comments
+    - openpyxl.compat
+    - openpyxl.descriptors
+    - openpyxl.drawing
+    - openpyxl.formatting
+    - openpyxl.formula
+    - openpyxl.packaging
+    - openpyxl.pivot
+    - openpyxl.reader
+    - openpyxl.styles
+    - openpyxl.utils
+    - openpyxl.workbook
+    - openpyxl.workbook.external_link
+    - openpyxl.worksheet
+    - openpyxl.writer
+    - openpyxl.xml
+
+about:
+  home: https://openpyxl.readthedocs.io
+  license: MIT
+  license_family: MIT
+  license_file: LICENCE.rst
+  summary: A Python library to read/write Excel 2010 xlsx/xlsm files
+  description: |
+    openpyxl is a Python library to read/write Excel 2010
+    xlsx/xlsm/xltx/xltm files.
+  doc_url: https://openpyxl.readthedocs.io/
+  dev_url: https://foss.heptapod.net/openpyxl/openpyxl
+
+extra:
+  recipe-maintainers:
+    - curtisalexander
+    - ocefpaf

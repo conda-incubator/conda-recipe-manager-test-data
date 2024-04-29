@@ -1,0 +1,85 @@
+{% set version = "0.15.0" %}
+{% set name = "meson-python" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/meson_python-{{ version }}.tar.gz
+  sha256: fddb73eecd49e89c1c41c87937cd89c2d0b65a1c63ba28238681d4bd9484d26f
+
+build:
+  skip: True # [py<37]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - meson 1.0.1
+    - pip
+    - pyproject-metadata 0.7.1
+    - python
+    - setuptools
+    - tomli 1.2.2  # [py<311]
+    # mesonpy takes care of creating the wheels without using wheel. See https://github.com/mesonbuild/meson-python/blob/main/mesonpy/_wheelfile.py
+  run:
+    - colorama # [win]
+    # Tests fail when using meson >1.2 on Python 3.8 which could affect other packages.
+    - meson 1.2  # [py<=38]
+    - meson >=0.63.3 # [py<312]
+    - meson >=1.2.3 # [py>=312]
+    - pyproject-metadata >=0.7.1
+    - python
+    # about setuptools see https://github.com/mesonbuild/meson-python/pull/308
+    - setuptools >=60.0  # [py>=312]
+    - tomli >=1.0.0 # [py<311]
+
+test:
+  imports:
+    - mesonpy
+  source_files:
+    - tests/
+    - docs/
+    - pyproject.toml
+  requires:
+    - {{ compiler('c') }}
+    # cython required for Python 3.12 support, see https://github.com/mesonbuild/meson-python/commit/936eee3fddfda34cbbb690acec8a170d089c1770
+    - cython >=3.0.3
+    - git
+    - gitpython
+    - patchelf   # [linux]
+    - pkgconfig  # [linux]
+    - pip
+    - pytest
+    - pytest-mock
+    # see https://github.com/mesonbuild/meson-python/commit/424f2f97e00c5281437355acd1232d29431dcf23
+    - typing-extensions >=3.7.4  # [py<310]
+  commands:
+    - pip check
+    # CPPFLAGS exports -DNDEBUG which is unwanted
+    - export CPPFLAGS=${CPPFLAGS//-DNDEBUG/}  # [unix]
+    # tests are relevant to wheel and not conda packages
+    - pytest tests -vv -k "not (test_tags.py or test_wheel.py)"  # [unix]
+    - pytest tests -vv -k "not (test_tags.py or test_wheel.py or test_editable_install or test_editble_reentrant or test_spam)"  # [win]
+
+about:
+  home: https://github.com/mesonbuild/meson-python
+  dev_url: https://github.com/mesonbuild/meson-python
+  doc_url: https://meson-python.readthedocs.io/
+  summary: Meson Python build backend (PEP 517)
+  description: |
+    Python build backend (PEP 517) for Meson projects.
+    It enables Python package authors to use Meson as the build backend for their packages.
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+
+extra:
+  recipe-maintainers:
+    - awvwgk
+    - rgommers
+  skip-lints:
+    - python_build_tool_in_run
+    - build_tools_must_be_in_build
+    - missing_wheel

@@ -1,0 +1,55 @@
+{% set name = "httpagentparser" %}
+{% set version = "1.9.5" %}
+{% set sha256 = "53cefd9d65990f6fe59c0378cad8ea1b9df8f770d2e8bd9d8762edae033be80a" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: {{ sha256 }}
+  - git_url: https://github.com/shon/httpagentparser.git
+    git_rev: 1e0f3da
+    folder: git_repo
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  build:
+    - git  # [not win]
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  source_files:
+    - git_repo
+  imports:
+    - httpagentparser
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+    - pytest git_repo/tests.py
+
+about:
+  home: https://github.com/shon/httpagentparser
+  summary: Extracts OS Browser etc information from http user agent string
+  description: Extracts OS Browser etc information from http user agent string
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  doc_url: https://github.com/shon/httpagentparser
+  dev_url: https://github.com/shon/httpagentparser
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk

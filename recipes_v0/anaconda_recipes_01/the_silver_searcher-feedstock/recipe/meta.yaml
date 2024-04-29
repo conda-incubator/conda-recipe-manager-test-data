@@ -1,0 +1,63 @@
+{% set name = "the_silver_searcher" %}
+{% set version = "2.2.0" %}
+{% set p = 'm2-' if win else '' %}
+{% set n = 'm2w64-' if win else '' %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  git_url: git://github.com/ggreer/the_silver_searcher.git
+  git_tag:  {{ version }}
+  patches:
+    - 0001-lang-Allow-both-extensions-and-full-filenames.patch
+    - 0002-win32-Detect-Cygwin-MSYS-PTY.patch
+    - 0003-options-Fix-ordering-problems-with-color.patch
+    - 0004-lang-Add-autotools-ac-am-in-m4-pc.patch
+    - 0005-lang-Add-to-make-Makefile-Makefile.Debug-Makefile.Re.patch
+    - 0006-lang-Add-makepkg-PKGBUILD-diff-patch-in-install.patch
+    - 0007-lang-Add-cmake-CMakeLists.txt-CMakeCache.txt.patch
+    - fix_dupsyms.patch
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}      # [not win]
+    - {{ p }}pkg-config
+    - {{ p }}git
+    - {{ p }}autoconf
+    - {{ p }}automake          # [not win]
+    - {{ p }}make              # [not win]
+    - {{ p }}automake-wrapper  # [win]
+    - {{ n }}toolchain         # [win]
+    - posix                    # [win]
+    - patch     # [not win]
+    - m2-patch  # [win]
+  host:
+    - {{ n }}pcre
+    - {{ n }}xz
+    - {{ n }}zlib
+  run:
+    - {{ n }}pcre
+    - {{ n }}xz                # [win]
+    - {{ n }}gcc-libs          # [win]
+
+test:
+  commands:
+    - ag --help
+
+about:
+  home: https://geoff.greer.fm/ag
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: 'A code searching tool similar to ack, with a focus on speed.'
+  dev_url: https://github.com/ggreer/the_silver_searcher
+
+extra:
+  recipe-maintainers:
+    - nehaljwani
+    - mingwandroid

@@ -1,0 +1,68 @@
+{% set name = "pystan" %}
+{% set version = "2.19.1.1" %}
+{% set sha256sum = "fa8bad8dbc0da22bbe6f36af56c9abbfcf10f92df8ce627d59a36bd8d25eb038" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256sum }}
+  patches:
+    - 0001-Add-compiler-flag-for-realigning-stack.patch  # [win32 and vc<14]
+
+build:
+  number: 0
+  detect_binary_files_with_prefix: False
+
+requirements:
+  build:
+    - m2-patch               # [win and vc<14]
+    - {{ compiler('c') }}    # [not (win and vc<14)]
+    - {{ compiler('cxx') }}  # [not (win and vc<14)]
+
+  host:
+    - python
+    - setuptools
+    - numpy
+    - cython >=0.22,!=0.25.1
+    # The VS2008 build of PyStan fails with:
+    # fatal error C1060: compiler is out of heap space
+    # so we use the m2w64-toolchain here
+    - libpython              # [win and vc<14]
+    - m2w64-toolchain        # [win and vc<14]
+
+  run:
+    - {{ pin_compatible('numpy') }}
+    # http://pystan.readthedocs.io/en/latest/windows.html
+    # PyStan requires a C++ compiler for building models. For
+    # full support of vectorized functions, gcc is recommended.
+    - libpython              # [win]
+    - m2w64-toolchain        # [win]
+    - {{ compiler('c') }}    # [not win]
+    - {{ compiler('cxx') }}  # [not win]
+    - python
+    - cython >=0.22,!=0.25.1
+    - matplotlib
+
+test:
+  imports:
+    - pystan
+
+about:
+  home: http://mc-stan.org/interfaces/pystan.html
+  license: GPLv3
+  license_file: LICENSE
+  summary: Python interface to Stan, a package for Bayesian inference
+  description: |
+    PyStan provides a Python interface to Stan, a package for Bayesian
+    inference using the No-U-Turn sampler, a variant of Hamiltonian Monte
+    Carlo.
+  doc_url: https://pystan.readthedocs.org/
+  dev_url: https://github.com/stan-dev/pystan
+
+extra:
+  recipe-maintainers:
+    - rmax

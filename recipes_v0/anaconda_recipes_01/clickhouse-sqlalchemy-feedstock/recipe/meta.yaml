@@ -1,0 +1,57 @@
+{% set version = "0.2.3" %}
+
+package:
+  name: clickhouse-sqlalchemy
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/c/clickhouse-sqlalchemy/clickhouse-sqlalchemy-{{ version }}.tar.gz
+  sha256: 6df4c125db428b856f8a7ec392190d9a4a2bb281eecb4fca2202e9d49ee4d55f
+
+build:
+  number: 0
+  # clickhouse-driver isn't available on s390x and aarch64.
+  skip: True  # [py<37 or (linux and (s390x or aarch64))]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+
+  run:
+    - python
+    - clickhouse-driver >=0.1.2
+    - requests
+    - sqlalchemy >=1.4,<1.5
+
+test:
+  imports:
+    - clickhouse_sqlalchemy
+    - clickhouse_sqlalchemy.drivers
+    - clickhouse_sqlalchemy.drivers.http
+    - clickhouse_sqlalchemy.drivers.native
+    - clickhouse_sqlalchemy.orm
+    - clickhouse_sqlalchemy.sql
+  requires:
+    - pip
+  commands: 
+    - pip check
+
+about:
+  home: https://github.com/xzkostyan/clickhouse-sqlalchemy
+  dev_url: https://github.com/xzkostyan/clickhouse-sqlalchemy
+  doc_url: https://github.com/xzkostyan/clickhouse-sqlalchemy
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Simple ClickHouse SQLAlchemy Dialect
+  description: |
+    Simple ClickHouse SQLAlchemy Dialect.
+
+extra:
+  recipe-maintainers:
+    - kszucs
+    - xzkostyan

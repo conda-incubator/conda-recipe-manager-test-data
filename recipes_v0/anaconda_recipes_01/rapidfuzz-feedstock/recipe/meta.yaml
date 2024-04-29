@@ -1,0 +1,61 @@
+{% set name = "rapidfuzz" %}
+{% set version = "3.5.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/rapidfuzz-{{ version }}.tar.gz
+  sha256: 9e9b395743e12c36a3167a3a9fd1b4e11d92fb0aa21ec98017ee6df639ed385e
+  patches:
+    - cmake_verfix.patch
+
+build:
+  number: 0
+  skip: True  # [py<38]
+  missing_dso_whitelist:  # [s390x]
+    - '$RPATH/ld64.so.1'  # [s390x]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - make         # [not win]
+    - ninja-base   # [win]
+    - patch        # [not win]
+    - m2-patch     # [win]
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - scikit-build
+    - cython
+  run:
+    - python
+    - numpy
+
+test:
+  imports:
+    - rapidfuzz
+    - rapidfuzz.distance
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/maxbachmann/RapidFuzz
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: rapid fuzzy string matching
+  description: Rapid fuzzy string matching in Python using various string metrics
+  dev_url: https://github.com/maxbachmann/RapidFuzz
+  doc_url: https://maxbachmann.github.io/RapidFuzz/
+
+extra:
+  recipe-maintainers:
+    - maxbachmann

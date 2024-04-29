@@ -1,0 +1,40 @@
+{% set name = "armpl" %}
+{% set version = "21.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  - url: https://developer.arm.com/-/media/Files/downloads/hpc/arm-performance-libraries/21-0-0/RHEL7/arm-performance-libraries_{{ version }}_RHEL-7_gcc-10.2.tar?revision=df0303bf-296f-4f67-a4bf-344a05563bf4
+    folder: armpl
+
+build:
+  number: 1
+  skip: True                                   # [not unix or not aarch64]
+  missing_dso_whitelist:
+    - /lib64/libc.so.6
+    - /lib64/libpthread.so.0
+    - /lib64/libgcc_s.so.1
+    - /lib64/libm.so.6
+    - $RPATH/libgfortran.so.5
+    - /lib64/librt.so.1
+    - $RPATH/libgomp.so.1
+
+test:
+  requires:
+    - {{ compiler('c') }}
+    - {{ compiler('fortran') }}
+  files:
+    - test/fftw_dft_r2c_1d_c_example.c
+    - test.sh
+  commands:
+    - chmod u+x test.sh && ./test.sh #[unix]
+
+about:
+  home: https://developer.arm.com/tools-and-software/server-and-hpc/downloads/arm-performance-libraries
+  license: Arm Performance Libraries (free version) EULA
+  license_family: OTHER
+  summary: Free Arm Performance Libraries
+  doc_url: https://developer.arm.com/tools-and-software/server-and-hpc/downloads/arm-performance-libraries
+

@@ -1,0 +1,43 @@
+{% set name = "teamcity-messages" %}
+{% set version = "1.32" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 6991d95642c8d067524c90985b650d89caab6ac0bf47b721b931b04951abbfc1
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - teamcity
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/JetBrains/teamcity-messages
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE.md
+  summary: Send test results to TeamCity continuous integration server from unittest, nose, py.test, twisted trial, behave (Python 2.6+)
+
+extra:
+  recipe-maintainers:
+    - gabrielcnr
+    - marcelotrevisani

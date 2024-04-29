@@ -1,0 +1,51 @@
+{% set name = "markdown2" %}
+{% set version = "2.4.0" %}
+{% set sha256 = "28d769f0e544e6f68f684f01e9b186747b079a6927d9ca77ebc8c640a2829b1b" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: python -m pip install --no-deps --ignore-installed .
+  entry_points:
+    - markdown2 = markdown2:main
+
+requirements:
+  host:
+    - pip
+    - python
+
+  run:
+    - python
+
+test:
+  imports:
+    - markdown2
+
+  commands:
+    - markdown2 --help
+
+about:
+  home: https://github.com/trentm/python-markdown2
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: fast and complete Python implementation of Markdown
+  description: |
+    Markdown is a text-to-HTML filter; it translates an easy-to-read / easy-to-write structured
+    text format into HTML.
+  doc_url: https://pypi.python.org/pypi/markdown2
+  doc_source_url: https://github.com/trentm/python-markdown2/blob/master/README.md
+  dev_url: https://github.com/waylan/Python-Markdown
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - pelson

@@ -1,0 +1,67 @@
+{% set name = "pyroma" %}
+{% set import = "pyroma" %}
+{% set entrypoint = "pyroma" %}
+{% set version = "4.1" %}
+{% set sha256 = "ff87335abce04efef0749ee63f2a4dbb9a3fa5a1eee285beaaaed65059dca89a" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - {{ entrypoint }} = {{ import }}:main
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+
+  run:
+    - docutils
+    - packaging
+    - pep517
+    - pygments  # Required internally by docutils for readme check to work
+    - python >=3.7
+    - python-build
+    - requests
+    - setuptools >=61.0.0
+    - trove-classifiers >=2022.6.26
+
+test:
+  requires:
+    - flit >=3.4
+    - pip
+    - setuptools >=60
+
+  source_files:
+    # Test data to copy to installed package
+    - {{ import }}/testdata
+
+  imports:
+    - {{ import }}
+
+  commands:
+    - pip check
+    - {{ entrypoint }} --help
+    # Copy the testdata into the expected place, sincei it isn't normally installed with the package
+    - cp -r $SRC_DIR/{{ import }}/testdata $(python -c 'from pathlib import Path; import {{ import }}; print(Path({{ import }}.__file__).parent)')/testdata
+    - python -b -X dev -m unittest -v pyroma.tests
+
+about:
+  home: https://github.com/regebro/pyroma/
+  license: MIT
+  license_file: LICENSE.txt
+  summary: Test your project's packaging friendliness
+
+extra:
+  recipe-maintainers:
+    - CAM-Gerlach
+    - jakirkham

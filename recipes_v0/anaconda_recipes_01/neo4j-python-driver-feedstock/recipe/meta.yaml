@@ -1,0 +1,49 @@
+{% set version = "4.4.0" %}
+
+package:
+  name: neo4j-python-driver
+  version: {{ version }}
+
+source:
+  url: https://github.com/neo4j/neo4j-python-driver/archive/{{ version }}.tar.gz
+  sha256: 1c63513674b047d9cfcac950225069364af7ae1ccc504d4c696566a626fb3ed0
+
+build:
+  number: 0
+  skip: True  # [py<36]
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - cython
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - pytz
+
+test:
+  imports:
+    - neo4j
+    - neo4j.graph
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/neo4j/neo4j-python-driver
+  license: Apache-2.0
+  license_file: LICENSE.txt
+  license_family: Apache
+  summary: 'Database connector for Neo4j graph database'
+  dev_url: https://github.com/neo4j/neo4j-python-driver
+  doc_url: https://neo4j.com/docs/api/python-driver/current/
+
+extra:
+  recipe-maintainers:
+    - pvanheus

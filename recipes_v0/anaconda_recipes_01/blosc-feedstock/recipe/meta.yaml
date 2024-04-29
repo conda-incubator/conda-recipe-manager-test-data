@@ -1,0 +1,64 @@
+{% set version = "1.21.3" %}
+
+package:
+  name: blosc
+  version: {{ version }}
+
+source:
+  url: https://github.com/Blosc/c-blosc/archive/v{{ version }}.tar.gz
+  sha256: 941016c4564bca662080bb01aea74f06630bd665e598c6f6967fd91b2e2e0bb6
+
+build:
+  number: 0
+  run_exports:
+    # nothing on abi-lab about compatibility. Going with default behavior of assuming semver is observed.
+    - {{ pin_subpackage('blosc') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - make                                           # [unix]
+  host:
+    # we probably won't ever use vc<14 at this point, but this is left here just in case
+    - msinttypes =r26                                # [win and vc<14]
+    # pinnings below are taken from upstream's internal-complibs folder.
+    # zlib's patch version had to be bumped up by one to satisfy zstd's dependency requirements on it.
+    - zlib =1.2.12
+    - lz4-c =1.9.4
+    - zstd =1.5.2   # This is in aggregate/cbc.yaml, but included here temporarily to work around a CI bug where that cbc.yaml isn't always being regarded.
+
+test:
+  commands:
+    - test -e $PREFIX/include/blosc.h                    # [unix]
+    - test -e $PREFIX/include/blosc-export.h             # [unix]
+    - test -e $PREFIX/lib/libblosc.a                     # [unix]
+    - test -e $PREFIX/lib/libblosc${SHLIB_EXT}           # [unix]
+    - if not exist %LIBRARY_INC%\\blosc.h exit 1         # [win]
+    - if not exist %LIBRARY_INC%\\blosc-export.h exit 1  # [win]
+    - if not exist %LIBRARY_BIN%\\blosc.dll exit 1       # [win]
+    - if not exist %LIBRARY_LIB%\\blosc.lib exit 1       # [win]
+    - if not exist %LIBRARY_LIB%\\libblosc.lib exit 1    # [win]
+
+about:
+  home: https://www.blosc.org/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSES/BLOSC.txt
+  summary: A blocking, shuffling and loss-less compression library that can be faster than `memcpy()`
+  description: |
+    Blosc is a high performance compressor optimized for binary data.
+    It has been designed to transmit data to the processor cache faster
+    than the traditional, non-compressed, direct memory fetch approach
+    via a memcpy() OS call.
+  doc_url: https://www.blosc.org/pages/blosc-in-depth/
+  dev_url: https://github.com/Blosc/c-blosc
+
+extra:
+  recipe-maintainers:
+    - danielfrg
+    - FrancescElies
+    - jakirkham
+    - beckermr
+    - msarahan

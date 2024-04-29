@@ -1,0 +1,55 @@
+{% set name = "awkward" %}
+{% set version = "2.0.7" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/awkward-{{ version }}.tar.gz
+  sha256: 05397d659a5a8889c8afae193c0ea51585683038ecc7f666f3da9835ba2f6492
+
+build:
+  noarch: python
+  number: 0
+  script:
+    - {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+    - hatchling >1.10.0
+    - hatch-fancy-pypi-readme
+  run:
+    - python >=3.7
+    - awkward-cpp ==8
+    - importlib_resources
+    - numpy >=1.14.5
+    - packaging
+    - typing_extensions
+
+test:
+  imports:
+    - awkward
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/scikit-hep/awkward-1.0
+  summary: Manipulate JSON-like data with NumPy-like idioms.
+  license: BSD-3-Clause
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - lgray
+    - chrisburr
+    - jpivarski
+    - henryiii
+    - agoose77
+    - conda-forge/scikit-hep
+    - ioanaif

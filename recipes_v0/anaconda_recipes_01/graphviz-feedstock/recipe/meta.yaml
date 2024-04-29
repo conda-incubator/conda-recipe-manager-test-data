@@ -1,0 +1,186 @@
+{% set version = "2.50.0" %}
+
+package:
+  name: graphviz
+  version: {{ version }}
+
+source:
+  - url: https://gitlab.com/graphviz/graphviz/-/archive/{{ version }}/graphviz-{{ version }}.tar.gz
+    sha256: afa48581f764a35e148909cc96a0308ec2356b5225b64af12492f3392f20ef1c
+    patches:
+      - patches/0001-Always-link-to-getopt-on-Windows.patch
+      - patches/0002-Remove-requirement-of-hard-coded-DLLs-in-PATH.patch
+      - patches/0003-Add-support-for-GTS-in-CMake-builds.patch
+      - patches/0004-Fix-logic-for-finding-harfbuzz.patch
+    # Prefer header only compat layer, even though m2-libtool might work
+  - url: https://gitlab.com/graphviz/graphviz-windows-dependencies/-/raw/c7eafb3c/x64/include/ltdl.h
+    sha256: a3cf376bca2965634ba05926d4065a46331e71c487d84a4c6aceb795e9458bfd
+    folder: ltdl_compat
+
+build:
+  number: 1
+  detect_binary_files_with_prefix: true  # [unix]
+  missing_dso_whitelist:         # [linux]
+    - '**/libc.so.6'             # [linux]
+    - '**/libpthread.so.0'       # [linux]
+    - '**/libdl.so.2'            # [linux]
+    - '**/librt.so.1'            # [linux]
+    - '**/libm.so.6'             # [linux]
+    - '**/ld-linux-x86-64.so.2'  # [linux]
+    - '**/ld64.so.1'             # [linux]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - pkg-config                                          # [unix]
+    - make                                                # [unix]
+    - bison                                               # [unix]
+    - libtool                                             # [unix]
+    - automake                                            # [unix]
+    - autoconf                                            # [unix]
+    - m4                                                  # [unix]
+    - cmake                                               # [win]
+    - ninja-base                                          # [win]
+    - python 3.9
+    - m2-gawk                                             # [win]
+    - m2-flex                                             # [win]
+    - m2-bison                                            # [win]
+    - perl 5.*                                            # [win]
+    - gawk  # [not win]
+    - sed  # [not win]
+    - patch       # [not win]
+    - m2-patch    # [win]
+    - pthread-stubs                                       # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('libx11-devel') }}          # [linux]
+    - {{ cdt('libxext') }}               # [linux]
+    - {{ cdt('libxext-devel') }}         # [linux]
+    - {{ cdt('libxrender-devel') }}      # [linux]
+    - {{ cdt('mesa-libgl-devel') }}      # [linux and not s390x]
+    - {{ cdt('mesa-libegl') }}           # [linux and not (ppc64le or s390x)]
+    - {{ cdt('mesa-libgbm') }}           # [linux and not (ppc64le or s390x)]
+    - {{ cdt('mesa-libegl-devel') }}     # [linux and not (ppc64le or s390x)]
+    - {{ cdt('mesa-dri-drivers') }}      # [linux]
+    - {{ cdt('libxau-devel') }}          # [linux]
+    - {{ cdt('alsa-lib-devel') }}        # [linux and not (ppc64le or s390x)]
+    - {{ cdt('gtk2-devel') }}            # [linux]
+    - {{ cdt('gtkmm24-devel') }}         # [linux and not (ppc64le or s390x)]
+    - {{ cdt('libdrm-devel') }}          # [linux and not s390x]
+    - {{ cdt('libxcomposite-devel') }}   # [linux and not (ppc64le or s390x)]
+    - {{ cdt('libxcursor-devel') }}      # [linux and not (ppc64le or s390x)]
+    - {{ cdt('libxi-devel') }}           # [linux]
+    - {{ cdt('libxrandr-devel') }}       # [linux]
+    - {{ cdt('pciutils-devel') }}        # [linux and not (ppc64le or s390x)]
+    - {{ cdt('libxscrnsaver-devel') }}   # [linux and not (ppc64le or s390x)]
+    - {{ cdt('libxtst-devel') }}         # [linux and not (ppc64le or s390x)]
+    - {{ cdt('libselinux') }}            # [linux]
+    - {{ cdt('libselinux-devel') }}      # [linux]
+    - {{ cdt('libxdamage') }}            # [linux]
+    - {{ cdt('libxdamage-devel') }}      # [linux]
+    - {{ cdt('libxfixes') }}             # [linux]
+    - {{ cdt('libxfixes-devel') }}       # [linux]
+    - {{ cdt('libxxf86vm') }}            # [linux]
+    - {{ cdt('libxxf86vm-devel') }}      # [linux]
+    - {{ cdt('libsm-devel') }}           # [linux]
+    - {{ cdt('libice-devel') }}          # [linux]
+    - {{ cdt('libxcb') }}                # [linux]
+    - {{ cdt('libxcb-devel') }}          # [linux and not (aarch64 or x86_64 or s390x or ppc64le)]
+    - {{ cdt('expat-devel') }}           # [linux and not (aarch64 or s390x or ppc64le)]
+    - {{ cdt('pcre') }}                  # [linux and not (x86_64 or s390x or ppc64le)]
+    - {{ cdt('libglvnd-glx') }}          # [linux and not (x86_64 or s390x)]
+    - {{ cdt('libglvnd-egl') }}          # [linux and not (x86_64 or ppc64le or s390x)]
+    - {{ cdt('libxkbcommon-devel') }}    # [linux and not (aarch64 or x86_64 or s390x or ppc64le)]
+    - {{ cdt('xcb-util-devel') }}        # [linux and not (ppc64le or s390x)]
+    - {{ cdt('xcb-util-image-devel') }}  # [linux and not (ppc64le or s390x)]
+    - {{ cdt('xcb-util-keysyms-devel') }}     # [linux and not (ppc64le or s390x)]
+    - {{ cdt('xcb-util-renderutil-devel') }}  # [linux and not (ppc64le or s390x)]
+    - {{ cdt('xcb-util-wm-devel') }}          # [linux and not (ppc64le or s390x)]
+    - {{ cdt('cups-devel') }}            # [linux and not (ppc64le or s390x)]
+    - {{ cdt('libcom_err') }}            # [linux and not (ppc64le or s390x)]
+    - {{ cdt('gnutls') }}                # [linux and not (ppc64le or s390x)]
+    - {{ cdt('avahi-libs') }}            # [linux and not (ppc64le or s390x)]
+    - {{ cdt('libgpg-error') }}          # [linux and not (ppc64le or s390x)]
+    - {{ cdt('libtasn1') }}              # [linux and not (ppc64le or s390x)]
+
+    - {{ cdt('libxau-devel') }}                           # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}                   # [linux]
+    - {{ cdt('libxrender-devel') }}                       # [linux]
+    - {{ cdt('libx11-devel') }}                           # [linux]
+    - {{ cdt('libxext-devel') }}                          # [linux]
+  host:
+    # --with-poppler=yes
+    - poppler
+    # --with-expat=yes
+    - expat
+    # --with-freetype2
+    - freetype
+    # --with-fontconfig=yes
+    - fontconfig
+    # --with-gts=yes
+    - gts
+    # --with-gdk-pixbuf=yes
+    - gdk-pixbuf                                          # [unix]
+    # --with-libgd=yes
+    - libgd
+    # --with-gdk=yes
+    - gtk2                                                # [linux]
+    # --with-rsvg=yes
+    - librsvg                                             # [unix]
+    # --enable-ltdl
+    - libtool                                             # [unix]
+    # --with-webp=yes
+    - libwebp 1.2.4
+    - libwebp-base
+    # --with-pangocairo=yes
+    - cairo
+    - pango
+    - glib
+    # default requirement
+    - zlib
+    - getopt-win32                                        # [win]
+  run:
+    - expat
+    - gts
+    - libgd
+    - gtk2                                                # [linux]
+    - librsvg                                             # [unix]
+    - libtool                                             # [unix]
+    - libwebp
+    - libwebp-base
+    - cairo
+    - pango
+    - glib
+    - zlib
+    - getopt-win32                                        # [win]
+    - fonts-conda-ecosystem
+    # Not linked in directly, likely interface deps? add 'em anyway!
+    - gdk-pixbuf                                          # [unix]
+    - fontconfig
+    - freetype
+    - poppler
+
+test:
+  files:
+    - sample.dot
+
+about:
+  home: https://www.graphviz.org/
+  license: EPL-1.0
+  license_family: Other
+  license_file: COPYING    
+  summary: Open Source graph visualization software.
+  description: |
+    Graphviz is an open source graph visualization software. Graph visualization
+    is a way of representing structural information as diagrams of abstract
+    graphs and networks.
+  doc_url: https://graphviz.gitlab.io/documentation/
+  dev_url: https://gitlab.com/graphviz/graphviz/
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - ccordoba12
+    - ocefpaf
+    - johanneskoester
+    - nehaljwani

@@ -1,0 +1,56 @@
+{% set name = "xmlsec" %}
+{% set version = "1.3.13" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 916f5d78e8041f6cd9391abba659da8c94a4fef7196d126d40af1ff417f2cf86
+
+build:
+  number: 0
+  # Skip s390x because of missing libxmlsec1, libgpg-error and libgcrypt
+  skip: true  # [(linux and s390x) or win or py<35]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - pkg-config
+  host:
+    - python
+    - libxml2 2.10
+    - libxmlsec1 1.2.32
+    - lxml 4.9.2
+    - pip
+    - pkgconfig
+    - setuptools
+    - setuptools_scm
+    - toml
+    - wheel
+  run:
+    - python
+    - lxml >=3.8.0
+
+test:
+  imports:
+    - xmlsec
+  requires:
+    - pip
+  commands:
+    - pip check
+    # Check that the correct version is reported by pip
+    - "pip list --format json | grep '{\"name\": \"xmlsec\", \"version\": \"{{ version }}\"}'"
+
+about:
+  home: https://github.com/mehcode/python-xmlsec
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Python bindings for the XML Security Library (XMLSec).
+  description: |
+    Python bindings for the XML Security Library (XMLSec).
+  doc_url: https://xmlsec.readthedocs.io/
+  dev_url: https://github.com/mehcode/python-xmlsec

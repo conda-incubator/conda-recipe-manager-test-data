@@ -1,0 +1,46 @@
+{% set name = "pytest-variables" %}
+{% set version = "3.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pytest_variables-{{ version }}.tar.gz
+  sha256: ab84235417afac5a0a7dd4c3918287d9c7329d2e16d570d6e943f8d8e02533b9
+
+build:
+    number: 0
+    script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - python
+    - hatch-vcs
+    - hatchling
+    - pip
+  run:
+    - python
+    - pytest >=7.0.0
+
+test:
+  imports:
+    - pytest_variables
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/pytest-dev/pytest-variables
+  license: MPL-2.0
+  license_family: OTHER
+  license_file: LICENSE
+  summary: pytest plugin for providing variables to tests/fixtures
+  dev_url: https://github.com/pytest-dev/pytest-variables
+  doc_url: https://github.com/pytest-dev/pytest-variables
+
+extra:
+  recipe-maintainers:
+    - birdsarah
+    - davehunt

@@ -1,0 +1,65 @@
+{% set name = "eventlet" %}
+{% set version = "0.33.1" %}
+{% set bundle = "tar.gz" %}
+{% set hash = "afbe17f06a58491e9aebd7a4a03e70b0b63fd4cf76d8307bae07f280479b1515" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.{{ bundle }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  sha256: {{ hash }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  skip: True  # [py<35]
+  # trigger: 0
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - greenlet >=0.3
+    - dnspython >=1.15.0
+    - six >=1.10.0
+    - pyopenssl
+
+test:
+  requires:
+    - dnspython >=2
+  imports:
+    - eventlet
+    - eventlet.green
+    - eventlet.green.OpenSSL
+    - eventlet.green.http
+    - eventlet.green.urllib
+    - eventlet.greenio
+    - eventlet.hubs
+    - eventlet.support
+  requires:
+    - pip
+  commands:
+    - pip check
+
+
+about:
+  home: http://eventlet.net
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Highly concurrent networking library
+  dev_url: https://github.com/eventlet/eventlet
+  doc_url: http://eventlet.net
+
+extra:
+  recipe-maintainers:
+    - synapticarbors
+    - anguslees
+    - pmlandwehr

@@ -1,0 +1,56 @@
+{% set name = "nfoursid" %}
+{% set version = "1.0.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d481e8ad58f19eba4292498ea4fd1324572a31c776fe6cf2ca774ea42448c04b
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - wheel
+    - setuptools
+  run:
+    - python
+    - matplotlib-base >=3.3
+    - numpy >=1.19
+    - pandas >=1.1
+
+test:
+  imports:
+    - nfoursid
+    - nfoursid.tests
+  requires:
+    - pip
+  commands:
+    - pip check
+    - python -m unittest discover -v nfoursid.tests
+
+about:
+  home: https://github.com/spmvg/nfoursid
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Implementation of N4SID, Kalman filtering and state-space models
+  description: |
+    Implementation of the N4SID algorithm for subspace identification [1], together with Kalman filtering and state-space models. 
+    
+    State-space models are versatile models for representing multi-dimensional timeseries. As an example, the ARMAX(p, q, r)-models - 
+    AutoRegressive MovingAverage with eXogenous input - are included in the representation of state-space models. By extension, ARMA-, 
+    AR- and MA-models can be described, too. The numerical implementations are based on [2].
+  doc_url: https://nfoursid.readthedocs.io
+  dev_url: https://github.com/spmvg/nfoursid
+
+extra:
+  recipe-maintainers:
+    - spmvg

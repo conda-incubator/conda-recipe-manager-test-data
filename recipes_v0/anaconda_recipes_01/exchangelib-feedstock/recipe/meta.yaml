@@ -1,0 +1,55 @@
+{% set name = "exchangelib" %}
+{% set version = "4.8.0" %}
+{% set sha256 = "a1f8f7b97c08f08f2a57785dc262f4cc6a115b0db3f06afa1c8b71454fb8bce7" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 1
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: true  # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - backports.zoneinfo  # [py<39]
+    - cached-property
+    - defusedxml >=0.6.0
+    - dnspython >=2.0.0
+    - isodate
+    - lxml >3.0
+    - oauthlib
+    - pygments
+    - python
+    - requests >=2.7
+    - requests_ntlm >=0.2.0
+    - requests-negotiate-sspi  # [win]
+    - requests-oauthlib
+    - python-tzdata
+    - tzlocal
+
+test:
+  imports:
+    - exchangelib
+
+about:
+  home: https://github.com/ecederstrand/exchangelib
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Client for Microsoft Exchange Web Services (EWS)
+  doc_url: https://github.com/ecederstrand/exchangelib
+  dev_url: https://github.com/ecederstrand/exchangelib
+
+extra:
+  recipe-maintainers:
+    - dhirschfeld
+    - rzillman

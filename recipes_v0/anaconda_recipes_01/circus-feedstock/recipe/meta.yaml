@@ -1,0 +1,61 @@
+{% set name = "circus" %}
+{% set version = "0.18.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 193ce8224e068ced66724cf483106fb6674b51a57583ac1a0e7ed7a7ee8c71ab
+
+build:
+  number: 0
+  entry_points:
+    - circusd = circus.circusd:main
+    - circusd-stats = circus.stats:main
+    - circusctl = circus.circusctl:main
+    - circus-top = circus.stats.client:main
+    - circus-plugin = circus.plugins:main
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  noarch: python
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - flit-core >=3.4,<4
+  run:
+    - python >=3.7
+    - psutil
+    - pyzmq >=17.0
+    - tornado >=5.0.2
+
+test:
+  imports:
+    - circus
+    - circus.commands
+    - circus.green
+    - circus.plugins
+    - circus.stats
+    - circus.stream
+  commands:
+    - circusd --help
+    - circusd-stats --help
+    - circusctl --help
+    - circus-top --help
+    - circus-plugin --help
+
+about:
+  home: https://github.com/circus-tent/circus
+  license: Apache-2.0
+  license_file: LICENSE
+  summary: Circus is a program that will let you run and watch multiple processes and sockets.
+
+extra:
+  recipe-maintainers:
+    - vamega
+    - carlodri
+    - ltalirz
+    - chrisjsewell
+    - sphuber

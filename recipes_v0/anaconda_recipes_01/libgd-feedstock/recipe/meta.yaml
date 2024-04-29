@@ -1,0 +1,88 @@
+{% set version = "2.3.3" %}
+{% set sha256 = "dd3f1f0bb016edcc0b2d082e8229c822ad1d02223511997c80461481759b1ed2" %}
+
+package:
+  name: libgd
+  version: {{ version }}
+
+source:
+  url: https://github.com/libgd/libgd/releases/download/gd-{{version}}/libgd-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    # see: https://github.com/libgd/libgd/issues/367
+    - patches/linux-fontconfig-basic.patch
+
+build:
+  number: 3
+  run_exports:
+    # https://abi-laboratory.pro/?view=timeline&l=libgd
+    - {{ pin_subpackage('libgd', max_pin='x.x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - automake      # [not win]
+    - libtool       # [not win]
+    - gettext       # [not win]
+    - pkg-config
+    - make          # [not win]
+    - patch         # [unix]
+    - m2-patch      # [win]
+    - cmake         # [win]
+    - ninja-base    # [win]
+    - sed           # [unix]
+    - gawk          # [unix]
+    - m2-sed        # [win]
+    - m2-gawk       # [win]
+  host:
+    - expat 2.4.9
+    - fontconfig 2.14
+    - freetype 2.10
+    - jpeg 9e
+    - libiconv 1.16     # [osx]
+    - libpng 1.6.*
+    - libtiff 4.1.*  # [not ((osx and arm64) or (linux and aarch64))]
+    - libtiff 4.2.*  # [(osx and arm64) or (linux and aarch64)]
+    - libwebp 1.2
+    - libwebp-base
+    - zlib 1.2.*
+  run:
+    - expat >=2.4.9,<3.0a0
+    - fontconfig >=2.14.1,<3.0a0
+    - freetype >=2.10.4,<3.0a0
+    - jpeg >=9e,<10a
+    - libiconv >=1.16,<2.0a0     # [osx]
+    - libpng >=1.6.37,<1.7.0a0
+    - libtiff >=4.1.0,<5.0a0  # [not ((osx and arm64) or (linux and aarch64))]
+    - libtiff >=4.2.0,<5.0a0  # [(osx and arm64) or (linux and aarch64)]
+    - libwebp >=1.2.0,<1.3.0a0
+    - libwebp-base
+    - zlib >=1.2.13,<1.3.0a0
+
+test:
+  commands:
+    - test -f $PREFIX/lib/libgd.a  # [linux]
+    - test -f $PREFIX/lib/libgd${SHLIB_EXT}  # [not win]
+    - if not exist %PREFIX%\\Library\\bin\\libgd.dll exit 1  # [win]
+    - if not exist %PREFIX%\\Library\\lib\\libgd.lib exit 1  # [win]
+
+about:
+    home: https://libgd.github.io/
+    summary: Library for the dynamic creation of images.
+    description: |
+      GD is commonly used to generate charts, graphics, thumbnails, and most anything else, on the fly. 
+      It is lite weight and fits usages like web development, embemdedded, or any other usages you may need.
+      It supports transparency, blending, images transformations and various filters. 
+      Its design allows the additions of custom features in a very friendly manner.
+    license: GD
+    license_family: BSD
+    license_file: COPYING
+    dev_url: https://github.com/libgd/libgd
+    doc_url: https://libgd.github.io/pages/docs.html
+
+extra:
+  recipe-maintainers:
+    - croth1
+    - ChrisBarker-NOAA
+    - ocefpaf

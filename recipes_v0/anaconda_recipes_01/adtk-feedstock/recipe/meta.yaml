@@ -1,0 +1,58 @@
+{% set name = "adtk" %}
+{% set version = "0.6.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 6cfafb44b5ad26a2ffd640aeb79d84fc5383d2d42c97a47420695badbee27be8
+
+build:
+  number: 1
+  skip: True  # [py<35]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - numpy
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - pandas >=0.23
+    - {{ pin_compatible('numpy') }}
+    - matplotlib-base >=3.0
+    - scikit-learn >=0.20
+    - statsmodels >=0.9
+    - packaging >=17.0
+    - tabulate >=0.8
+
+test:
+  imports:
+    - adtk
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/arundo/adtk
+  license: MPL-2.0
+  license_family: MOZILLA
+  license_file: LICENSE
+  summary: A package for unsupervised time series anomaly detection
+  description: |
+    This package offers a set of common detectors, transformers and aggregators
+    with unified APIs, as well as pipe classes that connect them together into 
+    models. It also provides some functions to process and visualize 
+    time series and anomaly events.
+  dev_url: https://github.com/arundo/adtk
+  doc_url: https://github.com/arundo/adtk
+
+extra:
+  recipe-maintainers:
+    - rpanai

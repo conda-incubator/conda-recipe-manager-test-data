@@ -1,0 +1,42 @@
+{% set name = "slacker" %}
+{% set version = "0.14.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 1ae7c597025c114e202b5c880345f150f795665bfc638010cac614ede4ed5108
+
+build:
+  number: 0
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  build:
+  host:
+    - python
+    - pip 
+  run:
+    - python
+    - requests
+
+test:
+  imports:
+    - slacker
+
+about:
+  home: https://github.com/os/slacker
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: 'Slack API client'
+
+extra:
+  recipe-maintainers:
+   - licode
+   - os
+   - tacaswell
+   - hadim

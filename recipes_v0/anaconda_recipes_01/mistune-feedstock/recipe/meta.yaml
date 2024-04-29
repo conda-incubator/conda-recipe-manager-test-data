@@ -1,0 +1,55 @@
+{% set version = "2.0.4" %}
+
+package:
+  name: mistune
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/m/mistune/mistune-{{ version }}.tar.gz
+  sha256: 9ee0a66053e2267aba772c71e06891fa8f1af6d4b01d5e84e267b4570d4d9808
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+  run_constrained:
+    # 6.1.0 pins to mistune <2 (a future version may loosen this pin)
+    # see: https://github.com/conda-forge/nbconvert-feedstock/pull/54
+    - nbconvert >6.1.0
+
+test:
+  source_files:
+    - tests
+  requires:
+    - pytest-cov
+    - pip
+  imports:
+    - mistune
+    - mistune.plugins
+    - mistune.directives
+  commands:
+    - pip check
+    - pytest --cov mistune --cov-report=term-missing:skip-covered --cov-fail-under=98 --no-cov-on-fail
+
+about:
+  home: https://github.com/lepture/mistune
+  license_file: LICENSE
+  license: BSD-3-Clause
+  license_family: BSD
+  summary: A sane Markdown parser with useful plugins and renderers.
+  dev_url: https://github.com/lepture/mistune
+  doc_url: https://mistune.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - pelson
+    - bollwyvl
+    - ocefpaf

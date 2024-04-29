@@ -1,0 +1,45 @@
+{% set version = "2023.1.0" %}
+
+package:
+  name: adlfs
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/a/adlfs/adlfs-{{ version }}.tar.gz
+  sha256: eca53f53d88fc8e2e7a2f1d8f5a40b8a1c56aa3b541e4aa2e7eaf55a6a789262
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.8
+    - pip
+  run:
+    - python >=3.8
+    - aiohttp >=3.7.0
+    - azure-core >=1.23.1,<2.0
+    - azure-datalake-store >=0.0.46,<0.1
+    - azure-identity
+    - azure-storage-blob >=12.12.0
+    - fsspec >=2021.10.1
+
+test:
+  imports:
+    - adlfs
+
+about:
+  home: https://github.com/dask/adlfs
+  license: BSD-3-Clause
+  license_file: LICENSE.txt
+  summary: fsspec-compatible Azure Datalake and Azure Blob Storage access
+
+extra:
+  recipe-maintainers:
+    - hayesgb
+    - martindurant
+    - TomAugspurger
+    - raybellwaves
+    - dhirschfeld

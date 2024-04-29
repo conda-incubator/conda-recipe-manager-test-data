@@ -1,0 +1,42 @@
+{% set version = "20191125" %}
+
+
+package:
+  name: pdfminer
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pdfminer/pdfminer-{{ version }}.tar.gz
+  sha256: 9e700bc731300ed5c8936343c1dd4529638184198e54e91dd2b59b64a755dc01
+
+build:
+  number: 1
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - pycryptodome
+
+test:
+  imports:
+    - pdfminer
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: http://euske.github.io/pdfminer/index.html
+  license: MIT
+  license_file: LICENSE
+  summary: 'PDF parser and analyzer'
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - nehaljwani

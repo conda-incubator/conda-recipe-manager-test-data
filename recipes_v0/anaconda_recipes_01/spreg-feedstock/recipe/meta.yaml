@@ -1,0 +1,50 @@
+{% set version = "1.2.4" %}
+
+package:
+  name: spreg
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/s/spreg/spreg-{{ version }}.tar.gz
+  sha256: c2d1f243dedf53e3380c83fcd93bbd33339e20fb187486dc7ce7ebab7c21bc76
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python >=3.7
+    - libpysal >=4.0.0
+    - numpy >=1.3
+    - scipy >=0.11
+    - pandas
+
+test:
+  imports:
+    - spreg
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/pysal/spreg
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: {{ environ["RECIPE_DIR"] }}/LICENSE.txt
+  dev_url: https://github.com/pysal/spreg
+  doc_url: https://github.com/pysal/spreg/blob/master/README.md
+  summary: PySAL Spatial Econometrics Package
+
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - pedrovma
+    - jGaboardi

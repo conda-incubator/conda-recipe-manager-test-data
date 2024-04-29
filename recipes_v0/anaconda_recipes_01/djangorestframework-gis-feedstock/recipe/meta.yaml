@@ -1,0 +1,47 @@
+{% set name = "djangorestframework-gis" %}
+{% set version = "1.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/djangorestframework-gis-{{ version }}.tar.gz
+  sha256: 921c5adbc9a7c0502c905957a6695b67f55d7bf6582e1ab837888b55a1fce5a6
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - djangorestframework >=3.10
+    - django >=2.2
+
+test:
+  imports:
+    - rest_framework_gis
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/djangonauts/django-rest-framework-gis
+  summary: Geographic add-ons for Django Rest Framework
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  doc_url: https://github.com/djangonauts/django-rest-framework-gis
+  dev_url: https://github.com/djangonauts/django-rest-framework-gis
+
+extra:
+  recipe-maintainers:
+    - kwilcox
+    - ocefpaf

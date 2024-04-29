@@ -1,0 +1,51 @@
+{% set name = "pyfakefs" %}
+{% set version = "5.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 316c6026640d14a6b4fbde71fd9674576d1b5710deda8fabde8aad51d785dbc3
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - python >=3.7
+
+test:
+  source_files:
+    - pyfakefs
+  imports:
+    - pyfakefs
+  commands:
+    - pip check
+    - python -m pyfakefs.tests.all_tests
+  requires:
+    - pip
+
+about:
+  home: https://github.com/jmcgeheeiv/pyfakefs
+  doc_url: http://jmcgeheeiv.github.io/pyfakefs/
+  license: Apache-2.0
+  license_file: COPYING
+  summary: A fake file system that mocks the Python file system modules.
+  description: |
+    Pyfakefs implements a fake file system that mocks the Python file system
+    modules. Using pyfakefs, your tests operate on a fake file system in
+    memory without touching the real disk. The software under test requires
+    no modification to work with pyfakefs. pyfakefs works with Linux, Windows
+    and MacOS.
+
+extra:
+  recipe-maintainers:
+    - tswast
+    - thewchan

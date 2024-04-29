@@ -1,0 +1,50 @@
+{% set name = "fasteners" %}
+{% set version = "0.16.3" %}
+{% set sha256 = "b1ab4e5adfbc28681ce44b3024421c4f567e705cc3963c732bf1cba3348307de" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools
+    - six
+    - wheel
+  run:
+    - python >=3.6
+    - six
+
+test:
+  imports:
+    - fasteners
+  requires:
+    - pip
+    - six
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/harlowja/fasteners
+  dev_url: https://github.com/harlowja/fasteners
+  doc_url: https://github.com/harlowja/fasteners/tree/master/doc/source
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: A python package that provides useful locks.
+
+extra:
+  recipe-maintainers:
+    - alimanfoo

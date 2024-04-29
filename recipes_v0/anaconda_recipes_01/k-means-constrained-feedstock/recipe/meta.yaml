@@ -1,0 +1,63 @@
+{% set name = "k-means-constrained" %}
+{% set version = "0.7.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e3cf1601ebe91c2317fd595399153e81c450085b15a072ea67f9850175a12102
+
+build:
+  # or-tools is missing on Windows due to OpenBLAS requirement 
+  skip: true  # [py<38 or win]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - setuptools
+    - wheel
+    - cython 0.29.33
+    - numpy 1.23.5
+    - pip
+  run:
+    - python
+    - ortools-python >=9.4
+    - scipy >=1.6.3
+    - six
+    - joblib
+    - {{ pin_compatible('numpy') }}
+
+test:
+  imports:
+    - k_means_constrained
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/joshlk/k-means-constrained
+  dev_url: https://github.com/joshlk/k-means-constrained
+  doc_url: https://joshlk.github.io/k-means-constrained/
+  summary: K-Means clustering constrained with minimum and maximum cluster size
+  description: |
+    K-means clustering implementation whereby a minimum and/or maximum size for 
+    each cluster can be specified.
+    This K-means implementation modifies the cluster assignment step (E in EM) 
+    by formulating it as a Minimum Cost Flow (MCF) linear network optimisation 
+    problem. This is then solved using a cost-scaling push-relabel algorithm 
+    and uses Google's Operations Research tools's SimpleMinCostFlow which is 
+    a fast C++ implementation.
+  license: BSD-3-Clause
+  license_file: LICENSE
+  license_family: BSD
+
+extra:
+  recipe-maintainers:
+    - ELundby45

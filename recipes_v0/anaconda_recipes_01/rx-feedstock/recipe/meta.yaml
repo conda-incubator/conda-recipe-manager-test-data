@@ -1,0 +1,50 @@
+{% set name = "Rx" %}
+{% set version = "3.2.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b657ca2b45aa485da2f7dcfd09fac2e554f7ac51ff3c2f8f2ff962ecd963d91c
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - pytest-runner
+    - python >=3.6
+  run:
+    - python >=3.6
+
+test:
+  requires:
+    - pip
+  imports:
+    - rx
+    - rx.disposable
+    - rx.operators
+    - rx.scheduler
+    - rx.subject
+    - rx.testing
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/ReactiveX/RxPY
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Reactive Extensions (Rx) for Python
+  description: |
+    A library for composing asynchronous and event-based programs using
+    observable collections and query operator functions in Python
+
+extra:
+  recipe-maintainers:
+    - bollwyvl

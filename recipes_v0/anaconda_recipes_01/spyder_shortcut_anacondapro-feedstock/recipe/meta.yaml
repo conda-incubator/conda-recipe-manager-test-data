@@ -1,0 +1,20 @@
+package:
+  name: spyder_shortcut_anacondapro
+  version: 0.1.0
+
+build:
+  number: 0
+  skip: True  # [not win]
+
+requirements:
+  run:
+    - spyder
+
+about:
+  license: BSD
+  summary: Spyder shortcut creator for Windows (using menuinst)
+
+extra:
+  recipe-maintainers:
+    - bkreider
+

@@ -1,0 +1,52 @@
+{% set version = "69.0.0.20240125" %}
+
+package:
+  name: types-setuptools
+  version: {{ version }}
+
+source:
+  - url: https://raw.githubusercontent.com/python/typeshed/main/LICENSE
+    sha256: 295f8538c94ae5c3043301cf7cff1c852dab6a786a8ddee471e061b40d5ecabe
+  - url: https://pypi.io/packages/source/t/types-setuptools/types-setuptools-{{ version }}.tar.gz
+    sha256: 22ad498cb585b22ce8c97ada1fccdf294a2e0dd7dc984a28535a84ea82f45b3f
+
+build:
+  number: 0
+  skip: true # [py<36]
+  script: {{ PYTHON }} -m pip install --no-deps --no-build-isolation . -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  requires:
+    - pip
+  imports:
+    - setuptools
+  commands:
+    - pip check
+    - test -f $SP_DIR/pkg_resources-stubs/__init__.pyi # [unix]
+    - if not exist %SP_DIR%\\pkg_resources-stubs\\__init__.pyi exit 1 # [win]
+    - pip check
+
+about:
+  home: https://github.com/python/typeshed
+  description: Typing stubs for setuptools
+  dev_url: https://github.com/python/typeshed
+  doc_url: https://typing.readthedocs.io/
+  summary: Typing stubs for setuptools
+  license: Apache-2.0 AND MIT
+  license_file: LICENSE
+  license_family: Other
+
+
+extra:
+  recipe-maintainers:
+    - fhoehle
+    - conda-forge/mypy

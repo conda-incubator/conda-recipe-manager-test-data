@@ -1,0 +1,40 @@
+{% set name = "pymodm" %}
+{% set version = "0.4.3" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b9fc352dabca1c10bc9342167ab322ce2898b68a79c42e19f0baa7d5b7578ea1
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - pymongo <4.0,>=3.4
+    - python >=3.6
+
+test:
+  imports:
+    - pymodm
+    - pymodm.base
+
+about:
+  home: https://pypi.org/project/pymodm/
+  summary: PyMODM is a generic ODM on top of PyMongo.
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - marcelotrevisani

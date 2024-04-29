@@ -1,0 +1,61 @@
+{% set name = "yapf" %}
+{% set version = "0.40.2" %}
+{% set sha256 = "8e0825803c488aa2cb118ed277a18d4617984608e75d10d5bffa5e24734eb022" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/google/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  entry_points:
+    - yapf = yapf:run_main
+    - yapf-diff = yapf_third_party.yapf_diff.yapf_diff:main
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skipt: true # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - importlib-metadata >=6.6.0
+    - platformdirs >=3.5.1
+    - tomli >=2.0.1
+
+test:
+  source_files:
+    - yapftests
+  imports:
+    - yapf
+  commands:
+    - pip check
+    - yapf --help
+    - yapf-diff --help
+    - python -m unittest discover -p '*_test.py' yapftests/ # [not win] tests failed to be discovered on windows...
+  requires:
+    - pip
+
+about:
+  home: https://github.com/google/yapf
+  license: Apache-2.0 AND PSF-2.0
+  license_family: Apache
+  license_file:
+    - LICENSE
+    - third_party/yapf_third_party/yapf_diff/LICENSE
+    - third_party/yapf_third_party/_ylib2to3/LICENSE
+  summary: A formatter for Python code
+  dev_url: https://github.com/google/yapf
+  doc_url: https://github.com/google/yapf
+
+extra:
+  recipe-maintainers:
+    - vamega
+    - ericdill

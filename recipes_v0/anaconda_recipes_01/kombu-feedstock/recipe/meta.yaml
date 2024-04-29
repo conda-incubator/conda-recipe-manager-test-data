@@ -1,0 +1,75 @@
+{% set name = "kombu" %}
+{% set version = "5.2.2" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/kombu-{{ version }}.tar.gz
+  sha256: 0f5d0763fb916808f617b886697b2be28e6bc35026f08e679697fc814b48a608
+  patches:
+    - fix_test_txt.patch
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  build:
+    - patch     # [not win]
+    - m2-patch  # [win]
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - importlib_metadata >=0.18  # [py<38]
+    - amqp >=5.0.6,<6.0.0
+    - vine
+
+test:
+  imports:
+    - kombu
+    - kombu.asynchronous
+    - kombu.asynchronous.aws
+    - kombu.asynchronous.http
+    - kombu.transport
+    - kombu.transport.virtual
+    - kombu.utils
+  source_files:
+    - t/
+  requires:
+    - pip
+    - pytz
+    - pytest >=6.2,<7
+    - pytest-sugar
+    - redis
+    - redis-py
+  commands:
+    - pip check
+    - pytest t/ -vv -k "not test_failed_credentials"
+
+about:
+  home: https://kombu.readthedocs.org
+  license_file: LICENSE
+  license: BSD-3-Clause
+  license_family: BSD
+  summary: Messaging library for Python
+  description: |
+    Kombu is a messaging library for Python.
+    The aim of Kombu is to make messaging in Python as easy as possible by providing an idiomatic high-level interface for the AMQ protocol, and also provide proven and tested solutions to common messaging problems.
+    AMQP is the Advanced Message Queuing Protocol, an open standard protocol for message orientation, queuing, routing, reliability and security, for which the RabbitMQ messaging server is the most popular implementation.
+  dev_url: https://github.com/celery/kombu
+  doc_url: https://docs.celeryq.dev/projects/kombu
+
+extra:
+  recipe-maintainers:
+    - anguslees
+    - kwilcox
+    - pmlandwehr
+    - igortg

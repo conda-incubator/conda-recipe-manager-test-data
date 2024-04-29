@@ -1,0 +1,47 @@
+{% set version = "0.5" %}
+
+package:
+  name: crender
+  version: {{ version }}
+
+source:
+  git_url: https://github.com/anaconda-distribution/crender.git
+  git_rev: 544ab2c9aa9e36c2927a94532ca7a0bed931963d
+  patches: # [linux and ppc64le]
+    # gcc8: link with -lstdc++fs to overcome std::filesystem issue. For more info, see: https://gitlab.kitware.com/cmake/cmake/-/issues/17834
+    - patches/gcc8-fs.patch # [linux and ppc64le]
+
+build:
+  number: 0
+  skip: True # [osx and x86_64]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - git
+    - ninja
+    - patch  # [linux and ppc64le]
+
+about:
+  home: https://github.com/anaconda-distribution/crender
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  license_url: https://github.com/anaconda-distribution/crender/blob/master/LICENSE
+  summary: The crender tool for creating and checking conda recipes
+  description: |
+    The crender tool renders conda recipes.
+  dev_url: https://github.com/anaconda-distribution/crender
+  doc_url: https://github.com/anaconda-distribution/crender
+
+extra:
+  skip-lints:
+    - missing_doc_source_url
+    - non_url_source
+    - missing_hash
+  recipe-maintainers:
+    - tkoch
+    - sbailey
+    - cbouss

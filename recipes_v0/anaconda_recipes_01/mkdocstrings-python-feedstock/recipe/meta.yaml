@@ -1,0 +1,46 @@
+{% set name = "mkdocstrings-python" %}
+{% set version = "0.8.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/mkdocstrings-python-{{ version }}.tar.gz
+  sha256: 9ae473f6dc599339b09eee17e4d2b05d6ac0ec29860f3fc9b7512d940fc61adf
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+    - pdm
+    - pdm-pep517
+  run:
+    - python >=3.7
+    - mkdocstrings >=0.19
+    - griffe >=0.24
+
+test:
+  imports:
+    - mkdocstrings_handlers.python
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://pypi.org/project/mkdocstrings-python/
+  doc_url: https://mkdocstrings.github.io/python
+  dev_url: https://github.com/mkdocstrings/python
+  summary: A Python handler for mkdocstrings.
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - bandersen23

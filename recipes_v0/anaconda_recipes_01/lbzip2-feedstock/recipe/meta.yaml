@@ -1,0 +1,42 @@
+{% set name = "lbzip2" %}
+{% set version = "2.5" %}
+{% set sha256 = "eec4ff08376090494fa3710649b73e5412c3687b4b9b758c93f73aa7be27555b" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: http://archive.lbzip2.org/lbzip2-{{ version }}.tar.bz2
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [win]
+  script:
+    - mkdir build && pushd build
+    - CFLAGS="$CFLAGS -gllvm -O0" ${SRC_DIR}/configure --prefix=$PREFIX
+    - make -j${CPU_COUNT} ${VERBOSE_AT}
+    - make check ${VERBOSE_AT}
+    - make install
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+
+test:
+  requires:
+    - bzip2
+  commands:
+    - lbzip2 --version
+
+about:
+  home: http://lbzip2.org
+  license: GPLv3
+  license_file: lbzip2-{{ version }}/COPYING
+  summary: lbzip2 is a free, multi-threaded compression utility with support for bzip2 compressed file format
+
+extra:
+  recipe-maintainers:
+    - gqmelo
+    - mingwandroid

@@ -1,0 +1,61 @@
+{% set version = "3.19.1" %}
+
+package:
+  name: libdap4
+  version: {{ version }}
+
+source:
+  url: https://github.com/OPENDAP/libdap4/archive/version-{{ version }}.tar.gz
+  sha256: 487c86ad95b45a83e9f0fc09b69107f6b035d7373c2a7a717532b6e31b1cb6ee
+
+build:
+  number: 1
+  skip: true  # [win]
+  run_exports:
+    # no ABI lab entry.  Going with minor pinning based on past conda-forge pinning.
+    - {{ pin_subpackage('libdap4', max_pin='x.x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - autoconf
+    - automake
+    - bison
+    - flex
+    - libtool
+    - make
+  host:
+    - flex
+    - libcurl
+    - libuuid  # [not osx]
+    - libxml2 2.10
+  run:
+    # libxml2 removed here because package has run_exports for itself
+    #    https://github.com/AnacondaRecipes/libxml2-feedstock/pull/2
+    # this req isn't actually necessary, as run_exports will add it.  Left here for reference.
+    # - libxml2 2.9.*
+    - curl
+
+test:
+  commands:
+    - dap-config --version
+    - test -f ${PREFIX}/lib/libdap${SHLIB_EXT}
+    - test -f ${PREFIX}/lib/libdapclient${SHLIB_EXT}
+    - test -f ${PREFIX}/lib/libdapserver${SHLIB_EXT}
+
+about:
+  home: https://www.opendap.org/
+  license: LGPL-2.1-or-later
+  license_family: LGPL
+  license_file: COPYING
+  summary: A C++ SDK which contains an implementation of both DAP2 and DAP4.
+  dev_url: https://github.com/OPENDAP/libdap4
+  doc_url: https://opendap.github.io/libdap4/
+
+extra:
+  recipe-maintainers:
+    - aleksandervines
+    - jakirkham
+    - ocefpaf
+    - msarahan

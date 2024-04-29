@@ -1,0 +1,58 @@
+{% set name = "mdit-py-plugins" %}
+{% set version = "0.3.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: ecc24f51eeec6ab7eecc2f9724e8272c2fb191c2e93cf98109120c2cace69750
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  skip: True  # [py<36]
+  # trigger: 0
+
+requirements:
+  host:
+    - pip
+    - setuptools
+    - wheel
+    - python
+  run:
+    - markdown-it-py >=1.0.0,<3.0.0
+    - python
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+  imports:
+    - mdit_py_plugins
+    - mdit_py_plugins.amsmath
+    - mdit_py_plugins.anchors
+    - mdit_py_plugins.container
+    - mdit_py_plugins.deflist
+    - mdit_py_plugins.dollarmath
+    - mdit_py_plugins.footnote
+    - mdit_py_plugins.front_matter
+    - mdit_py_plugins.myst_blocks
+    - mdit_py_plugins.myst_role
+    - mdit_py_plugins.tasklists
+    - mdit_py_plugins.texmath
+
+about:
+  home: https://github.com/executablebooks/mdit-py-plugins
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Collection of plugins for markdown-it-py
+  doc_url: https://markdown-it-py.readthedocs.io/en/latest/plugins.html
+
+extra:
+  recipe-maintainers:
+    - dopplershift
+    - choldgraf

@@ -1,0 +1,103 @@
+{% set version = '0.1.5' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-influencer
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/influenceR_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/influenceR/influenceR_{{ version }}.tar.gz
+  sha256: 8164e4820f769032fab97c9ca486d33e83309641fcc4875065d8f5a43b20f58c
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: testthat
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-matrix >=1.1_4
+    - r-igraph >=1.0.1
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-matrix >=1.1_4
+    - r-igraph >=1.0.1
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('influenceR')"           # [not win]
+    - "\"%R%\" -e \"library('influenceR')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://github.com/khanna-lab/influenceR
+  license: GPL-2
+  summary: Provides functionality to compute various node centrality measures on networks. Included
+    are functions to compute betweenness centrality (by utilizing Madduri and Bader's
+    SNAP library), implementations of constraint and effective network size by Burt
+    (2000) <doi:10.1016/S0191-3085(00)22009-1>; algorithm to identify key players by
+    Borgatti (2006) <doi:10.1007/s10588-006-7084-x>; and the bridging algorithm by Valente
+    and Fujimoto (2010) <doi:10.1016/j.socnet.2010.03.003>. On Unix systems, the betweenness,
+    Key Players, and bridging implementations are parallelized with OpenMP, which may
+    run faster on systems which have OpenMP configured.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: influenceR
+# Title: Software Tools to Quantify Structural Importance of Nodes in a Network
+# Version: 0.1.5
+# Author: Simon Jacobs [aut], Aditya Khanna [aut, cre], Kamesh Madduri [ctb], David Bader [ctb]
+# Maintainer: Aditya Khanna <khanna7.work@gmail.com>
+# Description: Provides functionality to compute various node centrality measures on networks. Included are functions to compute betweenness centrality (by utilizing Madduri and Bader's SNAP library), implementations of constraint and effective network size by Burt (2000) <doi:10.1016/S0191-3085(00)22009-1>; algorithm to identify key players by Borgatti (2006) <doi:10.1007/s10588-006-7084-x>; and the bridging algorithm by Valente and Fujimoto (2010) <doi:10.1016/j.socnet.2010.03.003>. On Unix systems, the betweenness, Key Players, and bridging implementations are parallelized with OpenMP, which may run faster on systems which have OpenMP configured.
+# Depends: R (>= 3.2.0)
+# License: GPL-2
+# Imports: igraph (>= 1.0.1), Matrix (>= 1.1-4), methods, utils
+# NeedsCompilation: yes
+# Suggests: testthat
+# URL: https://github.com/khanna-lab/influenceR
+# RoxygenNote: 7.2.3
+# Packaged: 2023-05-17 22:29:21 UTC; adityakhanna
+# Repository: CRAN
+# Date/Publication: 2023-05-18 10:00:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

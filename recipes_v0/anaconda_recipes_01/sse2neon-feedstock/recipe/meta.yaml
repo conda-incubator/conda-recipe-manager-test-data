@@ -1,0 +1,41 @@
+{% set name = "sse2neon" %}
+{% set version = "1.6.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/DLTcollab/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 06f4693219deccb91b457135d836fc514a1c0a57e9fa66b143982901d2d19677
+  
+build:
+  number: 0
+  skip: True  # [s390x]
+
+requirements:
+  build:
+    - {{ compiler('c') }} # [not win]
+    - {{ compiler('cxx') }} # [not win]
+    - make  # [not win]
+
+test:
+  commands:
+    - test -f "${PREFIX}/include/sse2neon/sse2neon.h" # [not win]
+    - if not exist %LIBRARY_INC%\sse2neon\sse2neon.h exit 1  # [win]
+    
+about:
+  home: https://github.com/DLTcollab/sse2neon/
+  summary: A C/C++ header file that converts Intel SSE intrinsics to Arm/Aarch64 NEON intrinsics.
+  license_file: LICENSE
+  license: MIT
+  license_family: MIT
+  dev_url: https://github.com/DLTcollab/sse2neon/
+  doc_url: https://github.com/DLTcollab/sse2neon/
+  description: |
+    sse2neon is a translator of Intel SSE (Streaming SIMD Extensions) intrinsics to Arm NEON, 
+    shortening the time needed to get an Arm working program that then can be used to 
+    extract profiles and to identify hot paths in the code.
+extra:
+  recipe-maintainers:
+    - M-Waszkiewicz-Anaconda

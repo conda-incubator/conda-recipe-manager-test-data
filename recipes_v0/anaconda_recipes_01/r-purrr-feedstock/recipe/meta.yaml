@@ -1,0 +1,116 @@
+{% set version = '1.0.2' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-purrr
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/purrr_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/purrr/purrr_{{ version }}.tar.gz
+  sha256: 2c1bc6bb88433dff0892b41136f2f5c23573b335ff35a4775c72aa57b48bbb63
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: covr, dplyr (>= 0.7.8), httr, knitr, lubridate, rmarkdown, testthat (>= 3.0.0), tibble, tidyselect
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}sed               # [win]
+    - {{ posix }}grep              # [win]
+    - {{ posix }}autoconf
+    - {{ posix }}automake          # [not win]
+    - {{ posix }}automake-wrapper  # [win]
+    - {{ posix }}pkg-config
+    - {{ posix }}make
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-cli >=3.6.1
+    - r-lifecycle >=1.0.3
+    - r-magrittr >=1.5.0
+    - r-rlang >=1.1.1
+    - r-vctrs >=0.6.3
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-cli >=3.6.1
+    - r-lifecycle >=1.0.3
+    - r-magrittr >=1.5.0
+    - r-rlang >=1.1.1
+    - r-vctrs >=0.6.3
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('purrr')"           # [not win]
+    - "\"%R%\" -e \"library('purrr')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://purrr.tidyverse.org/, https://github.com/tidyverse/purrr
+  license: MIT
+  summary: A complete and consistent functional programming toolkit for R.
+  license_family: MIT
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/MIT'
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: purrr
+# Title: Functional Programming Tools
+# Version: 1.0.2
+# Authors@R: c( person("Hadley", "Wickham", , "hadley@rstudio.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4757-117X")), person("Lionel", "Henry", , "lionel@rstudio.com", role = "aut"), person("RStudio", role = c("cph", "fnd")) )
+# Description: A complete and consistent functional programming toolkit for R.
+# License: MIT + file LICENSE
+# URL: https://purrr.tidyverse.org/, https://github.com/tidyverse/purrr
+# BugReports: https://github.com/tidyverse/purrr/issues
+# Depends: R (>= 3.5.0)
+# Imports: cli (>= 3.6.1), lifecycle (>= 1.0.3), magrittr (>= 1.5.0), rlang (>= 1.1.1), vctrs (>= 0.6.3)
+# Suggests: covr, dplyr (>= 0.7.8), httr, knitr, lubridate, rmarkdown, testthat (>= 3.0.0), tibble, tidyselect
+# LinkingTo: cli
+# VignetteBuilder: knitr
+# Biarch: true
+# Config/Needs/website: tidyverse/tidytemplate, tidyr
+# Config/testthat/edition: 3
+# Encoding: UTF-8
+# RoxygenNote: 7.2.3
+# NeedsCompilation: yes
+# Packaged: 2023-08-08 16:13:31 UTC; hadleywickham
+# Author: Hadley Wickham [aut, cre] (<https://orcid.org/0000-0003-4757-117X>), Lionel Henry [aut], RStudio [cph, fnd]
+# Maintainer: Hadley Wickham <hadley@rstudio.com>
+# Repository: CRAN
+# Date/Publication: 2023-08-10 08:20:07 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

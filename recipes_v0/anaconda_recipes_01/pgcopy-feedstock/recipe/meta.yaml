@@ -1,0 +1,44 @@
+{% set name = "pgcopy" %}
+{% set version = "1.5.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: a616af868720cbb805ef92922d44ed4044e9e813a9a4666763c630b0dab8b4fb
+
+build:
+  number: 0
+  noarch: python
+  script: '{{ PYTHON }} -m pip install . -vv '
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - psycopg2
+    - python
+    - pytz
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+  imports:
+    - pgcopy
+
+about:
+  home: https://pgcopy.readthedocs.io/en/latest/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Fast db insert with postgresql binary copy
+  dev_url: https://github.com/altaurog/pgcopy
+
+extra:
+  recipe-maintainers:
+    - xhochy

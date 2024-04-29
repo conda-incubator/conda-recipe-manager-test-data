@@ -1,0 +1,50 @@
+{% set name = "doc8" %}
+{% set version = "1.1.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d97a93e8f5a2efc4713a0804657dedad83745cca4cd1d88de9186f77f9776004
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - doc8 = doc8.main:main
+
+requirements:
+  host:
+    - python >=3.8
+    - pip >=19.3.1
+    - setuptools >=61.2
+    - setuptools_scm >=3.5.0
+    - setuptools_scm_git_archive >=1.1
+    - wheel >=0.33.6
+  run:
+    - python >=3.8
+    - docutils >=0.19,<0.21
+    - restructuredtext_lint >=0.7
+    - stevedore
+    - tomli
+    - pygments
+
+test:
+  commands:
+    - doc8 -h
+
+about:
+  home: https://github.com/PyCQA/doc8
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Doc8 is an opinionated style checker for rst (with basic support for plain text) styles of documentation.
+  dev_url: https://github.com/PyCQA/doc8
+
+extra:
+  recipe-maintainers:
+    - dopplershift
+    - carlodri

@@ -1,0 +1,56 @@
+{% set name = "types-protobuf" %}
+{% set version = "4.23.0.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/types-protobuf-{{ version }}.tar.gz
+  sha256: 7bd5ea122a057b11a82b785d9de464932a1e9175fe977a4128adef11d7f35547
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: true  #[py<36]
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - types-futures
+
+test:
+  files:
+    - _run_test.py
+  requires:
+    - pip
+    - protobuf
+  commands:
+    - test -f $SP_DIR/google-stubs/protobuf/__init__.pyi  # [not win]
+    - if not exist %SP_DIR%\\google-stubs\\protobuf\\__init__.pyi exit 1 # [win]
+    - pip check
+
+
+about:
+  home: https://github.com/python/typeshed
+  dev_url: https://github.com/python/typeshed
+  doc_url: https://typing.readthedocs.io/
+  summary: Typing stubs for protobuf
+  description: |
+    This is a PEP 561 type stub package for the protobuf package. 
+    It can be used by type-checking tools like mypy, pyright, 
+    pytype, PyCharm, etc. to check code that uses protobuf.
+  license: Apache-2.0 AND MIT
+  license_file: LICENSE
+  license_family: Apache
+
+extra:
+  recipe-maintainers:
+    - fhoehle
+    - conda-forge/mypy

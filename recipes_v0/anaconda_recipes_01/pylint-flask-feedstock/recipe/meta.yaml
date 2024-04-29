@@ -1,0 +1,43 @@
+{% set name = "pylint-flask" %}
+{% set version = "0.6" %}
+{% set sha256 = "f4d97de2216bf7bfce07c9c08b166e978fe9f2725de2a50a9845a97de7e31517" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - python
+
+  run:
+    - python
+    - pylint-plugin-utils >=0.2.1
+    - pylint >=1.0
+    - astroid >=1.0
+    - logilab-common >=0.60.0
+
+test:
+  imports:
+    - pylint_flask
+
+about:
+  home: https://github.com/jschaf/pylint-flask
+  license: GPL 2
+  license_file: LICENSE
+  summary: pylint-flask is a Pylint plugin to aid Pylint in recognizing and understanding errors caused when using Flask
+
+extra:
+  recipe-maintainers:
+    - jakirkham

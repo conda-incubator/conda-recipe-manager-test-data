@@ -1,0 +1,60 @@
+{% set name = "scispacy" %}
+{% set version = "0.5.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/scispacy-{{ version }}.tar.gz
+  sha256: 12bd915a81712a6dd50284ee7518088a8dd2c75d69949ea1bd3df00aee763d69
+
+build:
+  # spacy is not available on s390x
+  skip: true  # [py<36 or (linux and s390x)]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python 
+    - spacy >=3.4.0,<3.5.0
+    - requests >=2.0.0,<3.0.0
+    - conllu
+    - numpy
+    - joblib
+    - nmslib >=1.7.3.6
+    - scikit-learn >=0.20.3
+    - pysbd
+
+test:
+  imports:
+    - scispacy
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://spacy.io/universe/project/scispacy
+  summary: A full SpaCy pipeline and models for scientific/biomedical documents.
+  description: |
+    Contains custom pipes and models related to using spaCy for scientific documents.
+    In particular, there is a custom tokenizer that adds tokenization rules on top of 
+    spaCy's rule-based tokenizer, a POS tagger and syntactic parser trained on biomedical 
+    data and an entity span detection model. Separately, there are also NER models for 
+    more specific tasks.
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  doc_url: https://github.com/allenai/scispacy/blob/main/README.md
+  dev_url: https://github.com/allenai/scispacy
+
+extra:
+  recipe-maintainers:
+    - akabanovs

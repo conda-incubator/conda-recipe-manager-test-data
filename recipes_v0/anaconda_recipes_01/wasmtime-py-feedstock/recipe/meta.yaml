@@ -1,0 +1,55 @@
+{% set name = "wasmtime-py" %}
+{% set version = "11.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/bytecodealliance/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+  sha256: f9210cc7740adeae25ca47556ab0c1e0c526289b306c59f850a6ba30513c4c0d
+  patches:
+    patches/0001-read-library-from-standard-anaconda-location.patch
+
+build:
+  skip: True # [py<36 or (linux and (s390x or ppc64le))]
+  script: {{ PYTHON }} -m pip install . -vv  --no-deps --no-build-isolation
+  number: 1
+
+requirements:
+  build:
+    - patch         # [unix]
+    - m2-patch      # [win]
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+
+  run:
+    - python
+    - wasmtime
+
+test:
+  imports:
+    - wasmtime
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/bytecodealliance/wasmtime-py
+  summary: python bindings for Wasmtime
+  description: |
+   The wasmtime-py package has initial support for running WebAssembly components in Python with high-level bindings. 
+
+  license_family: Apache
+  license: Apache-2.0 WITH LLVM-exception
+  license_file: LICENSE
+  dev_url: https://github.com/bytecodealliance/wasmtime-py
+  doc_url: https://docs.wasmtime.dev/lang-python.html
+
+extra:
+  recipe-maintainers:
+    - markw77

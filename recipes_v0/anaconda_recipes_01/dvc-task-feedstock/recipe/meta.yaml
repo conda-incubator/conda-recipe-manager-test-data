@@ -1,0 +1,51 @@
+{% set name = "dvc-task" %}
+{% set version = "0.1.10" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/dvc-task-{{ version }}.tar.gz
+  sha256: 2ea87a76b533c703dcd19245bef89ddf9158e562cd5993ef6f77807a54383620
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+    - setuptools_scm
+  run:
+    - celery >=5.2.0,<6
+    - funcy >=1.17
+    - kombu
+    - python >=3.7
+    - pywin32-on-windows
+    - shortuuid >=1.0.8
+  run_constrained:
+    - pywin32 >=225
+
+test:
+  imports:
+    - dvc_task
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/iterative/dvc-task
+  summary: Extensible task queue used in DVC.
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - karajan1001
+    - pmrowla
+    - efiop
+    - shcheklein

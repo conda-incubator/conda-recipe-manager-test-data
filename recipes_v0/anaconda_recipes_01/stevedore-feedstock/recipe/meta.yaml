@@ -1,0 +1,60 @@
+{% set name = "stevedore" %}
+{% set version = "3.5.0" %}
+{% set bundle = "tar.gz" %}
+{% set hash = "f40253887d8712eaa2bb0ea3830374416736dc8ec0e22f5a65092c1174c44335" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  sha256: {{ hash }}
+
+build:
+  number: 3
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+  host:
+    - python
+    - pip
+    - pbr !=2.1.0,>=2.0.0
+
+  run:
+    - python
+    - pbr !=2.1.0,>=2.0.0
+    - importlib_metadata >=1.7.0  # [py<38]
+
+test:
+  imports:
+    - stevedore
+    - stevedore.named
+    - stevedore.driver
+    - stevedore.hook
+    - stevedore.extension
+    - stevedore.enabled
+    - stevedore.dispatch
+    - stevedore.tests
+    - stevedore._cache
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: http://docs.openstack.org/developer/stevedore/
+  license_file: LICENSE
+  license: Apache-2.0
+  license_family: Apache
+  summary: Manage dynamic plugins for Python applications
+  doc_url: http://docs.openstack.org/developer/stevedore/
+  dev_url: https://git.openstack.org/cgit/openstack/stevedore
+
+extra:
+  recipe-maintainers:
+    - anguslees
+    - tschoonj

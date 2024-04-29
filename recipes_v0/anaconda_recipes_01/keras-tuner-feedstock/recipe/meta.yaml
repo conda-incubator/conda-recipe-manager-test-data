@@ -1,0 +1,63 @@
+{% set name = "keras-tuner" %}
+{% set version = "1.2.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 21478f73e6f1ce5a34e8b378eb10dc935a5e6e6eb74deb46131cd23653d13422
+
+build:
+  noarch: python
+  number: 1
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - python >=3.7
+    - Ipython
+    - kt-legacy
+    - numpy
+    - packaging
+    - requests
+    - scikit-learn
+    - scipy
+    - tensorboard
+    - tensorflow >=2.0
+
+
+test:
+  imports:
+    - keras_tuner
+    - keras_tuner.applications
+    - keras_tuner.distribute
+    - keras_tuner.engine
+    - keras_tuner.oracles
+    - keras_tuner.protos
+    - keras_tuner.tuners
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/keras-team/keras-tuner
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
+  summary: Hypertuner for Keras
+  doc_url: https://keras-team.github.io/keras-tuner/
+  dev_url: https://github.com/keras-team/keras-tuner
+
+extra:
+  recipe-maintainers:
+    - anselmoo
+    - oblute
+    - rluria14
+    - Tata17
+    - mxr-conda

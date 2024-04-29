@@ -1,0 +1,47 @@
+{% set name = "pdfplumber" %}
+{% set version = "0.7.6" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pdfplumber-{{ version }}.tar.gz
+  sha256: a69bcc2a7eba5a2ca3171629dc33f1e08976175e98c8482d028fc6c3f644ec18
+
+build:
+  number: 0
+  entry_points:
+    - pdfplumber = pdfplumber.cli:main
+  script: {{ PYTHON }} -m pip install . -vv
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - python >=3.6.*
+  run:
+    - pdfminer.six ==20221105
+    - pillow >=9.1
+    - python >=3.6.*
+    - wand >=0.6.10
+
+test:
+  imports:
+    - pdfplumber
+  commands:
+    - pip check
+    - pdfplumber --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/jsvine/pdfplumber
+  summary: Plumb a PDF for detailed information about each char, rectangle, and line.
+  license: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - melonhead901

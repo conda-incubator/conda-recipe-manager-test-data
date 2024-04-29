@@ -1,0 +1,65 @@
+{% set name = "pyre2" %}
+{% set version = "0.3.6" %}
+{% set sha256 = "6a0a2c70b1ce98d870ce9423368cc83bbacc8a41f6e066296e197a26a842ede7" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/andreasvc/pyre2/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: true  # [py<36]
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    - {{ compiler('c') }}
+    - cmake >=3.15
+    - make  # [unix]
+    - ninja-base 1.10.2  # [unix]
+  host:
+    - python
+    - pybind11 2.10.4
+    - cython 0.29.32
+    - pip
+    - re2 2022.04.01
+    - setuptools
+    - wheel
+  run:
+    - python
+    - re2
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+    - export "PYTHONIOENCODING=utf8"  # [unix]
+    - set "PYTHONIOENCODING=utf8"  # [win]
+    - python -m unittest discover -f -s tests
+  imports:
+    - re2
+  source_files:
+    - tests
+
+about:
+  home: https://pypi.org/project/pyre2/
+  description: |
+    pyre2 is a Python extension that wraps Google's RE2 regular expression library. 
+    The RE2 engine compiles (strictly) regular expressions to deterministic 
+    finite automata, which guarantees linear-time behavior.
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Python wrapper for Google's RE2 using Cython
+  doc_url: https://github.com/andreasvc/pyre2/blob/master/README.rst
+  dev_url: https://github.com/andreasvc/pyre2
+
+extra:
+  recipe-maintainers:
+    - sarnold

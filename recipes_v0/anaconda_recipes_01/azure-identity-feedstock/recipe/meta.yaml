@@ -1,0 +1,56 @@
+{% set name = "azure-identity" %}
+{% set version = "1.15.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 4c28fc246b7f9265610eb5261d65931183d019a23d4b0e99357facb2e6c227c8
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - wheel
+    - setuptools
+  run:
+    - azure-core <2.0.0,>=1.23.0
+    - cryptography >=2.5
+    - msal <2.0.0,>=1.24.0
+    - msal_extensions <2.0.0,>=0.3.0
+    - python
+
+test:
+  imports:
+    - azure.identity
+    - azure.identity._credentials
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/Azure/azure-sdk-for-python/tree/master/sdk/identity/azure-identity
+  summary: Microsoft Azure Identity Library for Python
+  description: |
+    The Azure Identity library provides Microsoft Entra ID (formerly Azure Active Directory) token
+    authentication support across the Azure SDK. It provides a set of TokenCredential implementations,
+    which can be used to construct Azure SDK clients that support Microsoft Entra token authentication.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  doc_url: https://azuresdkdocs.blob.core.windows.net/$web/python/azure-identity/latest/azure.identity.html
+  dev_url: https://github.com/Azure/azure-sdk-for-python/tree/master/sdk/identity/azure-identity
+
+extra:
+  recipe-maintainers:
+    - marcelotrevisani
+    - dhirschfeld

@@ -1,0 +1,48 @@
+{% set name = "sudachidict-core" %}
+{% set version = "20230110" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/SudachiDict-core-{{ version }}.tar.gz
+  sha256: 35e3fa212e797d23c2147816febb6a5b870c4fe81fa05ad94ece271f23ea4656
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - sudachipy >=0.5,<0.7
+
+test:
+  imports:
+    - sudachidict_core
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/WorksApplications/SudachiDict
+  dev_url: https://github.com/WorksApplications/SudachiDict
+  doc_url: https://github.com/WorksApplications/SudachiDict
+  summary: Sudachi Dictionary for SudachiPy - Core Edition
+  description: Sudachi Dictionary for SudachiPy - Core Edition
+  license: Apache-2.0
+  license_family: Apache
+  license_file:
+    - LICENSE-2.0.txt
+    - sudachidict_core/resources/LICENSE-2.0.txt
+
+extra:
+  recipe-maintainers:
+    - skupr-anaconda

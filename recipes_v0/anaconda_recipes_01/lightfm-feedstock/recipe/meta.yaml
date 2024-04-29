@@ -1,0 +1,67 @@
+{% set name = "lightfm" %}
+{% set version = "1.17" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 2b77ada182ccd768a8d7643ab3cfcd8b6e855db09087f7cc7329bd63316697a8
+
+build:
+  number: 0
+  script:
+    # LIGHTFM_NO_CFLAGS is set to build without -march=nativ and -ffast-math as defined in setup.py
+    - export LIGHTFM_NO_CFLAGS=1 && {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed -vvv  # [unix]
+    - set LIGHTFM_NO_CFLAGS=1 && {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed -vvv  # [win]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - cython
+
+  run:
+    - python
+    - _openmp_mutex                   # [linux]
+    - scipy >=0.17
+    - requests
+    - numpy 
+    - requests
+    - scikit-learn
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+  imports:
+    # ensure OpenMP backend is used on linux
+    - lightfm._lightfm_fast_openmp  # [linux]
+    - lightfm
+    - lightfm.lightfm
+
+about:
+  home: https://github.com/lyst/lightfm
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: A Python implementation of LightFM, a hybrid recommendation algorithm.
+  description: |
+    LightFM is a Python implementation of a number of popular recommendation
+    algorithms for both implicit and explicit feedback, including efficient
+    implementation of BPR and WARP ranking losses. It's easy to use,
+    fast (via multithreaded model estimation), and produces high quality results.
+  doc_url: https://making.lyst.com/lightfm/docs/home.html
+  dev_url: https://github.com/lyst/lightfm
+
+extra:
+  recipe-maintainers:
+    - SimonCW
+    - maciejkula
+    - rth

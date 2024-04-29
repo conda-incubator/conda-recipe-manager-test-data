@@ -1,0 +1,99 @@
+{% set version = '2.1.1' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-mnormt
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/mnormt_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/mnormt/mnormt_{{ version }}.tar.gz
+  sha256: 95fca70378af0afd5a388982ba5528f5b27e02157eeb9940a0a9762d11511308
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('fortran') }}        # [not win]
+    - {{ compiler('m2w64_fortran') }}  # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('mnormt')"           # [not win]
+    - "\"%R%\" -e \"library('mnormt')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: http://azzalini.stat.unipd.it/SW/Pkg-mnormt/
+  license: GPL-2 | GPL-3
+  summary: Functions are provided for computing the density and the distribution function of
+    d-dimensional normal and "t" random variables, possibly truncated (on one side or
+    two sides),  and for generating random vectors sampled from these distributions,
+    except sampling from the truncated "t". Moments of arbitrary order of a multivariate
+    truncated normal are computed, and converted to cumulants up to order 4. Probabilities
+    are computed via non-Monte Carlo methods; different routines are used in the case
+    d=1, d=2, d=3, d>3, if d denotes the dimensionality.
+  license_family: GPL3
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: mnormt
+# Version: 2.1.1
+# Date: 2022-09-26
+# Title: The Multivariate Normal and t Distributions, and Their Truncated Versions
+# Author: Adelchi Azzalini [aut, cre], Alan Genz [aut] (most Fortran code), Alan Miller [ctb] (Fortran routine PHI), Michael J. Wichura  [ctb] (Fortran routine PHINV), G. W. Hill [ctb] (Fortran routine STDINV), Yihong Ge [ctb] (Fortran routines BNVU and MVBVU).
+# Maintainer: Adelchi Azzalini <adelchi.azzalini@unipd.it>
+# Depends: R (>= 2.2.0)
+# Description: Functions are provided for computing the density and the distribution function of d-dimensional normal and "t" random variables, possibly truncated (on one side or two sides),  and for generating random vectors sampled from these distributions, except sampling from the truncated "t". Moments of arbitrary order of a multivariate truncated normal are computed, and converted to cumulants up to order 4. Probabilities are computed via non-Monte Carlo methods; different routines are used in the case d=1, d=2, d=3, d>3, if d denotes the dimensionality.
+# License: GPL-2 | GPL-3
+# URL: http://azzalini.stat.unipd.it/SW/Pkg-mnormt/
+# NeedsCompilation: yes
+# Encoding: UTF-8
+# Packaged: 2022-09-26 08:42:55 UTC; aa
+# Repository: CRAN
+# Date/Publication: 2022-09-26 10:10:06 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

@@ -1,0 +1,69 @@
+{% set name = "tensorflow-probability" %}
+{% set version = "0.14.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/tensorflow/probability/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 54fe9a9cbfee5d02a561c92a730eb29166fa757084b9ccb3f700de42ddeafcfb
+  patches:
+    - 0001-always-build-release.patch
+
+build:
+  noarch: python
+  number: 0
+  script: 
+    - rm -f BUILD
+    - "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  build:
+    - m2-patch # [win]
+    - patch  # [not win]
+  host:
+    - python >=3.6
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python >=3.6
+    - absl-py
+    - six >=1.10.0
+    - numpy >=1.13.3
+    - decorator
+    - cloudpickle >=1.3
+    - gast >=0.3.2  # For autobatching
+    - dm-tree  # For NumPy/JAX backends (hence, also for prefer_static)
+
+test:
+  imports:
+    - tensorflow_probability
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://www.tensorflow.org/probability/
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: 'TensorFlow Probability is a library for probabilistic reasoning and statistical analysis in TensorFlow'
+
+  description: |
+    TensorFlow Probability is a library for probabilistic reasoning 
+    and statistical analysis in TensorFlow. As part of the TensorFlow
+    ecosystem, TensorFlow Probability provides integration of
+    probabilistic methods with deep networks, gradient-based inference
+    via automatic differentiation, and scalability to large datasets
+    and models via hardware acceleration (e.g., GPUs) and distributed
+    computation.
+  doc_url: https://www.tensorflow.org/probability/overview
+  dev_url: https://github.com/tensorflow/probability
+
+extra:
+  recipe-maintainers:
+    - sodre
+    - adbeda

@@ -1,0 +1,51 @@
+{% set name = "strictyaml" %}
+{% set version = "1.7.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 22f854a5fcab42b5ddba8030a0e4be51ca89af0267961c8d6cfa86395586c407
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+    - python-dateutil >=2.6.0
+    - ruamel.yaml >=0.17
+
+test:
+  imports:
+    - strictyaml
+    - strictyaml.ruamel
+    - strictyaml.ruamel.parser  # Verifies that ruamel is installed.
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://hitchdev.com/strictyaml/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Type-safe YAML parser and validator.
+  description: StrictYAML is a type-safe YAML parser that parses and validates a restricted subset of the YAML specification.
+  dev_url: https://github.com/crdoconnor/strictyaml
+  doc_url: https://hitchdev.com/strictyaml/
+
+extra:
+  recipe-maintainers:
+    - mcs07
+    - chrisburr

@@ -1,0 +1,41 @@
+{% set name = "sanic-routing" %}
+{% set version = "22.8.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/sanic-routing-{{ version }}.tar.gz
+  sha256: 305729b4e0bf01f074044a2a315ff401fa7eeffb009eec1d2c81d35e1038ddfc
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - python >=3.7
+
+test:
+  imports:
+    - sanic_routing
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/sanic-org/sanic-routing/
+  summary: Core routing component for Sanic
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - nicoddemus

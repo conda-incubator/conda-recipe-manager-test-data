@@ -1,0 +1,52 @@
+{% set version = "3.2.0" %}
+
+package:
+  name: graphql-relay
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/g/graphql-relay/graphql-relay-{{ version }}.tar.gz
+  sha256: 1ff1c51298356e481a0be009ccdff249832ce53f30559c1338f22a0e0d17250c
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install -vv .
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - poetry-core >=1,<2
+  run:
+    - python >=3.6
+    - graphql-core >=3.2,<3.3
+    - typing_extensions >=4.1,<5
+
+test:
+  source_files:
+    - tests
+  requires:
+    - pip
+    - pytest >=6.2,<7
+    - pytest-asyncio >=0.14,<1
+    - pytest-cov >=2.11,<3
+    - pytest-describe >=1,<2
+    - pyyaml >=5.4,<6
+  imports:
+    - graphql_relay
+  commands:
+    - pip check
+    - pytest --cov graphql_relay --no-cov-on-fail --cov-report term-missing:skip-covered --cov-fail-under 91
+
+about:
+  home: https://github.com/graphql-python/graphql-relay-py
+  license_file: LICENSE
+  license: MIT
+  license_family: MIT
+  summary: Relay library for graphql-core
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - bollwyvl

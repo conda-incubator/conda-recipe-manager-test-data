@@ -1,0 +1,57 @@
+{% set name = "lifelines" %}
+{% set version = "0.27.7" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/CamDavidsonPilon/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: 6c445b0782f4ea10bf9afba9109d1bc05d37afff3bd1826ff4604bdc587d45fa
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: True  # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - numpy >=1.14.0
+    - scipy >=1.2
+    - pandas >=1.0.0
+    - matplotlib-base >=3.0
+    - autograd >=1.5
+    - autograd-gamma >=0.3
+    - formulaic >=0.2.2
+
+test:
+  imports:
+    - lifelines
+    - lifelines.datasets
+    - lifelines.fitters
+    - lifelines.utils
+  requires: 
+    - pip
+  commands: 
+    - pip check
+
+about:
+  home: https://github.com/CamDavidsonPilon/lifelines
+  dev_url: https://github.com/CamDavidsonPilon/lifelines
+  doc_url: https://lifelines.readthedocs.io/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: lifelines is a complete survival analysis library, written in pure Python. 
+  description: lifelines is a complete survival analysis library, written in pure Python.
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk
+    - CamDavidsonPilon

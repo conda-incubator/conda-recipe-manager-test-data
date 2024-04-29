@@ -1,0 +1,86 @@
+{% set name = "numcodecs" %}
+{% set version = "0.12.1" %}
+{% set sha256 = "05d91a433733e7eef268d7e80ec226a0232da244289614a8f3826901aec1098e" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - patches/0001-unvendor-c-blosc.patch
+
+build:
+  number: 0
+  # numcodecs is not currently supported on s390x
+  skip: True  # [py<38 or s390x]
+  script:
+    - export DISABLE_NUMCODECS_AVX2=""  # [unix]
+    - export DISABLE_NUMCODECS_SSE2=""  # [arm64]
+    - set DISABLE_NUMCODECS_AVX2=""  # [win]
+    - export CFLAGS="${CFLAGS} -pthread"  # [ppc64le]
+    - {{ PYTHON }} -m pip install --no-deps . -vv --no-build-isolation
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - patch # [unix]
+    - m2-patch # [win]
+  host:
+    - python
+    - pip
+    - cython
+    - setuptools
+    - setuptools_scm
+    - wheel
+    - toml  # [py<311]
+    - py-cpuinfo
+    - blosc 1.21.3
+    - lz4-c 1.9.4
+    - zstd {{ zstd }}
+  run:
+    - python
+    # numcodecs/__init__.py requires msgpack,
+    # see https://github.com/zarr-developers/numcodecs/blob/c15e185f6c2d4fa3dc285ac7c975291ef78d1059/numcodecs/__init__.py#L107
+    - msgpack-python
+    - numpy >=1.7
+    # bounds set through run_exports
+    - blosc
+    - lz4-c
+    - zstd
+test:
+  requires:
+    - pytest
+    - importlib_metadata
+    - pip
+  imports:
+    - numcodecs
+    - numcodecs.blosc
+    - numcodecs.lz4
+    - numcodecs.zstd
+  commands:
+    - pip check
+    - pytest -v --pyargs numcodecs
+
+about:
+  home: https://github.com/zarr-developers/numcodecs
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: A Python package providing buffer compression and transformation codecs for use in data storage and communication applications.
+  description: |
+    Numcodecs is a Python package providing buffer compression and transformation codecs for use in data storage and communication applications. These include:
+    Compression codecs, e.g., Zlib, BZ2, LZMA, ZFPY and Blosc.
+    Pre-compression filters, e.g., Delta, Quantize, FixedScaleOffset, PackBits, Categorize.
+    Integrity checks, e.g., CRC32, Adler32.
+    All codecs implement the same API, allowing codecs to be organized into pipelines in a variety of ways.
+  dev_url: https://github.com/zarr-developers/numcodecs
+  doc_url: https://numcodecs.readthedocs.io/en/stable/
+
+extra:
+  recipe-maintainers:
+    - alimanfoo
+    - jakirkham
+    - jrbourbeau

@@ -1,0 +1,48 @@
+{% set version = "0.1.3" %}
+
+package:
+  name: opencensus-context
+  version: {{ version }}
+
+source:
+  url: https://files.pythonhosted.org/packages/4c/96/3b6f638f6275a8abbd45e582448723bffa29c1fb426721dedb5c72f7d056/opencensus-context-{{ version }}.tar.gz
+  sha256: a03108c3c10d8c80bb5ddf5c8a1f033161fa61972a9917f9b9b3a18517f0088c
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+  run:
+    - python
+    - contextvars  # [py==36]
+
+test:
+  imports:
+    - opencensus.common.runtime_context
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/census-instrumentation/opencensus-python
+  license: Apache-2.0
+  license_family: Apache
+  # The PyPi sources don't include a LICENSE file.
+  summary: The OpenCensus Runtime Context.
+  description: |
+    The OpenCensus Runtime Context provides in-process context propagation.
+    By default, thread local storage is used for Python 2.7, 3.4 and 3.5;
+    contextvars is used for Python >= 3.6, which provides asyncio support.
+  doc_url: https://github.com/census-instrumentation/opencensus-python/tree/master/context/opencensus-context/examples
+  dev_url: https://github.com/census-instrumentation/opencensus-python/tree/master/context/opencensus-context
+
+extra:
+  recipe-maintainers:
+    - basnijholt

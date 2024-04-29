@@ -1,0 +1,47 @@
+{% set name = "dj-rest-auth" %}
+{% set version = "2.2.7" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/dj-rest-auth-{{ version }}.tar.gz
+  sha256: 911bcf377df68c958a7f534def7715b61f3d887a46fbb53ca7666244b7c0b143
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.5
+  run:
+    - django >=2.0
+    - djangorestframework >=3.7.0
+    - python >=3.5
+  run_constrained:
+    - django-allauth >=0.40.0,<0.51.0
+
+test:
+  imports:
+    - dj_rest_auth
+    - dj_rest_auth.registration
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: http://github.com/iMerica/dj-rest-auth
+  summary: Authentication and Registration in Django Rest Framework
+  license: MIT
+  license_file: LICENSE
+  doc_url: https://dj-rest-auth.readthedocs.io/en/latest/index.html
+
+extra:
+  recipe-maintainers:
+    - BastianZim

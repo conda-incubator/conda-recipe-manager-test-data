@@ -1,0 +1,45 @@
+{% set name = "vt-py" %}
+{% set version = "0.17.4" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vt-py-{{ version }}.tar.gz
+  sha256: 26e82857068c85b65925f14bdcdb03b423dda98ca30c9cc208842135e12d1211
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - pytest-runner
+    - python >=3.6
+  run:
+    - aiohttp
+    - python >=3.6
+
+test:
+  imports:
+    - vt
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://www.virustotal.com/gui/
+  summary: The official Python client library for VirusTotal
+  license: Apache-2.0
+  license_file: LICENSE
+  dev_url: https://virustotal.github.io/vt-py/
+  doc_url: https://github.com/VirusTotal/vt-py
+
+extra:
+  recipe-maintainers:
+    - BastianZim

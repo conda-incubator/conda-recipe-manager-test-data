@@ -1,0 +1,84 @@
+{% set name = "sphinx" %}
+{% set version = "5.0.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/Sphinx-{{ version }}.tar.gz
+  sha256: b18e978ea7565720f26019c702cd85c84376e948370f1cd43d60265010e1c7b0
+
+build:
+  number: 0
+  skip: True  # [py<36]
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - sphinx-build = sphinx.cmd.build:main
+    - sphinx-quickstart = sphinx.cmd.quickstart:main
+    - sphinx-apidoc = sphinx.ext.apidoc:main
+    - sphinx-autogen = sphinx.ext.autosummary.generate:main
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - babel
+  run:
+    - python
+    - alabaster >=0.7,<0.8
+    - babel >=1.3
+    - docutils >=0.14,<0.19
+    - imagesize
+    - importlib-metadata >=4.4  # [py<310]
+    - jinja2 >=2.3
+    - packaging
+    - pygments >=2.0
+    - requests >=2.5.0
+    - snowballstemmer >=1.1
+    - sphinxcontrib-applehelp
+    - sphinxcontrib-devhelp
+    - sphinxcontrib-htmlhelp >=2.0.0
+    - sphinxcontrib-jsmath
+    - sphinxcontrib-qthelp
+    - sphinxcontrib-serializinghtml >=1.1.5
+    # only _strictly_ a windows dependency, but appeases `pip check`
+    - colorama >=0.3.5
+
+test:
+  imports:
+    - sphinx
+    - sphinx.builders
+  requires:
+    - pip
+  commands:
+    - pip check || true  # [not win]
+    - pip check || exit 0  # [win]
+    - sphinx-build --help
+    - sphinx-quickstart --help
+    - sphinx-apidoc --help
+    - sphinx-autogen --help
+
+about:
+  home: https://www.sphinx-doc.org
+  license: BSD-2-Clause
+  license_file: LICENSE
+  license_family: BSD
+  summary: Sphinx is a tool that makes it easy to create intelligent and beautiful documentation
+  description: |
+    Sphinx is a tool that makes it easy to create intelligent and beautiful documentation,
+    written by Georg Brandl and licensed under the BSD license.
+    It was originally created for the new Python documentation, and it has excellent
+    facilities for the documentation of Python projects, but C/C++ is already supported
+    as well, and it is planned to add special support for other languages as well.
+  doc_url: https://www.sphinx-doc.org/en/master/contents.html
+  dev_url: https://github.com/sphinx-doc/sphinx
+
+extra:
+  recipe-maintainers:
+    - chohner
+    - jakirkham
+    - ocefpaf
+    - blink1073

@@ -1,0 +1,57 @@
+{% set name = "murmurhash" %}
+{% set version = "1.0.7" %}
+{% set sha256sum = "630a396ebd31ca44d89b4eca36fa74ea8aae724adf0afaa2de7680c350b2936f" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256sum }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  skip: true  # [win32 or linux32]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - msinttypes  # [win and py<35]
+    - cython >=0.25
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  requires:
+    - mmh3
+    - pytest
+    - pip
+  imports:
+    - murmurhash
+    - murmurhash.mrmr
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/explosion/murmurhash/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Cython bindings for MurmurHash2
+  dev_url: https://github.com/explosion/murmurhash/
+
+extra:
+  recipe-maintainers:
+    - rmax
+    - ines
+    - honnibal
+    - adrianeboyd

@@ -1,0 +1,47 @@
+{% set name = "pytest-azurepipelines" %}
+{% set version = "0.8.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 944ae2c0790b792d123aa7312fe307bc35214dd26531728923ae5085a1d1feab
+
+build:
+  noarch: python
+  number: 0
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - pytest
+
+test:
+  imports:
+    - pytest_azurepipelines
+  commands:
+    - "py.test --traceconfig | grep pytest-azurepipelines-{{ version }}"
+
+about:
+  home: https://github.com/tonybaloney/pytest-azurepipelines
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Plugin for pytest that makes it simple to work with Azure Pipelines'
+
+  description: |
+    Making Pytest easier to use with Microsoft Azure Pipelines. Just run pytest with
+    this plugin and see your test results in the Azure Pipelines UI!
+  doc_url: https://github.com/tonybaloney/pytest-azurepipelines
+  dev_url: https://github.com/tonybaloney/pytest-azurepipelines
+
+extra:
+  recipe-maintainers:
+    - leouieda
+    - tonybaloney

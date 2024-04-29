@@ -1,0 +1,53 @@
+{% set version = "1.2.0" %}
+
+package:
+  name: uri-template
+  version: {{ version }}
+
+source:
+  - folder: dist
+    url: https://pypi.io/packages/source/u/uri_template/uri_template-{{ version }}.tar.gz
+    sha256: 934e4d09d108b70eb8a24410af8615294d09d279ce0e7cbcdaef1bd21f932b06
+  - folder: src
+    url: https://github.com/plinss/uri_template/archive/refs/tags/v{{ version }}.tar.gz
+    sha256: 1e37e14601ae685794d0d061da5481236f94a4b9c3db7b459d647de5160a79f3
+
+build:
+  noarch: python
+  number: 0
+  script: cd dist && {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+
+test:
+  source_files:
+    - src/test.py
+    - src/tests
+  imports:
+    - uri_template
+  requires:
+    - pip
+    - m2-grep  # [win]
+    - coverage
+  commands:
+    - pip check
+    - pip list
+    - pip list | grep -E "uri-template\s+{{ version.replace(".", "\\.") }}"
+    # upstream has home-rolled test suite
+    - cd src && coverage run --source=uri_template test.py && coverage report -m --fail-under=91
+
+about:
+  home: https://github.com/plinss/uri_template
+  license: MIT
+  license_family: MIT
+  license_file: dist/LICENSE
+  summary: An implementation of RFC 6570 URI Templates.
+
+extra:
+  recipe-maintainers:
+    - bollwyvl

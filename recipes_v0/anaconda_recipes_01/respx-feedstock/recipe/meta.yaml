@@ -1,0 +1,40 @@
+{% set name = "respx" %}
+{% set version = "0.20.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: cc47a86d7010806ab65abdcf3b634c56337a737bb5c4d74c19a0dfca83b3bc73
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - httpx >=0.21
+    - python >=3.7
+
+test:
+  imports:
+    - respx
+
+about:
+  home: https://lundberg.github.io/respx
+  summary: A utility for mocking out the Python HTTPX library.
+  license: BSD-3-Clause
+  license_file: LICENSE.md
+  dev_url: https://github.com/lundberg/respx
+  doc_url: https://lundberg.github.io/respx
+
+extra:
+  recipe-maintainers:
+    - synapticarbors

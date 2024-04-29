@@ -1,0 +1,61 @@
+{% set name = "line_profiler" %}
+{% set version = "4.1.1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 2fa73d2ac736902e0a6d1e74cf663244218d9c238a7aa5b5acfd6ac6d4672830
+
+build:
+  number: 0
+  skip: true  # [py<36]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - kernprof = kernprof:main
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - cython 0.29 # [py<312]
+    - cython 3.0  # [py>=312]
+    - setuptools
+    - wheel
+  run:
+    - python
+    - ipython >=7.14.0
+
+test:
+  imports:
+    - kernprof
+    - line_profiler
+  requires:
+    - pip
+  commands:
+    - pip check
+    - kernprof --help
+    - python -m kernprof --help
+
+about:
+  home: https://github.com/pyutils/line_profiler
+  # line_profiler/timers.c falls under the PSF license
+  license: BSD-3-Clause AND PSF-2.0
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Line-by-line profiling for Python
+  description: |
+    line_profiler will profile the time individual lines of code take to execute.
+    The profiler is implemented in C via Cython in order to reduce the overhead of profiling.
+  doc_url: https://github.com/pyutils/line_profiler
+  dev_url: https://github.com/pyutils/line_profiler
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - koverholt

@@ -1,0 +1,105 @@
+{% set version = '1.1-8' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-maptools
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/maptools_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/maptools/maptools_{{ version }}.tar.gz
+  sha256: 5e8579e3f559161935f1dde622ece703eefa2a28a677ce553d7f27611e66e0f7
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: rgeos (>= 0.1-8), spatstat.geom (>= 1.65-0), PBSmapping, maps, RColorBrewer, raster, polyclip, plotrix, spatstat.linnet (>= 1.65-3), spatstat.utils (>= 1.19.0), spatstat (>= 2.0-0)
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-foreign >=0.8
+    - r-lattice
+    - r-sp >=1.0_11
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-foreign >=0.8
+    - r-lattice
+    - r-sp >=1.0_11
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('maptools')"           # [not win]
+    - "\"%R%\" -e \"library('maptools')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: http://maptools.r-forge.r-project.org/, https://r-forge.r-project.org/projects/maptools/
+  license: GPL-2
+  summary: Please note that 'maptools' will be retired during October 2023, plan transition at
+    your earliest convenience (see <https://r-spatial.org/r/2023/05/15/evolution4.html>
+    and earlier blogs for guidance); some functionality will be moved to 'sp'. Set of
+    tools for manipulating geographic data. The package also provides interface wrappers
+    for exchanging spatial objects with packages such as 'PBSmapping', 'spatstat.geom',
+    'maps', and others.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: maptools
+# Version: 1.1-8
+# Date: 2023-07-18
+# Title: Tools for Handling Spatial Objects
+# Authors@R: c( person("Roger", "Bivand", role = c("cre", "aut"), email = "Roger.Bivand@nhh.no", comment=c(ORCID="0000-0003-2392-6140")), person("Nicholas", "Lewin-Koh", role = "aut"), person("Edzer", "Pebesma", role = "ctb"), person("Eric", "Archer", role = "ctb"), person("Adrian", "Baddeley", role = "ctb"), person("Nick", "Bearman", role = "ctb"), person("Hans-Jorg", "Bibiko", role = "ctb"), person("Steven", "Brey", role = "ctb"), person("Jonathan", "Callahan", role = "ctb"), person("German", "Carrillo", role = "ctb"), person("Stephane", "Dray", role = "ctb"), person("David", "Forrest", role = "ctb"), person("Michael", "Friendly", role = "ctb"), person("Patrick", "Giraudoux", role = "ctb"), person("Duncan", "Golicher", role = "ctb"), person("Virgilio", "Gomez Rubio", role = "ctb"), person("Patrick", "Hausmann", role = "ctb"), person("Karl Ove", "Hufthammer", role = "ctb"), person("Thomas", "Jagger", role = "ctb"), person("Kent", "Johnson", role = "ctb"), person("Matthew", "Lewis", role = "ctb", comment=c(ORCID="0000-0003-2244-4078")), person("Sebastian", "Luque", role = "ctb"), person("Don", "MacQueen", role = "ctb"), person("Andrew", "Niccolai", role = "ctb"), person("Edzer", "Pebesma", role = "ctb"), person("Oscar", "Perpinan Lamigueiro", role = "ctb"), person("Ethan", "Plunkett", role = "ctb"), person("Ege", "Rubak", role = "ctb", comment=c(ORCID="0000-0002-6675-533X")), person("Tom", "Short", role = "ctb"), person("Greg", "Snow", role = "ctb"), person("Ben", "Stabler", role = "ctb"), person("Murray", "Stokely", role = "ctb"), person("Rolf", "Turner", role = "ctb"))
+# Encoding: UTF-8
+# Depends: R (>= 2.10), sp (>= 1.0-11)
+# Imports: foreign (>= 0.8), methods, grid, lattice, stats, utils, grDevices
+# Suggests: rgeos (>= 0.1-8), spatstat.geom (>= 1.65-0), PBSmapping, maps, RColorBrewer, raster, polyclip, plotrix, spatstat.linnet (>= 1.65-3), spatstat.utils (>= 1.19.0), spatstat (>= 2.0-0)
+# Description: Please note that 'maptools' will be retired during October 2023, plan transition at your earliest convenience (see <https://r-spatial.org/r/2023/05/15/evolution4.html> and earlier blogs for guidance); some functionality will be moved to 'sp'. Set of tools for manipulating geographic data. The package also provides interface wrappers for exchanging spatial objects with packages such as 'PBSmapping', 'spatstat.geom', 'maps', and others.
+# License: GPL (>= 2)
+# URL: http://maptools.r-forge.r-project.org/, https://r-forge.r-project.org/projects/maptools/
+# NeedsCompilation: yes
+# Packaged: 2023-07-18 10:25:49 UTC; rsb
+# Author: Roger Bivand [cre, aut] (<https://orcid.org/0000-0003-2392-6140>), Nicholas Lewin-Koh [aut], Edzer Pebesma [ctb], Eric Archer [ctb], Adrian Baddeley [ctb], Nick Bearman [ctb], Hans-Jorg Bibiko [ctb], Steven Brey [ctb], Jonathan Callahan [ctb], German Carrillo [ctb], Stephane Dray [ctb], David Forrest [ctb], Michael Friendly [ctb], Patrick Giraudoux [ctb], Duncan Golicher [ctb], Virgilio Gomez Rubio [ctb], Patrick Hausmann [ctb], Karl Ove Hufthammer [ctb], Thomas Jagger [ctb], Kent Johnson [ctb], Matthew Lewis [ctb] (<https://orcid.org/0000-0003-2244-4078>), Sebastian Luque [ctb], Don MacQueen [ctb], Andrew Niccolai [ctb], Edzer Pebesma [ctb], Oscar Perpinan Lamigueiro [ctb], Ethan Plunkett [ctb], Ege Rubak [ctb] (<https://orcid.org/0000-0002-6675-533X>), Tom Short [ctb], Greg Snow [ctb], Ben Stabler [ctb], Murray Stokely [ctb], Rolf Turner [ctb]
+# Maintainer: Roger Bivand <Roger.Bivand@nhh.no>
+# Repository: CRAN
+# Date/Publication: 2023-07-18 19:10:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

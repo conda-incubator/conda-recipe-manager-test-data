@@ -1,0 +1,49 @@
+{% set name = "pydantic-settings" %}
+{% set version = "2.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pydantic_settings-{{ version }}.tar.gz
+  sha256: 26b1492e0a24755626ac5e6d715e9077ab7ad4fb5f19a8b7ed7011d52f36141c
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python
+    - hatchling
+    - pip
+  run:
+    - python
+    - pydantic >=2.3.0
+    - python-dotenv >=0.21.0
+
+test:
+  imports:
+    - pydantic_settings
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  summary: Settings management using Pydantic
+  description: |
+    Pydantic Settings provides optional Pydantic features for loading a settings or config class from environment
+    variables or secrets files.
+  home: https://github.com/pydantic/pydantic-settings
+  dev_url: https://github.com/pydantic/pydantic-settings
+  doc_url: https://docs.pydantic.dev/latest/usage/pydantic_settings
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+
+extra:
+  recipe-maintainers:
+    - jan-janssen
+    - fhoehle

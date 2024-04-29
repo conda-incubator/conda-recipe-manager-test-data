@@ -1,0 +1,53 @@
+{% set name = "peewee" %}
+{% set version = "3.15.4" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 2581520c8dfbacd9d580c2719ae259f0637a9e46eda47dfc0ce01864c6366205
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - cython                                 # [build_platform != target_platform]
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - cython >=0.22.1
+    - msinttypes  # [win]
+    - sqlite
+  run:
+    - python
+
+test:
+  imports:
+    - playhouse
+    - peewee
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/coleifer/peewee/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A little ORM
+  dev_url: https://github.com/coleifer/peewee/
+  doc_url: http://docs.peewee-orm.com/en/latest/
+
+extra:
+  recipe-maintainers:
+    - dharhas
+    - synapticarbors

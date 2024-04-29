@@ -1,0 +1,60 @@
+{% set name = "jupyter-dash" %}
+{% set version = "0.4.2" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d546c7c25a2867c14c95a48af0ad572803b26915a5ce6052158c9dede4dbf48c
+
+build:
+  number: 0
+  skip: True  # [py<35]
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv 
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - ansi2html
+    - dash
+    - flask
+    - ipykernel
+    - ipython
+    - requests
+    - retrying
+    - nest-asyncio
+
+test:
+  requires:
+    - pip
+  imports:
+    - jupyter_dash
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/plotly/jupyter-dash
+  summary: Dash support for the Jupyter notebook interface
+  license: MIT
+  license_file: LICENSE.txt
+  license_family: MIT
+  description: |
+    This library makes it easy to develop Plotly Dash apps 
+    interactively from within Jupyter environments 
+    (e.g. classic Notebook, JupyterLab, Visual Studio 
+    Code notebooks, nteract, PyCharm notebooks, etc.).
+  doc_url: https://dash.plotly.com/introduction
+  dev_url: https://github.com/plotly/jupyter-dash
+
+extra:
+  recipe-maintainers:
+    - raybellwaves
+    - bandersen23

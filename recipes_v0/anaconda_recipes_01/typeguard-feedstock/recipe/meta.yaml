@@ -1,0 +1,52 @@
+{% set name = "typeguard" %}
+{% set version = "3.0.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: fee5297fdb28f8e9efcb8142b5ee219e02375509cd77ea9d270b5af826358d5a
+
+build:
+  number: 0
+  skip: True  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools_scm
+    - setuptools
+    - toml
+    - wheel
+  run:
+    - python
+    - importlib_metadata >=3.6   # [py<310]
+    - typing_extensions >=4.4.0  # [py<311]
+
+test:
+  imports:
+    - typeguard
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/agronholm/typeguard
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Runtime type checker for Python
+  description: |
+    This library provides runtime type checking for functions defined with argument type annotations.
+  doc_url: https://typeguard.readthedocs.io/
+  dev_url: https://github.com/agronholm/typeguard
+
+extra:
+  recipe-maintainers:
+    - itamarst
+    - agronholm

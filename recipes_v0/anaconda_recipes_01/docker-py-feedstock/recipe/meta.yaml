@@ -1,0 +1,66 @@
+{% set version = "4.4.1" %}
+
+package:
+  name: docker-py
+  version: {{ version }}
+
+source:
+  url: https://github.com/docker/docker-py/archive/{{ version }}.tar.gz
+  sha256: e28b9033c165e622562782691234bd1ac2da13d59bc60b389ecb9b7a3d297d43
+
+build:
+  number: 5
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - requests >=2.14.2
+    - six >=1.10.0
+    - websocket-client >=0.32.0
+    - docker-pycreds  >=0.3.0
+    - pywin32 >=227  # [win]
+    - appdirs >=1.4.3
+    - asn1crypto >=0.22.0
+    - cffi >=1.10.0
+    - cryptography >=1.9
+    - docker-pycreds >=0.2.1
+    - idna >=2.5
+    - packaging >=16.8
+    - pycparser >=2.17
+    - pyopenssl >=17.0.0
+    - pyparsing >=2.2.0
+    - websocket-client >=0.40.0
+
+test:
+  requires:
+    - setuptools
+  imports:
+    - docker
+    - docker.api
+    - docker.auth
+    - docker.tls
+    - docker.utils
+    - docker.utils.ports
+    - docker.transport.unixconn
+    - docker.transport.npipeconn  # [win]
+    - docker.transport.npipesocket  # [win]
+
+about:
+  home: https://github.com/docker/docker-py/
+  license: Apache-2.0
+  license_file: LICENSE
+  summary: Python client for Docker.
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - ocefpaf
+    - scopatz
+    - mariusvniekerk
+    - mingwandroid

@@ -1,0 +1,53 @@
+{% set name = "Keras-Applications" %}
+{% set version = "1.0.8" %}
+{% set sha256 = "7c37f9e9ef93efac9b4956301cb21ce46c474ce9da41fac9a46753bab6823dfc" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/keras-team/{{ name }}/archive/{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+    - numpy >=1.9.1
+    - h5py
+  # avoid a direct requirement on keras to prevent a circular dependency
+  run_constrained:
+    - keras >=2.1.6
+
+test:
+  imports:
+    - keras_applications
+
+about:
+  home: https://github.com/keras-team/keras-applications
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Applications module of the Keras deep learning library.
+  description: |
+     Keras Applications is the applications module of the Keras deep learning
+     library. It provides model definitions and pre-trained weights for a
+     number of popular archictures, such as VGG16, ResNet50, Xception, 
+     MobileNet, and more.
+  doc_url: https://keras.io/applications/
+  dev_url: https://github.com/keras-team/keras-applications
+
+extra:
+  recipe-maintainers:
+    - CurtLH
+    - jjhelmus

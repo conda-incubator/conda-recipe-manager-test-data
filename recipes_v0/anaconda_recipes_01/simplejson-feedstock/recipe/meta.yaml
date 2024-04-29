@@ -1,0 +1,58 @@
+{% set version = "3.17.6" %}
+
+package:
+  name: simplejson
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/s/simplejson/simplejson-{{ version }}.tar.gz
+  sha256: cf98038d2abf63a1ada5730e91e84c642ba6c225b0198c3684151b1f80c5f8a6
+
+build:
+  number: 0
+  #trigger 1
+  script:
+    - export REQUIRE_SPEEDUPS=1  # [not win]
+    - set REQUIRE_SPEEDUPS=1  # [win]
+    - {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - simplejson
+    - simplejson._speedups   # [python_impl != 'pypy']
+    - simplejson.tests
+  requires:
+    - pip 
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/simplejson/simplejson
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Simple, fast, extensible JSON encoder/decoder for Python
+
+  description: |
+    simplejson is a simple, fast, complete, correct and extensible
+    JSON <https://json.org> encoder and decoder for Python 2.5+ and
+    Python 3.3+. It is pure Python code with no dependencies, but includes
+    an optional C extension for a serious speed boost.
+  doc_url: https://simplejson.readthedocs.io/
+  dev_url: https://github.com/simplejson/simplejson
+
+extra:
+  recipe-maintainers:
+    - ainafp
+    - ocefpaf

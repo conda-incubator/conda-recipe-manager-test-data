@@ -1,0 +1,41 @@
+{% set name = "pytest-mpi" %}
+{% set version = "0.6" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 09b3cd3511f8f3cd4d205f54d4a7223724fed0ab68b872ed1123d312152325a9
+
+build:
+  skip: True # [py<38]
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - pytest
+  run:
+    - python
+    - pytest
+    - py
+
+test:
+  imports:
+    - pytest_mpi
+
+about:
+  home: https://github.com/aragilar/pytest-mpi
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Pytest plugin for working with MPI
+  doc_url: https://pytest-mpi.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - beckermr

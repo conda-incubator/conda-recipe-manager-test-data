@@ -1,0 +1,44 @@
+{% set name = "sphinx-togglebutton" %}
+{% set version = "0.3.2" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/sphinx-togglebutton-{{ version }}.tar.gz
+  sha256: ab0c8b366427b01e4c89802d5d078472c427fa6e9d12d521c34fa0442559dc7a
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - docutils
+    - python >=3.6
+    - sphinx
+
+test:
+  imports:
+    - sphinx_togglebutton
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/executablebooks/sphinx-togglebutton
+  summary: Add a toggle button to items on a page.
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - anirrudh
+    - chrisjsewell

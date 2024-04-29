@@ -1,0 +1,80 @@
+{% set name = "isotree" %}
+{% set version = "0.5.24" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d5cb06ac442f3708aa00221f917cb5d18803c9ec256b5224a1cd08935227c9ed
+  patches:
+    - patches/0001-disable-xoshiro.patch
+    - patches/0002-add-unvendored-tsl_robin_map.patch
+
+build:
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+  missing_dso_whitelist:
+  # libc++.1 and libomp are not found by conda-build for some reason
+  # but I did verify that they were there and that they were imported
+  # when importing isotree on a python session with conda debug
+  - '*/libc++.1.dylib'  # [osx]
+  - '*/libomp.dylib'    # [osx]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    # openmp for win: see the conda_build_config.yaml
+    - llvm-openmp   # [osx]
+    - libgomp       # [linux]
+    - patch         # [not win]
+    - m2-patch      # [win]
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - numpy {{numpy}}
+    - cython >=3.0.0
+    - tsl_robin_map
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+    - pandas >=0.24.0
+    - scipy
+    # To stop the compiler pulling in an openmp implementation itself
+    # and prevent mixup with conda-forge's toolchain
+    - _openmp_mutex  # [linux]
+    # openmp for win: see the conda_build_config.yaml
+    - llvm-openmp    # [osx]
+    - libgomp        # [linux]
+
+test:
+  imports:
+    - isotree
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/david-cortes/isotree
+  summary: Isolation-Based Outlier Detection, Distance, and NA imputation
+  description: |
+    Fast and multi-threaded implementation of Isolation Forest (a.k.a. iForest) and variations of it such as Extended
+    Isolation Forest (EIF), Split-Criterion iForest (SCiForest), Fair-Cut Forest (FCF), Robust Random-Cut Forest
+    (RRCF), and other customizable variants, aimed at outlier/anomaly detection plus additions for imputation of
+    missing values, distance/similarity calculation between observations, and handling of categorical data.
+  license: MIT AND BSD-2-Clause
+  license_file:
+    - LICENSE
+    - src/robinmap/LICENSE
+  license_family: OTHER
+  doc_url: https://isotree.readthedocs.io
+  dev_url: https://github.com/david-cortes/isotree
+
+extra:
+  recipe-maintainers:
+    - boldorider4

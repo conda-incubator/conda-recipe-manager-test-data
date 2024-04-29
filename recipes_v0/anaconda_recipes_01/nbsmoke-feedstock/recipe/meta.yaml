@@ -1,0 +1,61 @@
+{% set name = "nbsmoke" %}
+{% set version = "0.6.0" %}
+{% set sha256 = "8b55333e2face27bc7ff80c266c468ca5633947cb0697727348020dd445b0874" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [py<34]
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - param >=1.7.0
+    - pip
+    - pyct >=0.4.4
+    - setuptools >=30.3.0
+    - wheel
+  run:
+    - python
+    - beautifulsoup4
+    # # only install if you are using holoviews magics (which are deprecated...)
+    #- holoviews
+    - ipykernel
+    - jupyter_client
+    - nbconvert
+    - nbformat
+    - param >=1.7.0
+    - pyflakes
+    - pytest >=3.1.1
+    - requests
+
+test:
+  imports:
+    - nbsmoke
+  requires:
+    - pip
+  commands:
+    - pip check
+  # TODO: once nbsmoke's tests are moved into the package, can add the following
+  #  - pytest --pyargs nbsmoke # or similar
+
+about:
+  home: https://github.com/pyviz/nbsmoke
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: 'Basic notebook checks. Do they run? Do they contain lint?'
+  dev_url: https://github.com/pyviz/nbsmoke
+  doc_url: https://github.com/pyviz-dev/nbsmoke/blob/master/README.md
+
+extra:
+  recipe-maintainers:
+    - jsignell

@@ -1,0 +1,38 @@
+{% set name = "jsonref" %}
+{% set version = "0.2" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: f3c45b121cf6257eafabdc3a8008763aed1cd7da06dbabc59a9e4d2a5e4e6697
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv "
+  noarch: python
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - python
+
+test:
+  imports:
+    - jsonref
+
+about:
+  home: http://github.com/gazpachoking/jsonref
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: An implementation of JSON Reference for Python
+
+extra:
+  recipe-maintainers:
+    - chapmanb
+    - marcelotrevisani

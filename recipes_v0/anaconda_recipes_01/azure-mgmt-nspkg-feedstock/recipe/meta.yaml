@@ -1,0 +1,42 @@
+{% set version = "3.0.2" %}
+
+package:
+  name: azure-mgmt-nspkg
+  version: {{ version }}
+
+source:
+  fn: azure-mgmt-nspkg-{{ version }}.zip
+  url: https://pypi.io/packages/source/a/azure-mgmt-nspkg/azure-mgmt-nspkg-{{ version }}.zip
+  md5: f62b88344ab0728b4d08250aadaf64c0
+  
+build:
+  noarch: python
+  script: python -m pip install --no-deps --ignore-installed .
+  number: 0
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - azure-nspkg
+  
+  run:
+    - python
+    - azure-nspkg
+
+test:
+  imports:
+    - azure
+    - azure.mgmt
+  commands:
+    - python -m unittest discover -p "test_*.py"
+
+about:
+  home: https://github.com/Azure/azure-sdk-for-python
+  license: Apache-2.0
+  summary: 'Microsoft Azure Resource Management Namespace Package'
+
+extra:
+  recipe-maintainers:
+    - Maxyme

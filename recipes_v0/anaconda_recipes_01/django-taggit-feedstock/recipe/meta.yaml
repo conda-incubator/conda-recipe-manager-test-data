@@ -1,0 +1,43 @@
+{% set version = "3.1.0" %}
+
+package:
+  name: django-taggit
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/d/django-taggit/django-taggit-{{ version }}.tar.gz
+  sha256: c8f2e4eae387939089b3d75d1d8649e008880970c068ce9d0e82f87fd5e29508
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.5
+    - pip
+  run:
+    - python >=3.5
+    - django >=1.11
+
+test:
+  imports:
+    - taggit
+    - taggit.migrations
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: http://github.com/alex/django-taggit/tree/master
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: django-taggit is a reusable Django application for simple tagging.
+
+extra:
+  recipe-maintainers:
+    - kwilcox
+    - marcelotrevisani

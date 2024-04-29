@@ -1,0 +1,91 @@
+{% set name = "uproot" %}
+{% set version = "4.3.7" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 264f148edde4c4a778d9b347c4ae975fe70a910e87d069fbd2b53e1f99874f0e
+
+build:
+  number: 2
+
+requirements:
+  host:
+    - python
+  run:
+    - python
+    - {{ pin_subpackage('uproot-base', exact=True) }}
+    # Compression
+    - lz4
+    - zstandard
+    - python-xxhash
+    # Other common requirements
+    - xrootd  # [not win]
+    - awkward >=1,<2  # [python_impl != 'pypy']
+    # Needed at runtime for pkg_resources
+    - setuptools
+
+test:
+  imports:
+    # Workaround for https://github.com/pypa/setuptools/issues/3165
+    - setuptools  # [osx and python_impl == 'pypy']
+    - uproot
+    - uproot.behaviors
+  commands:
+    - python -c 'import uproot; assert len(uproot.open("root://eospublic.cern.ch//eos/root-eos/cms_opendata_2012_nanoaod/Run2012B_DoubleMuParked.root")["Events"]["PV_x"].array()) == 29308627'  # [not (win or aarch64 or ppc64le) and python_impl != 'pypy']
+
+outputs:
+  - name: uproot-base
+    build:
+      noarch: python
+      script:
+        - {{ PYTHON }} -m pip install . -vv
+    requirements:
+      build:
+        - python >=3.5                           # [build_platform != target_platform]
+        - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+      host:
+        - pip
+        - numpy >=1.16
+        - python >=3.5
+      run:
+        - numpy
+        - python >=3.5
+    test:
+      imports:
+        - uproot
+        - uproot.behaviors
+      commands:
+        - pip check
+      requires:
+        - pip
+
+  - name: uproot
+
+about:
+  home: https://github.com/scikit-hep/uproot4
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: ROOT I/O in pure Python and Numpy.
+  description: |
+    uproot (originally μproot, for "micro-Python ROOT") is a reader and a writer
+    of the ROOT file format using only Python and Numpy. Unlike the standard C++
+    ROOT implementation, uproot is only an I/O library, primarily intended to
+    stream data into machine learning libraries in Python. Unlike PyROOT and
+    root_numpy, uproot does not depend on C++ ROOT. Instead, it uses Numpy calls
+    to rapidly cast data blocks in the ROOT file as Numpy arrays.
+  dev_url: https://github.com/scikit-hep/uproot4
+  doc_url: https://uproot.readthedocs.io/en/latest/
+
+extra:
+  recipe-maintainers:
+    - lgray
+    - chrisburr
+    - jpivarski
+    - henryiii
+    - agoose77
+    - ioanaif
+    - conda-forge/scikit-hep

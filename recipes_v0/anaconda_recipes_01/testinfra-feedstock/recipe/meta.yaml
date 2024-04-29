@@ -1,0 +1,52 @@
+{% set name = "testinfra" %}
+{% set version = "5.0.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b603bf25db98a6c5f13660c4197e73fa29722c6551bdf054f6eeadf8ef81541a
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.4
+    - pip
+    - setuptools_scm
+    - pytest !=3.0.2
+
+  run:
+    - python >=3.4
+    - pytest !=3.0.2
+
+test:
+  imports:
+    - testinfra
+
+about:
+  home: https://github.com/philpep/testinfra
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Test infrastructures
+
+  description: |
+    With Testinfra you can write unit tests in Python
+    to test actual state of your servers configured by management tools
+    like Salt, Ansible, Puppet, Chef and so on.
+
+    Testinfra aims to be a Serverspec equivalent in python and is written
+    as a plugin to the powerful Pytest test engine.
+  doc_url: https://testinfra.readthedocs.io/en/latest/
+  dev_url: https://github.com/philpep/testinfra
+
+extra:
+  recipe-maintainers:
+    - knightdave

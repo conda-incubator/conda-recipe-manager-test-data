@@ -1,0 +1,52 @@
+{% set name = "multiset" %}
+{% set version = "3.0.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/multiset-{{ version }}.tar.gz
+  sha256: e45671cae8385a8e6248a9b07a3a83280c2d0cc4312713058cfbacdc5ec9973e
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - setuptools >=46
+    - setuptools-scm
+  run:
+    - python >=3.7
+
+test:
+  imports:
+    - multiset
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/wheerd/multiset
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A multiset implementation for python
+  description: |
+    A multiset is similar to the builtin set, but it allows an element to occur
+    multiple times. It is an unordered collection of element which have to be
+    hashable just like in a set. It supports the same methods and operations as
+    set does, e.g. membership test, union, intersection, and (symmetric)
+    difference.
+  doc_url: http://multiset.readthedocs.io
+  dev_url: https://github.com/wheerd/multiset
+
+extra:
+  recipe-maintainers:
+    - johanneskoester

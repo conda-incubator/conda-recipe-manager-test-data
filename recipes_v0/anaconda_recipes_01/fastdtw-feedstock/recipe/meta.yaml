@@ -1,0 +1,51 @@
+{% set name = "fastdtw" %}
+{% set version = "0.3.4" %}
+{% set sha256 = "2350fa6ec36bcad186eaf81f46eff35181baf04e324f522de8aeb43d0243f64f" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 3
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - cython                                 # [build_platform != target_platform]
+    - numpy                                  # [build_platform != target_platform]
+  host:
+    - python
+    - pip
+    - Cython
+    - numpy
+    - setuptools
+    - six
+    - pytest-runner
+
+  run:
+    - python
+    - six
+    - {{ pin_compatible('numpy') }}
+
+
+test:
+  imports:
+    - fastdtw
+
+about:
+  home: https://github.com/slaypni/fastdtw
+  license: MIT
+  license_file: {{ environ["RECIPE_DIR"] }}/LICENSE
+  summary: Dynamic Time Warping (DTW) algorithm with an O(N) time and memory complexity
+
+extra:
+  recipe-maintainers:
+    - jakakokosar

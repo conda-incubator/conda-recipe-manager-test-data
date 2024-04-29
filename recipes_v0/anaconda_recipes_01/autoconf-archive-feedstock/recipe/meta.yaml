@@ -1,0 +1,36 @@
+{% set name = "autoconf-archive" %}
+{% set version = "2021.02.19" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://ftp.gnu.org/gnu/{{ name }}/{{ name }}-{{ version }}.tar.xz
+  sha256: e8a6eb9d28ddcba8ffef3fa211653239e9bf239aba6a01a6b7cfc7ceaec69cbd
+
+build:
+  number: 0
+  noarch: generic
+  skip: True  # [win]
+
+requirements:
+  build:
+    - autoconf
+  run:
+    - autoconf
+
+test:
+  commands:
+    - test -f ${PREFIX}/share/aclocal/ax_absolute_header.m4
+
+about:
+  home: https://savannah.gnu.org/projects/autoconf-archive/
+  license: GPL-3.0
+  license_family: GPL
+  summary: Collection of over 500 reusable autoconf macros
+
+extra:
+  recipe-maintainers:
+    - egpbos
+    - mcs07

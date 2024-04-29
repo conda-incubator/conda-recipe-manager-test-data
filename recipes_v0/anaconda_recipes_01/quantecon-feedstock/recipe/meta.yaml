@@ -1,0 +1,68 @@
+{% set version = "0.7.0" %}
+{% set sha256 = "23033eb1734aceb6f420b5727e6e4cb78b99bf2414584d4039dd1a0c93eaebf0" %}
+
+package:
+  name: quantecon
+  version: {{ version }}
+
+source:
+  fn: QuantEcon.py-{{ version }}.tar.gz
+  url: https://github.com/QuantEcon/QuantEcon.py/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: true  # [py<37 or s390x]
+  # blosc2 is a dependency that is required for s390x but it is not available.
+
+requirements:
+  host:
+    - python
+    - pip
+    - flit-core 3.8.0
+  run:
+    - python
+    - numpy >=1.17.0
+    - scipy >=1.5.0
+    - sympy
+    - numba >=0.49.0
+    - requests
+
+
+test:
+  imports:
+    - quantecon
+    - quantecon.tests
+    - quantecon.game_theory
+    - quantecon.markov
+    - quantecon.random
+    - quantecon.util
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://quantecon.org/quantecon-py/
+  license_family: BSD
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: QuantEcon is a package to support all forms of quantitative economic modelling.
+  description: |
+    **QuantEcon** is an organization run by economists for economists with the aim of coordinating
+    distributed development of high quality open source code for all forms of quantitative economic modelling.
+    The project website is located at [http://quantecon.org/](http://quantecon.org/). This website provides
+    more information with regards to the **quantecon** library, documentation, in addition to some resources
+    in regards to how you can use and/or contribute to the package.
+
+    The [repository](https://github.com/QuantEcon/QuantEcon.py>) includes the *conda-forge* build recipe for the *quantecon* python package.
+
+    **Note:** There is also a Julia version available for Julia users [QuantEcon.jl](https://github.com/QuantEcon/QuantEcon.jl)
+  doc_url: https://quanteconpy.readthedocs.io/en/latest/
+  dev_url: https://github.com/QuantEcon/QuantEcon.py
+
+extra:
+  recipe-maintainers:
+    - mmcky
+    - jstac

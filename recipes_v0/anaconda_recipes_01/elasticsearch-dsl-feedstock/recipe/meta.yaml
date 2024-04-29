@@ -1,0 +1,51 @@
+{% set name = "elasticsearch-dsl" %}
+{% set version = "7.4.0" %}
+{% set bundle = "tar.gz" %}
+{% set hash_type = "sha256" %}
+{% set hash = "c4a7b93882918a413b63bed54018a1685d7410ffd8facbc860ee7fd57f214a6d" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  {{ hash_type }}: {{ hash }}
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - six
+    - python-dateutil
+    - elasticsearch >=7.0.0,<8.0.0
+    - ipaddress  # [py<33]
+
+test:
+  imports:
+    - elasticsearch_dsl
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/elasticsearch/elasticsearch-dsl-py
+  license_file: LICENSE
+  license: Apache-2.0
+  license_family: Apache
+  summary: Higher-level Python client for Elasticsearch
+  dev_url: https://github.com/elasticsearch/elasticsearch-dsl-py
+  doc_url: https://elasticsearch-dsl.readthedocs.io/en/latest/
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr

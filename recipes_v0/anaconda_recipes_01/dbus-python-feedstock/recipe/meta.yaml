@@ -1,0 +1,63 @@
+{% set name = "dbus-python" %}
+{% set version = "1.2.18" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 92bdd1e68b45596c833307a5ff4b217ee6929a1502f5341bae28fd120acf7260
+
+build:
+  number: 0
+  skip: true  # [win]
+  script:
+    - cp $BUILD_PREFIX/share/gnuconfig/config.* ./build-aux  # [unix]
+    - {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - gnuconfig  # [unix]
+    - make  # [unix]
+    - pkg-config  # [unix]
+  host:
+    - dbus
+    - glib
+    - pip >=21.3
+    - python
+    - setuptools
+  run:
+    - dbus
+    - python
+
+test:
+  imports:
+    - dbus
+  requires:
+    - pip
+  commands:
+    # check requirements
+    - python -m pip check
+
+about:
+  home: http://www.freedesktop.org/wiki/Software/DBusBindings/#python
+  dev_url: https://gitlab.freedesktop.org/dbus/dbus-python
+  doc_url: https://dbus.freedesktop.org/doc/dbus-python/
+  license: MIT
+  license_family: MIT
+  license_file: COPYING
+  summary: Python bindings for dbus
+  description: |
+    D-Bus is a message bus, used for sending messages between applications.
+    Conceptually, it fits somewhere in between raw sockets and CORBA in
+    terms of complexity.
+
+    This package provides a Python interface to D-Bus.
+
+    See the dbus description for more information about D-Bus in general.
+
+extra:
+  recipe-maintainers:
+    - duncanmmacleod

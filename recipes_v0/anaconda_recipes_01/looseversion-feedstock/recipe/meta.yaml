@@ -1,0 +1,50 @@
+{% set name = "looseversion" %}
+{% set version = "1.0.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 035288860e1afe67d63ea9c700dd9d095c724e2e5722a39029dd91652d4316ed
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3
+    - pip
+    - flit-core >=3.2,<4
+  run:
+    - python >=3
+
+test:
+  imports:
+    - looseversion
+  requires:
+    - pip
+    - pytest
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/effigies/looseversion
+  summary: Version numbering for anarchists and software realists
+  description: |
+    looseversion is a drop-in replacement for the original distutils.version.LooseVersion.
+    It implements an identical interface and comparison logic to `LooseVersion`.
+    The only major change is that a `looseversion.LooseVersion` is comparable to a
+    `distutils.version.LooseVersion`, which means tools should not need to worry whether
+    all dependencies that use LooseVersion have migrated.
+  license: PSF-2.0
+  license_file: LICENSE
+  # doc_url: No docs at present. This is where we'd put them.
+  dev_url: https://github.com/effigies/looseversion
+
+extra:
+  recipe-maintainers:
+    - effigies

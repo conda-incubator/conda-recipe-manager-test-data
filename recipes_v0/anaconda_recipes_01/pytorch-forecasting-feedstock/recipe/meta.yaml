@@ -1,0 +1,92 @@
+{% set name = "pytorch-forecasting" %}
+{% set version = "0.10.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/jdb78/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 026a0498cd2444e38bb7db4c998d1dda5ee4c5e6418cce9d825eae06f892a1c6
+  patches:
+    - fix_versions.patch
+
+build:
+  number: 0
+  # pyarrow and fastparquet as test dependencies are not available on s390x
+  skip: True  # [py<38 or py>310 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  build:
+    - m2-patch  # [win]
+    - patch     # [not win]
+  host:
+    # This basically forces to pick scipy (and any other suitable packages in the chain, like numpy) 
+    # that was built with openblas rather than mkl. Openblas typically pairs with llvm-openmp and mkl with intel-openmp on osx-64. 
+    # By default, mkl variants are picked. By picking the variant that uses openblas rather 
+    # than mkl, intel-openmp will not be pulled in and so you will not have llvm-openmp / intel-openmp conflict. 
+    - blas=*=openblas # [osx and x86_64]
+    - pip
+    - poetry-core
+    - poetry-dynamic-versioning
+    - python
+  run:
+    - blas=*=openblas # [osx and x86_64]    
+    - matplotlib-base >=3.3.1
+    - optuna >=2.3.0,<4.0.0
+    - pandas >=1.3.0
+    - python
+    - pytorch >=1.7,<2.0
+    # In pytorch-lightning v2.0.0 module named 'pytorch_lightning.core.lightning' was removed
+    - pytorch-lightning >=1.2.4,<2.0.0
+    - scikit-learn >=0.24.0,<1.2
+    - scipy >=1.8
+    - statsmodels
+
+test:
+  imports:
+    - pytorch_forecasting
+  source_files:
+    - tests
+  requires:
+    - fastparquet
+    - networkx
+    # Use numpy <1.24 to avoid error numpy hasn't np.float 
+    - numpy <1.24
+    - blas=*=openblas # [osx and x86_64] 
+    - pip
+    - pytest
+    - pyarrow
+    - requests
+    - tensorboard
+  commands:
+    # Disable pip check on win64 because of tensorboard 2.10.0 has requirement protobuf<3.20,>=3.9.2, but you have protobuf 3.20.3.
+    # Disable pip check on linux-ppc64le because of tensorboard 2.6.0 has requirement google-auth<2,>=1.6.3, but you have google-auth 2.6.0.
+    - pip check  # [not (win or (linux and ppc64le))]
+    # Skip tests because of missing cpflows, also skip hyperparameter optimization tests because of `KeyError: 'radam_buffer'`, see https://discuss.pytorch.org/t/keyerror-radam-buffer/171424
+    # Skip tests on s390x because of missing fastparquet and pyarrow packages.
+    # Skip tests on linux-ppc64le as CI got stuck with running pytest
+    - pytest tests -v -k "not (test_integration[multivariate-quantiles] or test_mqf2_loss or test_hyperparameter_optimization_integration[True])"  # [not (win or (linux and ppc64le))]
+    # Skip test_MultivariateNormalDistributionLoss and test_integration on win64: `RuntimeError: Calling torch.linalg.cholesky on a CPU tensor requires compiling PyTorch with LAPACK.` 
+    - pytest tests -v -k "not (test_integration[multivariate-quantiles] or test_mqf2_loss or test_hyperparameter_optimization_integration[True] or test_MultivariateNormalDistributionLoss or test_integration)"  # [win]
+
+about:
+  home: https://github.com/jdb78/pytorch-forecasting
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Timeseries forecasting with PyTorch
+  description: |
+    PyTorch Forecasting is a timeseries forecasting package for PyTorch build on PyTorch Lightning.
+    It provides timeseries datasets and dataloaders, various ways to normalize variables
+    and a number of neural networks for forecasting. The package is tightly integrated with tensorboard
+    for logging.
+  doc_url: https://pytorch-forecasting.readthedocs.io/
+  dev_url: https://github.com/jdb78/pytorch-forecasting
+
+extra:
+  recipe-maintainers:
+    - jdb78
+  skip-lints:
+    - missing_wheel

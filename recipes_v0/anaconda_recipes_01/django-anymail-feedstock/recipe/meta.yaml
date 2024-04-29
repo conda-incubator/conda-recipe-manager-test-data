@@ -1,0 +1,44 @@
+{% set name = "django-anymail" %}
+{% set version = "7.0.0" %}
+{% set sha256 = "dfa4a00a1608d40893cf818ed3632046a0bb01cf2a2bb3a64d31ff146151533a" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  build:
+    - python
+    - pip
+  run:
+    - python
+    - django >=1.8
+    - requests >=2.4.3
+    - six
+
+about:
+  home: https://github.com/anymail/django-anymail
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: 'Django email backends and webhooks for Mailgun, Mailjet, Postmark, SendGrid, SparkPost and more '
+  description: |
+    Anymail integrates several transactional email service providers (ESPs) into Django, with a consistent API that lets you use ESP-added features without locking your code to a particular ESP.
+    It currently fully supports Mailgun, Mailjet, Postmark, SendGrid, and SparkPost, and has limited support for Mandrill.
+  doc_url: https://anymail.readthedocs.io/en/stable/
+  dev_url: https://github.com/anymail/django-anymail
+
+extra:
+  recipe-maintainers:
+    - cshaley
+    - sannykr

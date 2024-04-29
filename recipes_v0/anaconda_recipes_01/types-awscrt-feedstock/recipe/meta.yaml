@@ -1,0 +1,45 @@
+{% set name = "types-awscrt" %}
+{% set version = "0.16.4" %}
+{% set lib_version = version.split(".post")[0] %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_') }}-{{ version }}.tar.gz
+  sha256: fa1a13f544e31d118c92b4e960528ac8b9bcf7ff36b5c402d07f0c423b618896
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.7,<4.0
+    - pip
+    - poetry-core
+  run:
+    - python >=3.7,<4.0
+    - pip
+
+test:
+  requires:
+    - pip
+    - poetry
+  commands:
+    - pip check
+    - python -c "import importlib; importlib.import_module('awscrt-stubs')"
+
+about:
+  home: https://github.com/youtype/types-awscrt
+  summary: Type annotations for AWS awscrt {{ lib_version }} library
+  dev_url: https://github.com/youtype/types-awscrt
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - vemel

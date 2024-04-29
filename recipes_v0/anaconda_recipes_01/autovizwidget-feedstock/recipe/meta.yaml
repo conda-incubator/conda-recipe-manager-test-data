@@ -1,0 +1,54 @@
+{% set name = "autovizwidget" %}
+{% set version = "0.21.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/autovizwidget-{{ version }}.tar.gz
+  sha256: e2e605b6f45736a6fefd43dcd275d69804293294d914f0903fd30265ac1b65a9
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - hdijupyterutils >=0.6
+    - ipywidgets >5.0.0
+    - notebook >=4.2
+    - pandas >=0.20.1,<2.0.0
+    - plotly >=3
+
+test:
+  imports:
+    - autovizwidget
+    - autovizwidget.plotlygraphs
+  commands:
+    # For passing pip check: "jupyter 1.0.0 requires qtconsole, which is not installed."
+    - pip check || true      # [not win]
+    - pip check || (exit 1)  # [win]
+  requires:
+    - pip
+
+about:
+  home: https://github.com/jupyter-incubator/sparkmagic/tree/master/autovizwidget
+  summary: 'AutoVizWidget: An Auto-Visualization library for pandas dataframes'
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.md
+  dev_url: https://github.com/jupyter-incubator/sparkmagic/tree/master/autovizwidget
+  doc_url: https://github.com/jupyter-incubator/sparkmagic/tree/master/autovizwidget
+
+extra:
+  recipe-maintainers:
+    - dbast
+    - devstein

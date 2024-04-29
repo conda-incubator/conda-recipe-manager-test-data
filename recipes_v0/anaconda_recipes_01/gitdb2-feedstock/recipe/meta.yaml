@@ -1,0 +1,46 @@
+{% set version = "4.0.2" %}
+
+package:
+  name: gitdb2
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/g/gitdb2/gitdb2-{{ version }}.tar.gz
+  sha256: 0986cb4003de743f2b3aba4c828edd1ab58ce98e1c4a8acf72ef02760d4beb4e
+
+build:
+  number: 0
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - python >=3.4
+    - pip
+    - gitdb >=4
+  run:
+    - python >=3.4
+    - gitdb >=4
+    - smmap >=3.0.1,<4
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+  imports:
+    - gitdb
+    - gitdb.db
+    - gitdb.utils
+
+about:
+  home: https://github.com/gitpython-developers/gitdb
+  license: BSD-3-Clause
+  license_file: LICENSE
+  license_family: BSD
+  summary: 'A pure-Python git object database'
+
+extra:
+  recipe-maintainers:
+    - ngoldbaum
+    - ocefpaf

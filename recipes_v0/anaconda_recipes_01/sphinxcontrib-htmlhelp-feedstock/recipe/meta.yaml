@@ -1,0 +1,52 @@
+{% set version = "2.0.0" %}
+
+package:
+  name: sphinxcontrib-htmlhelp
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/s/sphinxcontrib-htmlhelp/sphinxcontrib-htmlhelp-{{ version }}.tar.gz
+  sha256: f5f8bb2d0d629f398bf47d0d69c07bc13b65f75a81ad9e2f71a63d4b7a2f6db2
+
+build:
+  number: 0
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python >=3.6
+    
+test:
+  source_files:
+    - tests
+  imports:
+    - sphinxcontrib
+    - sphinxcontrib.htmlhelp
+  requires:
+    #- pip
+    - html5lib
+    - pytest
+    # This is a circular dependency b/c sphinx depends on this package now :-/
+    - sphinx >=2
+  commands:
+    #- pip check
+    - python -m pytest -v tests
+
+about:
+  home: http://sphinx-doc.org/
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: sphinxcontrib-htmlhelp is a sphinx extension which renders HTML help files.
+  dev_url: https://github.com/sphinx-doc/sphinxcontrib-htmlhelp
+  doc_url: https://www.sphinx-doc.org/en/master/
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

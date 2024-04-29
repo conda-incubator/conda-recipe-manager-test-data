@@ -1,0 +1,47 @@
+{% set version = "1.7" %}
+
+package:
+    name: verboselogs
+    version: {{ version }}
+
+source:
+    fn: verboselogs-{{ version }}.tar.gz
+    url: https://pypi.io/packages/source/v/verboselogs/verboselogs-{{ version }}.tar.gz
+    sha256: e33ddedcdfdafcb3a174701150430b11b46ceb64c2a9a26198c76a156568e427
+
+build:
+    number: 1
+    script: pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+    host:
+        - python
+        - setuptools
+        - pip
+        - wheel
+    run:
+        - python
+
+test:
+    imports:
+        - verboselogs
+    requires:
+        - pip
+    commands:
+        - pip check
+
+about:
+    home: https://verboselogs.readthedocs.io
+    license: MIT
+    license_family: MIT
+    license_file: LICENSE.txt
+    summary: "Verbose logging level for Python's logging module."
+    description: |
+      The verboselogs package extends Python’s logging module to add the log 
+      levels NOTICE, SPAM, SUCCESS and VERBOSE
+    doc_url: https://verboselogs.readthedocs.io
+    dev_url: https://github.com/xolox/python-verboselogs
+
+extra:
+    recipe-maintainers:
+        - ocefpaf

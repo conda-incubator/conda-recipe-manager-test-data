@@ -1,0 +1,50 @@
+{% set name = "streamlit-plotly-events" %}
+{% set version = "0.0.6" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 1fe25dbf0e5d803aeb90253be04d7b395f5bcfdf3c654f96ff3c19424e7f9582
+
+build:
+  # skipping s390x because of missing streamlit
+  skip: True  # [s390x]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - streamlit >=0.63
+    - plotly >=4.14.3
+
+test:
+  imports:
+    - streamlit_plotly_events
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/null-jones/streamlit-plotly-events
+  summary: Plotly chart component for Streamlit that also allows for events to bubble back up to Streamlit.
+  description: |
+    Plotly chart component for Streamlit that also allows for events to bubble back up to Streamlit.
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  doc_url: https://github.com/null-jones/streamlit-plotly-events
+  dev_url: https://github.com/null-jones/streamlit-plotly-events
+
+extra:
+  recipe-maintainers:
+    - skupr-anaconda

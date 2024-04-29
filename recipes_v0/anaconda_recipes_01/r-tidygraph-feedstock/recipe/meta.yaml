@@ -1,0 +1,107 @@
+{% set version = "1.2.0" %}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-tidygraph
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/tidygraph_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/tidygraph/tidygraph_{{ version }}.tar.gz
+  sha256: 057d6c42fc0144109f3ace7f5058cca7b2fe493c761daa991448b23f86b6129f
+
+build:
+  merge_build_host: true  # [win]
+  number: 0
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - cross-r-base {{ r_base }}  # [build_platform != target_platform]
+    - r-igraph                   # [build_platform != target_platform]
+    - r-tibble                   # [build_platform != target_platform]
+    - r-rcpp                     # [build_platform != target_platform]
+    - r-tidyr                    # [build_platform != target_platform]
+    - r-magrittr                 # [build_platform != target_platform]
+    - r-pillar                   # [build_platform != target_platform]
+    - r-rlang                    # [build_platform != target_platform]
+    - r-dplyr                    # [build_platform != target_platform]
+    - r-r6                       # [build_platform != target_platform]
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+  host:
+    - r-base
+    - r-r6
+    - r-rcpp
+    - r-dplyr >=0.8
+    - r-igraph
+    - r-magrittr
+    - r-pillar
+    - r-rlang
+    - r-tibble
+    - r-tidyr
+  run:
+    - r-base
+    - {{ native }}gcc-libs         # [win]
+    - r-r6
+    - r-rcpp
+    - r-dplyr >=0.8
+    - r-igraph
+    - r-magrittr
+    - r-pillar
+    - r-rlang
+    - r-tibble
+    - r-tidyr
+
+test:
+  commands:
+    - $R -e "library('tidygraph')"           # [not win]
+    - "\"%R%\" -e \"library('tidygraph')\""  # [win]
+
+about:
+  home: https://github.com/thomasp85/tidygraph
+  license: MIT
+  summary: A graph, while not "tidy" in itself, can be thought of as two tidy data frames describing node and edge data respectively. 'tidygraph' provides an approach to manipulate these two virtual data frames using the API defined in the 'dplyr' package, as well as provides tidy interfaces to  a lot of common graph algorithms.
+  license_family: MIT
+
+  license_file:
+    - {{ environ["PREFIX"] }}/lib/R/share/licenses/MIT
+    - LICENSE
+extra:
+  recipe-maintainers:
+    - nick-youngblut
+    - conda-forge/r
+
+# Package: tidygraph
+# Type: Package
+# Title: A Tidy API for Graph Manipulation
+# Version: 1.1.2
+# Date: 2019-02-18
+# Authors@R:  person(given = "Thomas Lin", family = "Pedersen", role = c("cre", "aut"), email = "thomasp85@gmail.com")
+# Maintainer: Thomas Lin Pedersen <thomasp85@gmail.com>
+# Description: A graph, while not "tidy" in itself, can be thought of as two tidy data frames describing node and edge data respectively. 'tidygraph' provides an approach to manipulate these two virtual data frames using the API defined in the 'dplyr' package, as well as provides tidy interfaces to  a lot of common graph algorithms.
+# License: MIT + file LICENSE
+# Encoding: UTF-8
+# LazyData: true
+# RoxygenNote: 6.1.1
+# Imports: tibble, dplyr (>= 0.8), igraph, magrittr, utils, rlang, R6, Rcpp, tools, stats, tidyr, pillar
+# URL: https://github.com/thomasp85/tidygraph
+# BugReports: https://github.com/thomasp85/tidygraph/issues
+# LinkingTo: Rcpp
+# Suggests: network, data.tree, ape, graph, methods, testthat, covr, seriation, netrankr, influenceR, NetSwan
+# NeedsCompilation: yes
+# Packaged: 2019-02-18 09:46:42 UTC; thomas
+# Author: Thomas Lin Pedersen [cre, aut]
+# Repository: CRAN
+# Date/Publication: 2019-02-18 22:30:03 UTC

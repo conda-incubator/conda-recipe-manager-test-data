@@ -1,0 +1,58 @@
+{% set name = "fs" %}
+{% set version = "2.4.16" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: ae97c7d51213f4b70b6a958292530289090de3a7e15841e108fbe144f069d313
+
+build:
+  number: 0
+  #The following constraint on the python version is applied due to the unavailability of some dependencies. Upstream actually supports older versions.
+  skip: True  # [py<36]
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir --no-build-isolation -vvv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - setuptools
+    - appdirs >=1.4.3,<1.5.0
+    - pytz
+    - six >=1.10.0,<2
+    # In case this package is required for older python versions:
+    # - enum34 >=1.1.6,<1.2.0  # [py<34]
+    # - typing >=3.6.0,<4  # [py<36]
+    # - backports.os >=0.1,<1  # [py<30]
+
+test:
+  requires:
+    - pip
+  imports:
+    - fs
+    - fs.opener
+  commands:
+    - pip check
+
+about:
+  home: https://www.pyfilesystem.org/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Filesystem abstraction layer for Python
+  description: pyfilesystem2 lets you work with diverse filesystems through a common API.
+  doc_url: https://docs.pyfilesystem.org/en/v{{ version }}
+  dev_url: https://github.com/PyFilesystem/pyfilesystem2
+
+extra:
+  recipe-maintainers:
+    - notestaff
+    - willmcgugan
+    - ReimarBauer

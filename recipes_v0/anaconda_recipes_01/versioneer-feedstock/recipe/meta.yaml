@@ -1,0 +1,54 @@
+{% set name = "versioneer" %}
+{% set version = "0.29" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 5ab283b9857211d61b53318b7c792cf68e798e765ee17c27ade9f6c924235731
+
+build:
+  skip: true  # [py<37]
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - versioneer = versioneer:main
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+    - tomli 2.0.1  # [py<311]
+  run:
+    - python
+
+test:
+  imports:
+    - versioneer
+  requires:
+    - pip
+  commands:
+    - pip check
+    # CI is picking up versioneer from builder environment
+    # commenting out this test until ticket SIR-588 is resolved.
+    - versioneer version  # [not osx]
+
+about:
+  home: https://github.com/python-versioneer/python-versioneer
+  license: Unlicense
+  license_file: LICENSE
+  license_family: PUBLIC-DOMAIN
+  summary: Easy VCS-based management of project version strings
+  description: |
+    This is a tool for managing a recorded version number
+    in setuptools-based python projects.
+  dev_url: https://github.com/python-versioneer/python-versioneer
+  doc_url: https://github.com/python-versioneer/python-versioneer
+
+extra:
+  recipe-maintainers:
+    - jakirkham

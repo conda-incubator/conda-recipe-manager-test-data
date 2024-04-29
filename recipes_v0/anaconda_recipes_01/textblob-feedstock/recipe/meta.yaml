@@ -1,0 +1,69 @@
+{% set name = "textblob" %}
+{% set version = "0.17.1" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 8dc0875dfab1eaf0dc772a9dbc4afaa9ca93d0e35cd62cb792f3a38e067ab68f
+  - url: https://github.com/sloria/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+    sha256: 752ce2a3050cdaed35c9768e1705839d0518a33780daaf7b524f32225192e038
+    folder: tests
+
+build:
+  number: 0
+  skip: True  # [py<36 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - pip
+    - wheel
+
+  run:
+    - python
+    - nltk >=3.1
+
+{% set tests_to_ignore = "--ignore=tests/tests/test_blob.py" %}
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/tests/test_classifiers.py" %}
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/tests/test_np_extractor.py" %}
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/tests/test_tokenizers.py" %}
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/tests/test_sentiments.py" %}
+{% set tests_to_ignore = tests_to_ignore + " --ignore=tests/tests/test_taggers.py" %}
+
+test:
+  source_files:
+    - tests
+  imports:
+    - textblob
+    - textblob.en
+    - textblob.unicodecsv
+  commands:
+    - pip check
+    - pytest -v tests {{ tests_to_ignore }}
+  requires:
+    - pip
+    - nose >=1.3.0
+    - mock >=3.0.5
+    - invoke >=0.15.0
+    - pytest
+
+about:
+  home: https://github.com/sloria/TextBlob
+  license: MIT
+  license_file: LICENSE
+  summary: 'Simple, Pythonic text processing. Sentiment analysis, part-of-speech tagging, noun phrase parsing, and more.'
+  description: 'TextBlob is a Python library for processing textual data. It provides a simple API for diving into common 
+    natural language processing (NLP) tasks such as part-of-speech tagging, noun phrase extraction, sentiment analysis, 
+    classification, translation, and more.'
+  license_family: MIT
+  doc_url: https://textblob.readthedocs.io/en/dev/
+  dev_url: https://github.com/sloria/TextBlob
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr

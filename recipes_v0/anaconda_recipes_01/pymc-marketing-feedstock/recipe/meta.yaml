@@ -1,0 +1,63 @@
+{% set name = "pymc-marketing" %}
+{% set version = "0.1.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pymc-marketing-{{ version }}.tar.gz
+  sha256: 412b92d3a28211dc5ea8191fc1d95832759e1f24548bc2e8d7c4c0d1d92b904c
+
+build:
+  # pymc not available for py38
+  skip: True  # [py<39]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python
+    - setuptools >=61.0.0
+    - pip
+    - wheel
+  run:
+    - python
+    - arviz >=0.13.0
+    - matplotlib-base >=3.5.1
+    - numpy >=1.17
+    - pandas
+    - pymc >=5.3.0
+    - scikit-learn >=1.1.1
+    - seaborn >=0.12.2
+    - xarray
+
+test:
+  imports:
+    - pymc_marketing
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://www.pymc-marketing.io/en/stable/
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  summary: Marketing Statistical Models in PyMC
+  description: |
+    This package allows to unlock the power of marketing analytics with PyMC-Marketing - the open source solution for
+    smarter decision-making. Media mix modeling and customer lifetime value modules allow businesses to make
+    data-driven decisions about their marketing campaigns. With pymc-marketing it is possible to optimize the marketing
+    strategy and unlock the full potential of customer data.
+  doc_url: https://www.pymc-marketing.io/en/stable/api/index.html
+  dev_url: https://github.com/pymc-labs/pymc-marketing
+
+
+extra:
+  recipe-maintainers:
+    - maresb
+    - twiecki
+    - ricardoV94
+    - drbenvincent

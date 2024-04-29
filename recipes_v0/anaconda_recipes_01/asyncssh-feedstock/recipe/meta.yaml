@@ -1,0 +1,41 @@
+{% set name = "asyncssh" %}
+{% set version = "2.13.0" %}
+{% set sha256 = "be7e1cb47225dc9899e56472fdc4daac03584a6843675329c0ce67179cb20e29" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.4
+    - setuptools
+    - pip
+  run:
+    - python >=3.4
+    - cryptography
+    - pyopenssl >=17.0.0
+    - python-gssapi >=1.2.0
+    - typing_extensions >=3.6
+
+test:
+  imports:
+    - asyncssh
+
+about:
+  home: https://github.com/ronf/asyncssh
+  license: EPL-1.0
+  summary: 'AsyncSSH: Asynchronous SSHv2 client and server library'
+
+extra:
+  recipe-maintainers:
+    - vamega

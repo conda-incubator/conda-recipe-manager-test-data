@@ -1,0 +1,52 @@
+{% set name = "flask-marshmallow" %}
+{% set version = "0.14.0" %}
+{% set sha256 = "bd01a6372cbe50e36f205cfff0fc5dab0b7b662c4c8b2c4fc06a3151b2950950" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  build:
+    - python
+    - pip
+  run:
+    - python
+    - flask
+    - marshmallow >=2.0.0
+    - six >=1.9.0
+
+test:
+  imports:
+    - flask_marshmallow
+
+about:
+  home: https://github.com/marshmallow-code/flask-marshmallow
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Flask + marshmallow for beautiful APIs
+
+  description: |
+    Flask-Marshmallow is a thin integration layer for Flask (a Python web
+    framework) and marshmallow (an object serialization/deserialization
+    library) that adds additional features to marshmallow, including URL and
+    Hyperlinks fields for HATEOAS-ready APIs. It also (optionally) integrates
+    with Flask-SQLAlchemy.
+  doc_url: http://flask-marshmallow.readthedocs.io/
+  dev_url: https://github.com/marshmallow-code/flask-marshmallow
+
+extra:
+  recipe-maintainers:
+    - frol
+    - igortg

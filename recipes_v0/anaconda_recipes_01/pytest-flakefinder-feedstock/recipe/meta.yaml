@@ -1,0 +1,53 @@
+{% set name = "pytest-flakefinder" %}
+{% set version = "1.1.0" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  sha256: e2412a1920bdb8e7908783b20b3d57e9dad590cc39a93e8596ffdd493b403e0e
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - pytest >=2.7.1
+    - python
+
+test:
+  imports:
+    - pytest_flakefinder
+  requires:
+    - pip
+    - ripgrep
+  source_files:
+    - tests/
+  commands:
+    - pip check
+    - pytest --traceconfig | rg pytest-flakefinder-{{ version }}
+    - pytest
+
+about:
+  home: https://github.com/dropbox/pytest-flakefinder
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
+  summary: Runs tests multiple times to expose flakiness.
+  description: |
+    When enabled it will 'multiply' your tests so that they get run multiple times without having to restart pytest.
+    This helps you find flakiness in your tests.
+  doc_url: https://github.com/dropbox/pytest-flakefinder/blob/master/README.rst 
+  dev_url: https://github.com/dropbox/pytest-flakefinder
+
+extra:
+  recipe-maintainers:
+    - danpetry

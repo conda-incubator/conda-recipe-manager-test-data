@@ -1,0 +1,62 @@
+{% set major_minor = "1.4" %}
+{% set version = major_minor + ".51" %}
+
+package:
+  name: lighttpd
+  version: {{ version }}
+
+source:
+  url: https://download.lighttpd.net/lighttpd/releases-{{ major_minor }}.x/lighttpd-{{ version }}.tar.gz
+  sha256: 4301fe64136c7030d63cccc96996c6603dcbe82cca9a72e0aca29ce88284c978
+
+build:
+  number: 1
+  # mysql-connector-c is not available on s390x
+  skip: True  # [linux and s390x]
+  skip: True  # [not linux]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - automake
+    - libtool
+    - make  # [unix]
+    - perl  # Needed to run the tests
+    - pkg-config
+  host:
+    - bzip2
+    - krb5
+    - libuuid
+    - libxml2 2.10
+    - mysql-connector-c
+    - openssl 1.1.1
+    - pcre
+    - sqlite
+    - zlib
+
+test:
+  files:
+    - lighttpd.conf
+  commands:
+    - lighttpd -h
+    - lighttpd -v
+    - lighttpd -t -f lighttpd.conf
+
+about:
+  home: https://www.lighttpd.net/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: COPYING
+  summary: Light, fast web server
+  description: |
+    Lighttpd is rapidly redefining the efficiency of a webserver. It is
+    designed and optimized for high performance environments. With a small
+    memory footprint compared to other web-servers, effective management of
+    the cpu-load, and an advanced feature set, lighttpd is the perfect
+    solution for every server that is suffering load problems.
+  doc_url: https://redmine.lighttpd.net/projects/lighttpd/wiki
+  dev_url: https://github.com/lighttpd
+
+extra:
+  recipe-maintainers:
+    - sdvillal

@@ -1,0 +1,57 @@
+{% set name = "aiorwlock" %}
+{% set version = "1.3.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/aiorwlock-{{ version }}.tar.gz
+  sha256: 83f12d87df4b9728a0b8fda1756585ab0d652b107bab59c6084e1b1ad692ab45
+
+build:
+  skip: True  # [py<37]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 1
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - aiorwlock
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/aio-libs/aiorwlock
+  summary: Read write lock for asyncio.
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  description: |
+    Read write lock for asyncio. A RWLock maintains a pair of associated locks, 
+    one for read-only operations and one for writing. 
+    The read lock may be held simultaneously by multiple reader tasks, 
+    so long as there are no writers. The write lock is exclusive.
+    Whether or not a read-write lock will improve performance 
+    over the use of a mutual exclusion lock depends on the frequency 
+    that the data is read compared to being modified. For example, 
+    a collection that is initially populated with data and thereafter infrequently modified, 
+    while being frequently searched is an ideal candidate for the use of a read-write lock. 
+    However, if updates become frequent then the data spends most of its time being exclusively locked 
+    and there is little, if any increase in concurrency.
+  doc_url: https://github.com/aio-libs/aiorwlock
+  dev_url: https://github.com/aio-libs/aiorwlock
+
+extra:
+  recipe-maintainers:
+    - wendazhou

@@ -1,0 +1,69 @@
+{% set version = "4.7.2" %}
+
+package:
+  name: mayavi
+  version: {{ version }}
+
+source:
+  fn: mayavi-{{ version }}.tar.gz
+  url: https://github.com/enthought/mayavi/archive/{{ version }}.tar.gz
+  sha256: c8addff9c87c7b9f91d32205c99d0af75cf480cbb2585e69149ab6b9337deb2e
+
+build:
+  number: 0
+  entry_points:
+    - mayavi2 = mayavi.scripts.mayavi2:main
+    - tvtk_doc = tvtk.tools.tvtk_doc:main
+  skip: True  # [win and py27]
+  ignore_run_exports:
+    - pyqt    # [linux and aarch64]
+
+requirements:
+  build:
+    - {{ compiler('fortran') }}
+    - {{ compiler('c') }}
+    - make    # [linux and aarch64]
+  host:
+    - python
+    - numpy
+    - pip
+    - setuptools
+    - vtk
+    - traitsui
+    - apptools
+    - sphinx  # [osx or (linux and aarch64)]
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+    - vtk
+    - traitsui
+    - pyface
+    - apptools
+    - envisage
+    - pyqt >=4,<6
+    - setuptools
+
+test:
+  commands:
+    - mayavi2 --help
+  imports:
+    - tvtk
+    - tvtk.array_ext
+    - mayavi
+
+about:
+  home: https://github.com/enthought/mayavi
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: The Mayavi scientific data 3-dimensional visualizers
+  doc_url: http://docs.enthought.com/mayavi/mayavi
+  dev_url: https://github.com/enthought/mayavi
+
+extra:
+  recipe-maintainers:
+    - msarahan
+    - grlee77
+    - hadim
+    - dfroger
+    - cadair

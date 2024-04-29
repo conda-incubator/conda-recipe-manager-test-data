@@ -1,0 +1,103 @@
+{% set version = '1.2.2.2' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-modelmetrics
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/ModelMetrics_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/ModelMetrics/ModelMetrics_{{ version }}.tar.gz
+  sha256: 5e06f1926aebca5654e1329c66ef19b04058376b2277ebb16e3bf8c208d73457
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: testthat
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-rcpp
+    - r-data.table
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-rcpp
+    - r-data.table
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('ModelMetrics')"           # [not win]
+    - "\"%R%\" -e \"library('ModelMetrics')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://CRAN.R-project.org/package=ModelMetrics
+  license: GPL-2
+  summary: Collection of metrics for evaluating models written in C++ using 'Rcpp'. Popular metrics
+    include area under the curve, log loss, root mean square error, etc.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: ModelMetrics
+# Title: Rapid Calculation of Model Metrics
+# Version: 1.2.2.2
+# Date: 2018-11-03
+# Authors@R: person("Tyler", "Hunt", email = "thunt@snapfinance.com", role = c("aut", "cre"))
+# Description: Collection of metrics for evaluating models written in C++ using 'Rcpp'. Popular metrics include area under the curve, log loss, root mean square error, etc.
+# Depends: R (>= 3.2.2)
+# License: GPL (>= 2)
+# Encoding: UTF-8
+# LazyData: true
+# LinkingTo: Rcpp
+# Imports: Rcpp, data.table
+# RoxygenNote: 6.0.1
+# Suggests: testthat
+# NeedsCompilation: yes
+# Packaged: 2020-03-17 06:58:01 UTC; ripley
+# Author: Tyler Hunt [aut, cre]
+# Maintainer: Tyler Hunt <thunt@snapfinance.com>
+# Repository: CRAN
+# Date/Publication: 2020-03-17 07:45:31 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

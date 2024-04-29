@@ -1,0 +1,97 @@
+{% set name = "geopandas-split" %}
+{% set version = "0.14.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/geopandas/geopandas-{{ version }}.tar.gz
+  sha256: 6e71d57b8376f9fdc9f1c3aa3170e7e420e91778de854f51013ae66fd371ccdb
+
+build:
+  number: 0
+  skip: True  # [py<39 or s390x]
+
+outputs:
+  - name: geopandas-base
+    script: build_base.sh   # [unix]
+    script: build_base.bat  # [win]
+    requirements:
+      host:
+        - python
+        - pip
+        - setuptools
+        - wheel
+      run:
+        - python
+        - packaging
+        - pandas >=1.4.0
+        - pyproj >=3.3.0
+        - shapely >=1.8.0
+        - fiona >=1.8.21
+    test:
+      imports:
+        - geopandas
+        - geopandas.io
+        - geopandas.tools
+        - geopandas.datasets
+      files:
+        - test_data
+      requires:
+        - pip
+      commands:
+        - pip check
+
+  - name: geopandas
+    requirements:
+      host:
+        - python
+        - pip
+        - setuptools
+        - wheel
+      run:
+        - python
+        - {{ pin_subpackage('geopandas-base', exact=True) }}
+        - folium
+        - mapclassify >=2.4.0
+        - matplotlib-base >=3.5.0
+        - rtree >=0.9 # [not s390x]
+        - xyzservices
+
+    test:
+      imports:
+        - geopandas
+        - geopandas.io
+        - geopandas.tools
+        - geopandas.datasets
+      files:
+        - test_data
+      requires:
+        - pip
+      commands:
+        - pip check
+
+about:
+  home: https://geopandas.org
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Geographic pandas extensions
+  description: |
+    GeoPandas is an open source project to make working with geospatial data in python easier.
+    GeoPandas extends the datatypes used by pandas to allow spatial operations on geometric types.
+    Geometric operations are performed by shapely. Geopandas further depends on fiona for file access and
+    descartes and matplotlib for plotting.
+    The goal of GeoPandas is to make working with geospatial data in python easier.
+    It combines the capabilities of pandas and shapely, providing geospatial operations in pandas
+    and a high-level interface to multiple geometries to shapely.
+    GeoPandas enables you to easily do operations in python that would otherwise require a spatial database such as PostGIS.
+  dev_url: https://github.com/geopandas/geopandas
+  doc_url: https://geopandas.org/en/stable/docs.html
+
+extra:
+  recipe-maintainers:
+    - ocefpaf
+    - jorisvandenbossche
+    - jdmcbr

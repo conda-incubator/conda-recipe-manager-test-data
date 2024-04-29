@@ -1,0 +1,52 @@
+{% set name = "spirv-tools" %}
+{% set version = "2021.4" %}
+{% set sha256 = "d68de260708dda785d109ff1ceeecde2d2ab71142fa5bf59061bb9f47dd3bb2c" %}
+{% set build_number = 0 %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  # Note: there are a number of build dependencies that get downloaded via a utility in the source 
+  # repo: `git-sync-deps`. This is run for both unix and windows via the build.sh and bld.bat,
+  # respectively. Alternatively we could:
+  #   - list them here as sources and put them in their correct locations.
+  #   - build out packages of them and list them as build requirements.
+  # For more information: https://github.com/KhronosGroup/SPIRV-Tools#build
+  url: https://github.com/KhronosGroup/SPIRV-Tools/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: {{ build_number }}
+
+requirements:
+  build:
+    - git
+    - {{ compiler('cxx') }}
+    - cmake
+    - make  # [unix]
+    - ninja  # [win]
+  run_constrained:                                             # [osx and x86_64]
+    - __osx >={{ MACOSX_DEPLOYMENT_TARGET|default("10.12") }}  # [osx and x86_64]
+
+test:
+  commands:
+    - spirv-as -h
+
+about:
+  home: https://github.com/KhronosGroup/SPIRV-Tools
+  dev_url: https://github.com/KhronosGroup/SPIRV-Tools
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  summary: 'The SPIR-V Tools project provides an API and commands for processing SPIR-V modules.'
+  description: |
+    The project includes an assembler, binary module parser, disassembler, validator, and optimizer
+    for SPIR-V. Except for the optimizer, all are based on a common static library. The library
+    contains all of the implementation details, and is used in the standalone tools whilst also
+    enabling integration into other code bases directly. The optimizer implementation resides in
+    its own library, which depends on the core library.
+extra:
+  recipe-maintainers:
+    - 

@@ -1,0 +1,184 @@
+# Based on recipes from birdhouse and anaconda channel.
+
+{% set name = "openjdk" %}
+{% set version = "11.0.13" %}
+{% set ver_parts = version.split('.') %}
+{% set uversion = version.replace('.', '_') %}
+{% set intellij_build = "1751.21" %}
+{% set build_number = 0 %}
+{% set sha256_osx = "654dd3126e67de8605a7cd94a3ebc713365cc1d63ab6156dd65f0249b064e37a" %}
+{% set sha256_jbrex_osx = "79faff0f41b2e571768bdbca6f977d0d20f643edfbdd568a28fc99f6a097b071" %}
+{% set sha256_osx_arm64 = "65807ed92397cd92e1381c49039af443d713874e1ec8efd6e92e370514e56861" %}
+{% set sha256_jbrex_osx_arm64 = "639207be5b110b2da89c40895354ecfbfad9bd922fa85e91e085a667c537d79f" %}
+{% set sha256_linux_64 = "c83ac1e95932dd6f334a52c363be656cfa71a476a6e5f66bc5b76e19cf2a5678" %}
+{% set sha256_jbrex_linux_64 = "6bfa21611d62c45126e022796801ea45f29ae921861419295d47d107169056fc" %}
+{% set sha256_linux_aarch64 = "7bd76455e211098e954ee2c6a3d8c15533e2b80bbee7eef6b89fad36cfdc78d0" %}
+{% set sha256_jbrex_linux_aarch64 = "56309fcb763c5cc7a52fa2565866a1fcc2cddd9b515a7bce7401f7f8a8c9d2fe" %}
+{% set sha256_dejagnu_fonts = "7576310b219e04159d35ff61dd4a4ec4cdba4f35c00e002a136f00e96a908b0a" %}
+{% set sha256_win_64 = "dae01a2eb17d12d53c53f2e7260ac06a24206824895fd8eda7a85b144f4053fd" %}
+{% set sha256_jbrex_win_64 = "7a49c1dea35b7f32a2b82c65d3dca9eac861cb035adbbe4a3cae396a0da08b26" %}
+{% set sha256_win_32 = "8cc6bb935efca7e2a34f26533c9fa8158bec645478371efca61d352df2ff591c" %}
+{% set sha256_jbrex_win_32 = "70743eab790c9286b6ec1ce7c3874736d00a5a1532387a7ec191e3609450389b" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-{{ uversion }}-osx-x64-b{{ intellij_build }}.tar.gz                       # [osx and not arm64]]
+    fn: jbrsdk-{{ uversion }}-osx-x64-b{{ intellij_build }}.tar.gz                                                                            # [osx and not arm64]
+    sha256: {{ sha256_osx }}                                                                                                                  # [osx and not arm64]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbr_jcef-{{ uversion }}-osx-x64-b{{ intellij_build }}.tar.gz                     # [osx and not arm64]
+    fn: jbr_jcef-{{ uversion }}-osx-x64-b{{ intellij_build }}.tar.gz                                                                          # [osx and not arm64]
+    sha256: {{ sha256_jbrex_osx }}                                                                                                            # [osx and not arm64]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-{{ uversion }}-osx-aarch64-b{{ intellij_build }}.tar.gz                   # [osx and arm64]
+    fn: jbrsdk-{{ uversion }}-osx-aarch64-b{{ intellij_build }}.tar.gz                                                                        # [osx and arm64]
+    sha256: {{ sha256_osx_arm64 }}                                                                                                            # [osx and arm64]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbr_jcef-{{ uversion }}-osx-aarch64-b{{ intellij_build }}.tar.gz                 # [osx and arm64]
+    fn: jbr_jcef-{{ uversion }}-osx-aarch64-b{{ intellij_build }}.tar.gz                                                                      # [osx and arm64]
+    sha256: {{ sha256_jbrex_osx_arm64 }}                                                                                                      # [osx and arm64]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-{{ uversion }}-linux-x64-b{{ intellij_build }}.tar.gz                     # [linux and not aarch64]
+    fn: jbrsdk-{{ uversion }}-linux-x64-b{{ intellij_build }}.tar.gz                                                                          # [linux and not aarch64]
+    sha256: {{ sha256_linux_64 }}                                                                                                             # [linux and not aarch64]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbr_jcef-{{ uversion }}-linux-x64-b{{ intellij_build }}.tar.gz                   # [linux and not aarch64]
+    fn: jbr_jcef-{{ uversion }}-linux-x64-b{{ intellij_build }}.tar.gz                                                                        # [linux and not aarch64]
+    sha256: {{ sha256_jbrex_linux_64 }}                                                                                                       # [linux and not aarch64]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-{{ uversion }}-linux-aarch64-b{{ intellij_build }}.tar.gz                 # [linux and aarch64]
+    fn: jbrsdk-{{ uversion }}-linux-aarch64-b{{ intellij_build }}.tar.gz                                                                      # [linux and aarch64]
+    sha256: {{ sha256_linux_aarch64 }}                                                                                                        # [linux and aarch64]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbr-{{ uversion }}-linux-aarch64-b{{ intellij_build }}.tar.gz                    # [linux and aarch64]
+    fn: jbr-{{ uversion }}-linux-aarch64-b{{ intellij_build }}.tar.gz                                                                         # [linux and aarch64]
+    sha256: {{ sha256_jbrex_linux_aarch64 }}                                                                                                  # [linux and aarch64]
+  - url: https://github.com/dejavu-fonts/dejavu-fonts/releases/download/version_2_37/dejavu-fonts-ttf-2.37.zip                                # [linux]
+    sha256: {{ sha256_dejagnu_fonts }}                                                                                                        # [linux]
+    folder: fonts                                                                                                                             # [linux]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-{{ uversion }}-windows-x64-b{{ intellij_build }}.tar.gz                   # [win64]
+    fn: jbrsdk-{{ uversion }}-windows-x64-b{{ intellij_build }}.tar.gz                                                                        # [win64]
+    sha256: {{ sha256_win_64 }}                                                                                                               # [win64]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbr_jcef-{{ uversion }}-windows-x64-b{{ intellij_build }}.tar.gz                 # [win64]
+    fn: jbr_jcef-{{ uversion }}-windows-x64-b{{ intellij_build }}.tar.gz                                                                      # [win64]
+    sha256: {{ sha256_jbrex_win_64 }}                                                                                                         # [win64]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbrsdk-{{ uversion }}-windows-x86-b{{ intellij_build }}.tar.gz                   # [win32]
+    fn: jbrsdk-{{ uversion }}-windows-x86-b{{ intellij_build }}.tar.gz                                                                        # [win32]
+    sha256: {{ sha256_win_32 }}                                                                                                               # [win32]
+  - url: https://cache-redirector.jetbrains.com/intellij-jbr/jbr-{{ uversion }}-windows-x86-b{{ intellij_build }}.tar.gz                      # [win32]
+    fn: jbr-{{ uversion }}-windows-x86-b{{ intellij_build }}.tar.gz                                                                           # [win32]
+    sha256: {{ sha256_jbrex_win_32 }}                                                                                                         # [win32]
+
+build:
+  number: {{ build_number }}
+  # openjdk 11.0.13 is not currently supported on ppc64le or s390x.
+  # openjdk 11.0.13 requires GLIBC_2.27 on aarch64, but currently is available GLIBC_2.26.
+  skip: True  # [ppc64le or s390x or aarch64]
+  ignore_run_exports:
+    - cairo              # [linux and aarch64]
+    - dbus               # [linux]
+    - expat              # [linux]
+    - freetype           # [linux]
+    - libxcb             # [linux]
+    - pango              # [linux and aarch64]
+    - zlib               # [osx]
+  missing_dso_whitelist:
+    - $RPATH/libz.so.1
+    - $RPATH/libjli.so
+    - $RPATH/libjvm.so
+    - $RPATH/libgobject-2.0.so.0
+    - $RPATH/libglib-2.0.so.0
+    - $RPATH/libnss3.so
+    - $RPATH/libdrm.so.2
+    - $RPATH/libgbm.so.1
+    - $RPATH/libnssutil3.so
+    - $RPATH/libsmime3.so
+    - $RPATH/libnspr4.so
+    - $RPATH/libatk-1.0.so.0
+    - $RPATH/libatk-bridge-2.0.so.0
+    - $RPATH/libgio-2.0.so.0
+    - $RPATH/libxkbcommon.so.0
+    - $RPATH/libX11.so.6
+    - $RPATH/libXcomposite.so.1
+    - $RPATH/libXdamage.so.1
+    - $RPATH/libXext.so.6
+    - $RPATH/libXfixes.so.3
+    - $RPATH/libXrandr.so.2
+    - $RPATH/libasound.so.2
+    - $RPATH/libcups.so.2
+    - $RPATH/libatspi.so.0
+    - $RPATH/libxshmfence.so.1
+    - $RPATH/libjawt.so
+    - $RPATH/libXrender.so.1
+    - $RPATH/libXtst.so.6
+    - $RPATH/libXi.so.6
+    - $RPATH/libXxf86vm.so.1
+    - $RPATH/libXcursor.so.1
+    - $RPATH/libstdc++.so.6
+    - $RPATH/libjvm.dylib               # [osx]
+    - $RPATH/libjawt.dylib              # [osx]
+    - $RPATH/libpangoft2-1.0.so.0       # [linux and aarch64]
+    - $RPATH/libgtk-x11-2.0.so.0        # [linux and aarch64]
+    - $RPATH/libgdk-x11-2.0.so.0        # [linux and aarch64]
+    - $RPATH/libgdk_pixbuf-2.0.so.0     # [linux and aarch64]
+    - $RPATH/libgthread-2.0.so.0        # [linux and aarch64]
+    - $RPATH/ld-linux-x86-64.so.2       # [linux and (aarch64 or s390x or ppc64le)]
+    - $RPATH/libgtk-3.so.0              # [linux and aarch64]
+    - $RPATH/libgdk-3.so.0              # [linux and aarch64]
+    - $RPATH/libavcodec-ffmpeg.so.56    # [linux and aarch64]
+    - $RPATH/libavformat-ffmpeg.so.56   # [linux and aarch64]
+    - $RPATH/libGL.so.1                 # [linux and aarch64]
+    - $RPATH/libgmodule-2.0.so.0        # [linux and aarch64]
+    - /*/*/*/*/*/*/*/Frameworks/JavaNativeFoundation.framework/JavaNativeFoundation  # [osx and arm64]
+    - Library\bin\VCRUNTIME140.dll      # [win]
+    - Library\bin\bin\VCRUNTIME140.dll  # [win]
+    - Library\bin\MSVCP140.dll          # [win]
+    - Library\bin\bin\MSVCP140.dll      # [win]
+    - $RPATH/jvm.dll                    # [win]
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}   # [not win]
+    - zip                     # [linux]
+  host:
+    - cairo                   # [linux and aarch64]
+    - dbus                    # [linux]
+    - expat                   # [linux]
+    - freetype                # [linux]
+    - glib                    # [linux]
+    - libxcb                  # [linux]
+    - pango                   # [linux and aarch64]
+    - zlib                    # [unix]
+  run:
+    - cairo                   # [linux and aarch64]
+    - dbus                    # [linux]
+    - expat                   # [linux]
+    - freetype                # [linux]
+    - glib                    # [linux]
+    - libxcb                  # [linux]
+    - pango                   # [linux and aarch64]
+ 
+test:
+  requires:
+    - {{ compiler('c') }}
+  files:
+    - test-jni     # [not win]
+    - test-jni.sh  # [not win]
+    - test-nio
+  commands:
+    - java -version
+    - ./test-jni.sh                                # [not win]
+    - conda inspect linkages -p ${PREFIX} openjdk  # [linux]
+    - conda inspect objects -p ${PREFIX} openjdk   # [osx]
+
+about:
+  home: https://github.com/JetBrains/JetBrainsRuntime
+  license: GPL-2.0-only
+  license_family: GPL
+  summary: The JetBrains Runtime OpenJDK build.
+  description: |
+    JetBrains Runtime is a runtime environment for running
+    IntelliJ Platform based products on Windows, Mac OS X, and Linux
+  dev_url: https://github.com/JetBrains/JetBrainsRuntime
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - mingwandroid
+    - sodre

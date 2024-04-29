@@ -1,0 +1,69 @@
+{% set name = "py-ard" %}
+{% set version = "1.0.9" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 1e156ddfb0992f998d02683fe8eed3b3c8037fb935b3a111a2039346e9e99add
+  - url: https://github.com/nmdp-bioinformatics/{{ name }}/archive/refs/tags/{{ version }}.tar.gz
+  folder: source
+  sha256: b6637aa7e3f901ae51c9cba9e21656cd6b9ca6b9790b604d6a5f2319ed19150f
+
+
+build:
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+  number: 0
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+    - toml >=0.10.2
+    - numpy >=1.24.3
+    - pandas >=1.5.3
+
+test:
+  imports:
+    - pyard
+  source_files:
+    - source/tests
+  requires:
+    - pip
+    - pytest
+    - pyhamcrest
+  commands:
+    - pip check || true
+    - pytest -v source/tests
+
+about:
+  home: https://py-ard.org/
+  dev_url: https://github.com/nmdp-bioinformatics/py-ard
+  doc_url: https://github.com/nmdp-bioinformatics/py-ard
+  summary: ARD reduction for HLA with Python
+  description: |
+    Human leukocyte antigen (HLA) genes encode cell surface proteins
+    that are important for immune regulation. Exons encoding
+    the Antigen Recognition Domain (ARD) are the most polymorphic region of HLA genes
+    and are important for donor/recipient HLA matching.
+    The history of allele typing methods has played a major role in determining
+    resolution and ambiguity of reported HLA values.
+    Although HLA nomenclature has not always conformed to the same standard,
+    it is now defined by The WHO Nomenclature Committee for Factors of the HLA System.
+    py-ard is aware of the variation in historical resolutions and grouping
+    and is able to translate from one representation to another based on alleles published quarterly by IPD/IMGT-HLA.
+  license: LGPL-3.0 AND GPL-3.0
+  license_family: Other
+  license_file:
+    - LICENSE
+    - COPYING
+
+extra:
+  recipe-maintainers:
+    - skupr-anaconda

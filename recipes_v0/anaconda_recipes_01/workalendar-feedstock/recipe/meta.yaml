@@ -1,0 +1,56 @@
+{% set name = "workalendar" %}
+{% set version = "17.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b82d6024aed452505b01baf06dbe8d6309a3135ff1d39dee07c31b21ece853b4
+
+build:
+  noarch: python
+  number: 0
+  script: '{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv '
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+
+  run:
+    - lunardate
+    - convertdate
+    - skyfield
+    - skyfield-data
+    - pyluach
+    - python >=3.6
+    - python-dateutil
+    - pytz
+    - setuptools >=1.0
+    - freezegun
+
+test:
+  imports:
+    - workalendar
+    - workalendar.africa
+    - workalendar.america
+    - workalendar.asia
+    - workalendar.europe
+    - workalendar.europe.scotland
+    - workalendar.europe.scotland.mixins
+    - workalendar.oceania
+    - workalendar.tests
+    - workalendar.usa
+
+about:
+  home: https://github.com/peopledoc/workalendar
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Worldwide holidays and working days helper and toolkit.
+
+extra:
+  recipe-maintainers:
+    - Matt-BF

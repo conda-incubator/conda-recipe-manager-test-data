@@ -1,0 +1,41 @@
+{% set version = "2.4.0" %}
+
+package:
+  name: googletrans
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/g/googletrans/googletrans-{{ version }}.tar.gz
+  sha256: bb4e2a6ee72a24870e696a14238b7305f855a05206ecae10bd50052651984cc5
+
+build:
+  noarch: python
+  number: 1001
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  host:
+    - python
+    - pip
+    - requests
+  run:
+    - python
+    - requests
+
+test:
+  imports:
+    - googletrans
+
+
+about:
+  home: https://github.com/ssut/py-googletrans
+  license: MIT
+  license_file: LICENSE
+  summary: 'Free Google Translate API for Python. Translates totally free of charge'
+  description: "Googletrans is a free and unlimited python library that implemented Google Translate API. This uses the Google Translate Ajax API to make calls to such methods as detect and translate.\nCompatible with Python 2.7+ and 3.4+. (Note: Python 2 support will be dropped in the next major release.)"
+  doc_url: https://github.com/ssut/py-googletrans
+  dev_url: https://py-googletrans.readthedocs.io/en/latest
+
+extra:
+  recipe-maintainers:
+    - SekouD

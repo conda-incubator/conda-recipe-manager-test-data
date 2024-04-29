@@ -1,0 +1,68 @@
+# this package is not intended to go on the default channel
+{% set name = "hyperopt" %}
+{% set version = "0.2.7" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/hyperopt-{{ version }}.tar.gz
+  sha256: 1bf89ae58050bbd32c7307199046117feee245c2fd9ab6255c7308522b7ca149
+
+build:
+  number: 1
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  entry_points:
+    - hyperopt-mongo-worker=hyperopt.mongoexp:main
+
+requirements:
+  host:
+    - python
+    - numpy {{ numpy }}
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - cloudpickle
+    - future
+    - networkx >=2.2
+    # see numpy pinnings https://github.com/conda-forge/hyperopt-feedstock/pull/11/commits/349d44f2aacf045fbef322d0a4d3e7a4a3eab456
+    - numpy >=1.17
+    - py4j
+    - scipy
+    - six
+    - tqdm
+  run_constrained:
+    - pymongo
+    - pyspark
+    - lightgbm
+    - scikit-learn
+
+test:
+  imports:
+    - hyperopt
+    - hyperopt.pyll
+  requires:
+    - pip
+  commands:
+    - pip check
+    - hyperopt-mongo-worker --help
+
+about:
+  home: https://github.com/hyperopt/hyperopt
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Distributed Asynchronous Hyper-parameter Optimization
+  description: |
+    Hyperopt is a Python library for serial and parallel optimization over awkward search spaces,
+    which may include real-valued, discrete, and conditional dimensions.
+  doc_url: https://hyperopt.github.io/hyperopt/
+  dev_url: https://github.com/hyperopt/hyperopt
+
+extra:
+  recipe-maintainers:
+    - PhilipMay
+    - BastianZim

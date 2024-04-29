@@ -1,0 +1,43 @@
+{% set name = "azure-mgmt-web" %}
+{% set version = "6.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.zip
+  sha256: c26635089276515b0488fcf014aab50a0446f54800c6e0e5583cc493ac8d738f
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >3.0
+    - pip
+  run:
+    - python >3.0
+    - azure-common ~=1.1
+    - azure-mgmt-core >=1.2.0,<2.0.0
+    - msrest >=0.6.21
+
+test:
+  imports:
+    - azure
+    - azure.mgmt
+    - azure.mgmt.web
+
+about:
+  home: https://github.com/Azure/azure-sdk-for-python
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Microsoft Azure Web Apps Management Client Library for Python.
+
+
+extra:
+  recipe-maintainers:
+    - tim-werner

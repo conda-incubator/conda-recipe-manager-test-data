@@ -1,0 +1,46 @@
+{% set name = "pytest-socket" %}
+{% set version = "0.5.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 7c4b81dc6a51cbc0093f11791de00ff4a15ac698f5da96879a80f5d9ad4179b6
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - poetry-core >=1.0.0
+    - python >=3.7
+  run:
+    - pytest >=3.6.3
+    - python >=3.7
+
+test:
+  requires:
+    - pip
+  imports:
+    - pytest_socket
+  commands:
+    - python -m pip check
+
+about:
+  home: https://github.com/miketheman/pytest-socket
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Pytest Plugin to disable socket calls during tests
+  description: |
+    A plugin to use with Pytest to disable or restrict socket calls
+    during tests to ensure network calls are prevented.
+
+extra:
+  recipe-maintainers:
+    - duncanmmacleod

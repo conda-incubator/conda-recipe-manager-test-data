@@ -1,0 +1,45 @@
+{% set version = "0.14.0" %}
+
+package:
+  name: rasterstats
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/r/rasterstats/rasterstats-{{ version }}.tar.gz
+  sha256: b7b19c620934e8f7c81b1c5456ade63673831cd1e02c7361514b5bf1d08c23e4
+
+build:
+  number: 0
+  noarch: python
+  script: "{{ PYTHON }} -m pip install . --no-deps -vv"
+
+requirements:
+  build:
+    - python
+    - pip
+  run:
+    - python
+    - shapely
+    - numpy >=1.9
+    - rasterio >=0.27
+    - cligj >=0.4
+    - fiona
+    - simplejson
+
+test:
+  imports:
+    - rasterstats
+  commands:
+    - rio zonalstats --help
+    - rio pointquery --help
+
+about:
+  home: https://github.com/perrygeo/python-raster-stats
+  license: BSD-3-Clause
+  license_file: LICENSE.txt
+  summary: 'Summarize geospatial raster datasets based on vector geometries'
+
+extra:
+  recipe-maintainers:
+    - perrygeo
+    - ocefpaf

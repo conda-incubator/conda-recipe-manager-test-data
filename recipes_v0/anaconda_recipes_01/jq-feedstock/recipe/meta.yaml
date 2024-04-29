@@ -1,0 +1,53 @@
+{% set version = "1.6" %}
+
+package:
+  name: jq-suite
+  version: {{ version }}
+
+source:
+  fn: jq-{{ version }}.tar.gz
+  url: https://github.com/stedolan/jq/releases/download/jq-{{ version }}/jq-{{ version }}.tar.gz
+  sha256: 5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
+
+build:
+  # trigger 1
+  number: 1
+  missing_dso_whitelist:  # [s390x]
+    - $RPATH/ld64.so.1    # [s390x]
+
+outputs:
+  - name: jq
+    script: build-jq.sh
+    script_interpreter: bash
+    requirements:
+      build:
+        - {{ compiler('c') }}  # [not win]
+        - make  # [not win]
+        - m2-base  # [win]
+        - m2-make  # [win]
+        - m2-autoconf  # [win]
+        - m2-automake-wrapper  # [win]
+        - m2-make  # [win]
+        - m2-libtool  # [win]
+        - m2w64-toolchain  # [win]
+        - libtool  # [not win]
+      host:
+        - oniguruma 6.9.*  # [not win]
+      run:
+        - oniguruma 6.9.*  # [not win]
+        - m2w64-libwinpthread-git  # [win]
+
+    test:
+      commands:
+        - jq --help
+
+about:
+  home: http://stedolan.github.io/jq/
+  license: MIT
+  license_file: COPYING
+  summary: A command-line JSON processor.
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - mingwandroid

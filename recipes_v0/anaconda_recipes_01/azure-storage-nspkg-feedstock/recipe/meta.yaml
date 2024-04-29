@@ -1,0 +1,42 @@
+{% set name = "azure-storage-nspkg" %}
+{% set version = "3.1.0" %}
+{% set sha256 = "6f3bbe8652d5f542767d8433e7f96b8df7f518774055ac7c92ed7ca85f653811" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - pip
+  run:
+    - python
+    - azure-nspkg >=2.0.0
+
+test:
+  imports:
+    - azure
+    - azure.storage
+
+about:
+  home: https://github.com/Azure/azure-storage-python
+  license: Apache-2.0
+  license_family: Apache
+  license_file: {{ RECIPE_DIR }}/LICENSE.txt
+  summary: 'Microsoft Azure Storage Namespace Package [Internal]'
+
+extra:
+  recipe-maintainers:
+    - xhochy

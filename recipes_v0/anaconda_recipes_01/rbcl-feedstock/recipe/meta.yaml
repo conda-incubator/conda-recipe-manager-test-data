@@ -1,0 +1,56 @@
+{% set name = "rbcl" %}
+{% set version = "1.0.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.python.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: a0bf43234a2987b67b451d1e61efe5666c12a236001e8ace788307ce5f2ad698
+  patches:
+    - 0001-do-not-bundle-libsodium-into-_sodium.py.patch
+    - 0002-do-not-depend-on-pystache.patch
+
+build:
+  number: 0
+  script:
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+    - echo "from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(sys.prefix, 'lib', 'libsodium.dylib'))" > $SP_DIR/{{ name }}/_sodium.py  # [osx]
+    - echo "from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(sys.prefix, 'lib', 'libsodium.so'))" > $SP_DIR/{{ name }}/_sodium.py  # [linux]
+    - echo from ctypes import cdll; import os; import sys; _sodium = cdll.LoadLibrary(os.path.join(os.environ['LIBRARY_BIN'], 'libsodium.dll')) > %SP_DIR%\{{ name }}\_sodium.py  # [win]
+    - rm $SP_DIR/{{ name }}/_sodium.tmpl   # [not win]
+    - rm %SP_DIR%\{{ name }}\_sodium.tmpl  # [win]
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - pip
+    - wheel
+  run:
+    - python
+    - barriers
+    - libsodium
+
+test:
+  imports:
+    - rbcl
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/nthparty/rbcl
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  summary: Python library that bundles libsodium and provides wrappers for its Ristretto group functions.
+  description: Python library that bundles libsodium and provides wrappers for its Ristretto group functions.
+  doc_url: https://github.com/nthparty/rbcl
+  dev_url: https://github.com/nthparty/rbcl
+
+extra:
+  recipe-maintainers:
+    - boldorider4

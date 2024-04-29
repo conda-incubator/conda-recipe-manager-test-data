@@ -1,0 +1,38 @@
+{% set version = "2020.1" %}
+
+package:
+  name: pytzdata
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pytzdata/pytzdata-{{ version }}.tar.gz
+  sha256: 3efa13b335a00a8de1d345ae41ec78dd11c9f8807f522d39850f2dd828681540
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - poetry
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - pytzdata
+
+about:
+  home: https://github.com/sdispater/pytzdata
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Official timezone database for Python
+
+extra:
+  recipe-maintainers:
+    - mcs07
+    - ocefpaf

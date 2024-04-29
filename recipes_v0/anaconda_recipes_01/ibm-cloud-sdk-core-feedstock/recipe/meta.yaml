@@ -1,0 +1,48 @@
+{% set name = "ibm-cloud-sdk-core" %}
+{% set version = "3.16.2" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 7cf625f5ccfd1880c02996041fef20fa8991b46314f9a6c1c75e887fb1f98b72
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - pytest
+    - python >=3.7
+  run:
+    - pyjwt <3.0.0,>=2.4.0
+    - python >=3.7
+    - python-dateutil <3.0.0,>=2.5.3
+    - requests <3.0.0,>=2.26.0
+    - urllib3 <2.0.0,>=1.26.0
+
+test:
+  imports:
+    - ibm_cloud_sdk_core
+    - ibm_cloud_sdk_core.authenticators
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/IBM/python-sdk-core
+  summary: Core library used by SDKs for IBM Cloud Services
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - synapticarbors
+    - BastianZim

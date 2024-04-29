@@ -1,0 +1,43 @@
+{% set name = "bashlex" %}
+{% set version = "0.18" %}
+{% set sha256 = "5bb03a01c6d5676338c36fd1028009c8ad07e7d61d8a1ce3f513b7fff52796ee" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - enum34  # [py<34]
+
+test:
+  imports:
+    - bashlex
+
+about:
+  home: https://github.com/idank/bashlex
+  license: GPL-3.0-only
+  license_family: GPL
+  # License file added manually so far:
+  # https://github.com/idank/bashlex/issues/27
+  # https://github.com/conda-forge/staged-recipes/pull/4401
+  license_file: {{ environ["RECIPE_DIR"] }}/LICENSE
+  dev_url: https://github.com/idank/bashlex
+  summary: Python parser for bash
+
+extra:
+  recipe-maintainers:
+    - sebastian-luna-valero

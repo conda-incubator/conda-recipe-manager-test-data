@@ -1,0 +1,43 @@
+{% set name = "vaex-astro" %}
+{% set version = "0.9.1" %}
+{% set sha256 = "f65dea9f6f37038e9467aab165eba7d51a9f08ffb7a9ec4569f5151ec68cfc7b" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - setuptools
+    - pip
+  run:
+    - python >=3.6
+    - vaex-core >=4.5.0,<5
+    - astropy
+
+test:
+  imports:
+    - vaex.astro
+
+about:
+  home: https://www.github.com/maartenbreddels/vaex
+  doc_url: https://docs.vaex.io/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Astronomy related transformations and FITS file support for vaex
+
+extra:
+  recipe-maintainers:
+    - maartenbreddels

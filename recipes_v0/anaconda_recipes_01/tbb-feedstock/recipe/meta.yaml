@@ -1,0 +1,174 @@
+{% set version = "2021.8.0" %}
+
+{% set vmajor = version.split('.')[0]|int %}
+{% set vminor = version.split('.')[1]|int %}
+{% set vpatch = version.split('.')[2]|int %}
+{% set vbinary = vmajor - 2009 %}
+
+{% set vtag = "v%d.%d.%d" % (vmajor, vminor, vpatch) %}
+
+# Official patch version for the first release of 2021 is 1,
+# but internal patch version is 0, handle it for interface version.
+{% set vinterface = "%d" % (vbinary * 1000 + vminor * 10 + (vpatch if vmajor != 2021 or vminor != 1 else 0)) %}
+
+# Libraries on Windows are expected to be installed into LIBRARY_PREFIX.
+# tbb4py files should be installed into PREFIX.
+# See https://docs.conda.io/projects/conda-build/en/latest/user-guide/environment-variables.html.
+# On non-Windows CMAKE_ARGS already contains CMAKE_INSTALL_PREFIX.
+{% set cmake_args = "$CMAKE_ARGS -DPython3_EXECUTABLE=${PYTHON} -DPYTHON_EXECUTABLE=${PYTHON}" %}  # [not win and not ppc64le] 
+{% set cmake_args = "$CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_INSTALL_LIBDIR=lib -DPython3_EXECUTABLE=${PYTHON} -DPYTHON_EXECUTABLE=${PYTHON}" %}  # [ppc64le]
+{% set cmake_args = "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% -DPython3_EXECUTABLE=%PYTHON% -DPYTHON_EXECUTABLE=%PYTHON%" %}  # [win]
+
+{% set cmake_tbb4py_args = "$CMAKE_ARGS -DPython3_EXECUTABLE=${PYTHON} -DPYTHON_EXECUTABLE=${PYTHON}" %}  # [not win and not ppc64le]
+{% set cmake_tbb4py_args = "$CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_INSTALL_LIBDIR=lib -DPython3_EXECUTABLE=${PYTHON} -DPYTHON_EXECUTABLE=${PYTHON}" %}  # [ppc64le]
+{% set cmake_tbb4py_args = "-DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%PREFIX% -DPython3_EXECUTABLE=%PYTHON% -DPYTHON_EXECUTABLE=%PYTHON%" %}   # [win]
+
+# Use specific test list agreed with TBB team to cover core functionality on high level.
+# Execution of all tests is too heavy task for packaging CI.
+{% set tests = "test_parallel_for test_tbb_header conformance_version test_malloc_compliance test_flow_graph test_arena_constraints" %}
+{% set ctest_regex = "^(%s)$" % (tests.replace(' ', '|')) %}
+
+{% set tbb4py_build_dir = 'build_py${PY_VER}h${PKG_HASH}' %}   # [not win]
+{% set tbb4py_build_dir = 'build_py%PY_VER%h%PKG_HASH%' %}  # [win]
+
+package:
+  name: tbb-split
+  version: {{ version }}
+
+source:
+  url: https://github.com/oneapi-src/oneTBB/archive/{{ vtag }}.tar.gz
+  sha256: eee380323bb7ce864355ed9431f85c43955faaae9e9bce35c62b372d7ffd9f8b
+
+build:
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+    # the ninja cmake generator only works on windows, for some reason
+    - ninja  # [win]
+    - make   # [not win]
+    - cmake
+
+outputs:
+  - name: tbb
+    build:
+      script:
+        - set CMAKE_GENERATOR=Ninja  # [win]
+        - cmake {{ cmake_args }} -DTBB_TEST=OFF -S . -B build
+        - cmake --build build --parallel
+        - cmake -DCOMPONENT=runtime -P build/cmake_install.cmake
+      missing_dso_whitelist:
+        - "$RPATH/libtbbmalloc.so.2"  # [ppc64le]
+        - "*/ld64.so.1"               # [s390x]
+    requirements:
+      build:
+        - {{ compiler('cxx') }}
+        - ninja  # [win]
+        - make   # [not win]
+        - cmake
+    test:
+      requires:
+        - python
+      commands:
+        - python -c "import ctypes; assert {{ vinterface }} == ctypes.cdll[r'libtbb.so.{{ vbinary }}.{{ vminor }}']       ['TBB_runtime_interface_version']()"  # [linux]
+        - python -c "import ctypes; assert {{ vinterface }} == ctypes.cdll[r'libtbb.{{ vbinary }}.{{ vminor }}${SHLIB_EXT}']['TBB_runtime_interface_version']()"  # [unix and not linux]
+        - python -c "import ctypes, os; os.add_dll_directory(os.environ['LIBRARY_BIN']); assert {{ vinterface }} == ctypes.cdll[r'tbb{{ vbinary }}.dll'] ['TBB_runtime_interface_version']()"  # [win]
+
+  - name: tbb-devel
+    build:
+      script:
+        - set CMAKE_GENERATOR=Ninja  # [win]
+        - cmake {{ cmake_args }} -DTBB_TEST=OFF -S . -B build
+        - cmake --build build --parallel
+        - cmake -DCOMPONENT=devel -P build/cmake_install.cmake
+      run_exports:
+        - tbb >={{ version }}
+    requirements:
+      build:
+        - {{ compiler('cxx') }}
+        - ninja  # [win]
+        - make   # [not win]
+        - cmake >=3.13
+
+      run:
+        - {{ pin_subpackage('tbb', exact=True) }}        # development package is for specific version of tbb
+    test:
+      requires:
+        - {{ compiler('cxx') }}
+        - ninja  # [win]
+        - make   # [not win]
+        - cmake
+      source_files:
+        - cmake
+        - test
+        - CMakeLists.txt
+        - include  # some tests depend on files from include
+        - src      # some tests depend on files from src
+      commands:
+        - set CMAKE_GENERATOR=Ninja  # [win]
+        # Setting TBB_DIR=TRUE is needed to use libraries from the tested package,
+        # but do not build them from sources; real path to TBBConfig files is not required,
+        # because CMake will successfully find installed tested package.
+        - cmake {{ cmake_args }} -DTBB_TEST=ON -DTBB_DIR=TRUE -S . -B test_build
+        - cmake --build test_build --target {{ tests }} --parallel  # build tests
+        - cd test_build
+        - ctest -R "{{ ctest_regex }}" --output-on-failure
+
+  - name: tbb4py
+    build:
+      script:
+        - set CMAKE_GENERATOR=Ninja  # [win]
+        - cmake {{ cmake_tbb4py_args }} -DTBB4PY_BUILD=ON -DTBB_TEST=OFF -S . -B {{ tbb4py_build_dir }}
+        - cmake --build {{ tbb4py_build_dir }} --target python_build --parallel
+        - cmake -DCOMPONENT=tbb4py -P {{ tbb4py_build_dir }}/cmake_install.cmake
+      missing_dso_whitelist:
+        - "$RPATH/libtbb.so.12"  # [ppc64le]
+        - "*/ld64.so.1"          # [s390x]
+    requirements:
+      build:
+        - {{ compiler('cxx') }}
+        - ninja  # [win]
+        - make   # [not win]
+        - cmake
+        - swig >=3.0.6
+      host:
+        - python
+        - {{ pin_subpackage('tbb-devel', exact=True) }}
+      run:
+        - tbb >={{ version }}                            # while python module works with any compatible tbb...
+        - python
+    test:
+      requires:
+        - python
+      imports:
+        - tbb
+        - TBB
+      commands:
+        - python -m TBB -h
+        - python -m tbb -h
+        - python -m tbb test
+    about:
+      summary: TBB module for Python
+      license: Apache-2.0
+      dev_url: https://github.com/oneapi-src/oneTBB/tree/master/python
+
+about:
+  home: https://github.com/oneapi-src/oneTBB
+  license: Apache-2.0
+  license_family: Apache
+  license_file:
+    - LICENSE.txt
+    - third-party-programs.txt
+  summary: High level abstract threading library
+  description: |
+    oneTBB is a flexible C++ library that simplifies the work of adding parallelism to complex applications, even if you
+    are not a threading expert.
+  dev_url: https://github.com/oneapi-src/oneTBB
+  doc_url: https://oneapi-src.github.io/oneTBB/
+
+extra:
+  recipe-maintainers:
+    - anton-malakhov
+    - jschueller
+    - AlexVeprev

@@ -1,0 +1,88 @@
+{% set version = '0.19-4' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-coda
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/coda_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/coda/coda_{{ version }}.tar.gz
+  sha256: 422d3cfd34797a3631e9c4812431940599c0ca4bb9937797bed07b7b1d6fe58f
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-lattice
+
+  run:
+    - r-base
+    - r-lattice
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('coda')"           # [not win]
+    - "\"%R%\" -e \"library('coda')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://CRAN.R-project.org/package=coda
+  license: GPL-2
+  summary: Provides functions for summarizing and plotting the output from Markov Chain Monte
+    Carlo (MCMC) simulations, as well as diagnostic tests of convergence to the equilibrium
+    distribution of the Markov chain.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: coda
+# Version: 0.19-4
+# Date: 2020-09-30
+# Title: Output Analysis and Diagnostics for MCMC
+# Authors@R: c(person("Martyn", "Plummer", role=c("aut","cre","trl"), email="martyn.plummer@gmail.com"), person("Nicky", "Best", role="aut"), person("Kate", "Cowles", role="aut"), person("Karen", "Vines", role="aut"), person("Deepayan", "Sarkar", role="aut"), person("Douglas", "Bates", role="aut"), person("Russell", "Almond", role="aut"), person("Arni", "Magnusson", role="aut"))
+# Depends: R (>= 2.14.0)
+# Imports: lattice
+# Description: Provides functions for summarizing and plotting the output from Markov Chain Monte Carlo (MCMC) simulations, as well as diagnostic tests of convergence to the equilibrium distribution of the Markov chain.
+# License: GPL (>= 2)
+# NeedsCompilation: no
+# Packaged: 2020-09-30 16:13:19 UTC; martyn
+# Author: Martyn Plummer [aut, cre, trl], Nicky Best [aut], Kate Cowles [aut], Karen Vines [aut], Deepayan Sarkar [aut], Douglas Bates [aut], Russell Almond [aut], Arni Magnusson [aut]
+# Maintainer: Martyn Plummer <martyn.plummer@gmail.com>
+# Repository: CRAN
+# Date/Publication: 2020-09-30 20:00:04 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

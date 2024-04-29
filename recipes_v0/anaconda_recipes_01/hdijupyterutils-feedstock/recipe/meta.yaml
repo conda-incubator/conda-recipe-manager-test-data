@@ -1,0 +1,56 @@
+{% set name = "hdijupyterutils" %}
+{% set version = "0.21.0" %}
+{% set hash_type = "sha256" %}
+{% set hash_val = "bc122b07cb66ea3ce4d5858154a8fb86b93e6a19e08154198751353d453accee" %}
+
+package:
+    name: {{ name }}
+    version: {{ version }}
+
+source:
+    fn: {{ name }}-{{ version }}.tar.gz
+    url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    {{ hash_type }}: {{ hash_val }}
+
+build:
+    number: 0
+    script: {{ PYTHON }} -m pip install --no-deps --no-build-isolation --ignore-installed . -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - ipython >=4.0.2
+    - ipywidgets >5.0.0
+    - ipykernel >=4.2.2
+    - jupyter >=1
+    - pandas >=0.17.1,<2.0.0
+    - numpy >=1.16.5
+    - notebook >=4.2
+
+test:
+  imports:
+    - hdijupyterutils
+  requires:
+    - pip
+  commands:
+    # For passing pip check: "jupyter 1.0.0 requires qtconsole, which is not installed."
+    - pip check || true      # [not win]
+    - pip check || (exit 1)  # [win]
+
+about:
+  home: https://github.com/jupyter-incubator/sparkmagic/tree/master/hdijupyterutils
+  license: BSD-3-Clause
+  license_file: LICENSE.md
+  license_family: BSD
+  summary: Project with useful classes/methods for all projects created by the HDInsight team at Microsoft around Jupyter
+  dev_url: https://github.com/jupyter-incubator/sparkmagic/tree/master/hdijupyterutils
+  doc_url: https://github.com/jupyter-incubator/sparkmagic/tree/master/hdijupyterutils
+
+extra:
+  recipe-maintainers:
+    - danielfrg

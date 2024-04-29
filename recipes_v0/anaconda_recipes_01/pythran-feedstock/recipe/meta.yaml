@@ -1,0 +1,109 @@
+{% set version = "0.15.0" %}
+
+package:
+  name: pythran
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pythran/pythran-{{ version }}.tar.gz
+  sha256: f9bc61bcb96df2cd4b578abc5a62dfb3fbb0b0ef02c264513dfb615c5f87871c
+  
+build:
+  number: 0
+  skip: true # [py<37]
+  script:
+    # prevent d1trimfile option being added which clang-cl does not understand.
+    # d1trimfile option is added by a patch and disabled by unsetting SRC_DIR
+    # https://github.com/conda-forge/python-feedstock/blob/e7ea437a819f8f06dcbc3769f6e46dc026070c44/recipe/patches/0021-Add-d1trimfile-SRC_DIR-to-make-pdbs-more-relocatable.patch
+    - set "SRC_DIR="   # [win]
+    # unvendor xsimd; use version packaged by conda
+    - {{ PYTHON }} -c "import os, shutil; shutil.rmtree(os.path.join('pythran', 'xsimd'))"
+    # on windows, pythran wrongly sets %PREFIX\include instead of %PREFIX%\Library\include;
+    # pythran-win32.cfg already exists and has [compiler].include_dirs; we replace it on the fly;
+    # conda will detect the written environment-path and replace it as appropriate for user installs;
+    # note that we need r'...' for this due to paths like D:\bld\... where python would interpret \b.
+    # Seeking to 0 and overwriting without truncating only works, because the file is now longer than before.
+    - "python -c \"with open('pythran\\pythran-win32.cfg', 'r+') as s: a=s.read(); s.seek(0); s.write(a.replace('include_dirs=', r'include_dirs=%PREFIX%/Library/include'))\""  # [win]
+    # sanity check to ensure this is set correctly
+    - type pythran\pythran-win32.cfg  # [win]
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - pythran = pythran.run:run
+    - pythran-config = pythran.config:run
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}  # [not win]
+    - clang                  # [win]
+    - clangxx                # [win]
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - {{ compiler('cxx') }}  # [not win]
+    - clang                  # [win]
+    - clangxx                # [win]
+    - python
+    - numpy
+    - gast >=0.5.0,<0.6.0
+    - ply >=3.4
+    - beniget >=0.4.0,<0.5.0
+    - setuptools # used in pythran.dist
+    - xsimd 12.1.1
+
+test:
+  requires:
+    - pip
+    # default to testing openblas
+    - openblas-devel {{ openblas }}   # [linux or osx]
+    - {{ compiler('c') }}  # [osx]
+  files:
+    - dprod.py
+    - simple_numexpr.py
+  commands:
+    - pip check
+    - export CBS="-isysroot $(xcrun --show-sdk-path)" # [osx]
+    - export CFLAGS="${CFLAGS} ${CBS}"  # [osx]
+    - export CXXFLAGS="${CXXFLAGS} ${CBS}"  # [osx]
+    - export LDFLAGS="${LDFLAGS} ${CBS}"  # [osx]
+    - set "SRC_DIR="  # [win]
+    - pythran --version
+    - pythran --help
+    - pythran-config -vvv
+    - pythran -v dprod.py
+    - python -c "import dprod"
+    - pythran -v simple_numexpr.py -DUSE_XSIMD -march=native  # [not (ppc64le or s390x or (osx and arm64))]
+    - pythran -v simple_numexpr.py -DUSE_XSIMD                # [osx and arm64]
+    - pythran -v simple_numexpr.py                            # [ppc64le or s390x]
+    - python -c "import simple_numexpr"
+  imports:
+    - omp  # [not win]
+    - pythran
+    - pythran.analyses
+    - pythran.optimizations
+    - pythran.transformations
+    - pythran.types
+
+about:
+  home: https://github.com/serge-sans-paille/pythran
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: a claimless python to c++ converter
+
+  description: |
+    Pythran is an ahead of time compiler for a subset of the Python language,
+    with a focus on scientific computing. It takes a Python module annotated
+    with a few interface description and turns it into a native Python module
+    with the same interface, but (hopefully) faster.
+  doc_url: https://pythran.readthedocs.io/
+  dev_url: https://github.com/serge-sans-paille/pythran
+
+extra:
+  skip-lints:
+    - compilers_must_be_in_build
+  recipe-maintainers:
+    - saraedum
+    - serge-sans-paille

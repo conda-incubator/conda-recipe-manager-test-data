@@ -1,0 +1,51 @@
+{% set name = "python-novaclient" %}
+{% set version = "18.2.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 185bbf2cafb5f3d761f272e3e184a700cc7ba5cf7d51619065be7f5c4b5b7cf4
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - nova = novaclient.shell:main
+
+requirements:
+  host:
+    - pbr
+    - pip
+    - python >=3.8
+    - setuptools
+  run:
+    - pbr
+    - keystoneauth1 >=3.5.0
+    - iso8601 >=0.1.11
+    - oslo.i18n >=3.15.3
+    - oslo.serialization >2.19.1
+    - oslo.utils >=3.33.0
+    - prettytable >=0.7.2
+    - python >=3.8
+    - stevedore >=2.0.1
+
+test:
+  imports:
+    - novaclient
+
+about:
+  home: https://docs.openstack.org/python-novaclient/latest
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
+  summary: Client library for OpenStack Compute API
+  doc_url: https://docs.openstack.org/python-novaclient/latest
+  dev_url: https://opendev.org/openstack/python-novaclient
+
+extra:
+  recipe-maintainers:
+    - tschoonj

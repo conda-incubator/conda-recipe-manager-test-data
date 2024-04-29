@@ -1,0 +1,62 @@
+{% set name = "newrelic" %}
+{% set version = "8.6.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 3de16fee3e9ac6b3384504f22bb7af1d913e7531c20dcc895833133e2aa4735c
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  entry_points:
+    - newrelic-admin = newrelic.admin:main
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - pip
+    - python
+    - setuptools_scm >=3.2,<4
+  run:
+    - python
+
+test:
+  requires:
+    - python
+    - pip
+  imports:
+    - newrelic
+  commands:
+    - python -m pip check
+    - newrelic-admin help  # [unix]
+
+about:
+  home: https://newrelic.com/docs/python/new-relic-for-python
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - THIRD_PARTY_NOTICES.md
+    - newrelic/packages/wrapt/LICENSE
+    - newrelic/packages/urllib3/LICENSE.txt
+  summary: New Relic Python Agent
+  dev_url: https://github.com/newrelic/newrelic-python-agent
+  description: |
+    The newrelic package instruments your application for performance
+    monitoring and advanced performance analytics with New Relic.
+
+    Pinpoint and solve Python application performance issues down to the line
+    of code. New Relic APM is the only tool you’ll need to see everything in
+    your Python application, from the end user experience to server monitoring.
+    Trace problems down to slow database queries, slow 3rd party APIs and web
+    services, caching layers, and more. Monitor your app in a production
+    environment and make sure your app can stand a big spike in traffic by
+    running scalability reports.
+
+extra:
+  recipe-maintainers:
+    - bollwyvl

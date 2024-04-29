@@ -1,0 +1,61 @@
+{% set name = "unyt" %}
+{% set version = "2.9.5" %}
+{% set sha256 = "99892f33b5c6bf97053beac84c8a136747631828f030725e9a01147d48377337" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: true  # [py<38]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - numpy >=1.17.5
+    - sympy >=1.5
+
+test:
+  source_files:
+    - unyt/tests
+  requires:
+    - pip
+    - pytest
+  imports:
+    - unyt
+  commands:
+    - pip check
+    - pytest unyt/tests -v
+
+about:
+  home: https://github.com/yt-project/unyt
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Handle, manipulate, and convert data with units in Python
+  description: |
+    A package for handling numpy arrays with units.
+    Often writing code that deals with data that has units can be confusing. 
+    A function might return an array but at least with plain NumPy arrays, 
+    there is no way to easily tell what the units of the data are without somehow knowing them prior.
+    The unyt package (pronounced like "unit") provides a subclass of NumPy's 
+    ndarray class that knows about units.
+  doc_url: https://unyt.readthedocs.io/
+  dev_url: https://github.com/yt-project/unyt
+
+extra:
+  recipe-maintainers:
+    - jzuhone
+    - ngoldbaum
+    - neutrinoceros

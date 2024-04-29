@@ -1,0 +1,68 @@
+{% set version = "4.8.2" %}
+{% set sha256 = "6c202cb9cf05e63b86477ebf84d6475eb10b4022ac2cd3a7481fb36d9c45fdb2" %}
+
+package:
+  name: mercurial
+  version: {{ version }}
+
+source:
+  fn: mercurial-{{ version }}.tar.gz
+  url: https://mercurial-scm.org/release/mercurial-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: True  # [py3k]
+  script: python setup.py install
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - setuptools  # [win]
+  run:
+    - python
+    - pygments
+    - setuptools  # [win]
+
+test:
+  commands:
+    - hg --version
+  imports:
+    - hgdemandimport
+    - hgext
+    - hgext.convert
+    - hgext.fsmonitor
+    - hgext.fsmonitor.pywatchman
+    - hgext.fsmonitor.pywatchman.bser
+    - hgext.highlight
+    - hgext.infinitepush
+    - hgext.largefiles
+    - hgext.lfs
+    - hgext.narrow
+    - hgext.zeroconf
+    - hgext3rd
+    - mercurial
+    - mercurial.cext
+    - mercurial.cffi
+    - mercurial.hgweb
+    - mercurial.pure
+    - mercurial.utils
+
+about:
+  home: http://mercurial-scm.org
+  license: GPL2
+  license_file: COPYING
+  summary: Source control management tool
+  description: |
+    Mercurial is a free, distributed source control management tool. It
+    efficiently handles projects of any size and offers an easy and intuitive
+    interface.
+  doc_url: https://www.mercurial-scm.org/guide
+  dev_url: https://www.mercurial-scm.org/repo/hg
+
+extra:
+  recipe-maintainers:
+    - ngoldbaum
+    - nehaljwani

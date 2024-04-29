@@ -1,0 +1,58 @@
+{% set name = "parsel" %}
+{% set version = "1.8.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: aff28e68c9b3f1a901db2a4e3f158d8480a38724d7328ee751c1a4e1c1801e39
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True  # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+    - pytest-runner
+    - setuptools
+    - wheel
+  run:
+    - python
+    # https://github.com/scrapy/parsel/pull/277
+    - cssselect >=1.2.0
+    - jmespath
+    - lxml
+    - packaging
+    - w3lib >=1.19.0
+    - typing-extensions  # [py<38]
+
+test:
+  source_files:
+    - tests
+  imports:
+    - parsel
+  requires:
+    - pip
+    - pytest
+    # https://github.com/giampaolo/psutil/issues/1659#issuecomment-586032229
+    - psutil
+  commands:
+    - pip check
+    - pytest -v tests
+
+about:
+  home: https://github.com/scrapy/parsel
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: library to extract data from HTML and XML using XPath and CSS selectors
+  description: |
+    Features of parcel are, Extract text using CSS or XPath selectors and
+    Regular expression helper methods.
+  dev_url: https://github.com/scrapy/parsel
+  doc_url: https://parsel.readthedocs.io/

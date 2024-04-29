@@ -1,0 +1,103 @@
+{% set name = "apache-airflow-providers-google" %}
+{% set version = "8.8.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/apache-airflow-providers-google-{{ version }}.tar.gz
+  sha256: 0bcf211609963b1ebc7a168f0477da5d9ac431063d2554b7e0c4efefef2667e0
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - setuptools
+  run:
+    - python >=3.7
+    - pyopenssl
+    - apache-airflow-providers-common-sql >=1.3.1
+    - apache-airflow >=2.3.0
+    - asgiref >=3.5.2
+    - gcloud-aio-bigquery >=6.1.2
+    - gcloud-aio-storage
+    - gcloud-aio-auth >=4.0.0
+    - google-ads >=15.1.1
+    # google-api-core has incorrect dependencies, and doesn't seem worth fixing
+    - google-api-core >=2.7.0,<3.0.0,!=2.10.0
+    - google-api-python-client >=1.6.0,<2.0.0
+    - google-auth >=1.0.0
+    - google-auth-httplib2 >=0.0.1
+    - google-cloud-aiplatform >=1.7.1,<2.0.0
+    - google-cloud-automl >=2.1.0
+    - google-cloud-bigquery-datatransfer >=3.0.0
+    - google-cloud-bigtable >=1.0.0,<2.0.0
+    - google-cloud-build >=3.0.0
+    - google-cloud-compute >=0.1.0,<2.0.0
+    - google-cloud-container >=2.2.0,<3.0.0
+    - google-cloud-datacatalog >=3.0.0
+    - google-cloud-dataform >=0.2.0
+    - google-cloud-dataplex >=0.1.0
+    - google-cloud-dataproc >=3.1.0
+    - google-cloud-dataproc-metastore >=1.2.0,<2.0.0
+    - google-cloud-dlp >=0.11.0,<2.0.0
+    - google-cloud-kms >=2.0.0
+    - google-cloud-language >=1.1.1,<2.0.0
+    - google-cloud-logging >=2.1.1
+    - google-cloud-memcache >=0.2.0
+    - google-cloud-monitoring >=2.0.0
+    - google-cloud-orchestration-airflow >=1.0.0,<2.0.0
+    - google-cloud-os-login >=2.0.0
+    - google-cloud-pubsub >=2.0.0
+    - google-cloud-redis >=2.0.0
+    - google-cloud-secret-manager >=0.2.0,<2.0.0
+    - google-cloud-spanner >=1.10.0,<2.0.0
+    - google-cloud-speech >=0.36.3,<2.0.0
+    - google-cloud-storage >=1.30,<3.0.0
+    - google-cloud-tasks >=2.0.0
+    - google-cloud-texttospeech >=0.4.0,<2.0.0
+    - google-cloud-translate >=1.5.0,<2.0.0
+    - google-cloud-videointelligence >=1.7.0,<2.0.0
+    - google-cloud-vision >=0.35.2,<2.0.0
+    - google-cloud-workflows >=0.1.0,<2.0.0
+    - grpcio-gcp >=0.2.2
+    - httpx
+    - json-merge-patch >=0.2
+    - looker-sdk >=22.2.0
+    - pandas >=0.17.1
+    - pandas-gbq
+    - proto-plus >=1.19.6
+    - protobuf <=3.20.0
+    # googleapis-common-protos 1.57.0 has incorrect dependencies and doesn't seem worth fixing
+    - googleapis-common-protos !=1.57.0
+    - sqlalchemy-bigquery >=1.2.1
+
+test:
+  imports:
+    - airflow.providers.google
+    - airflow.providers.google.ads
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://airflow.apache.org/
+  summary: Provider for Apache Airflow. Implements apache-airflow-providers-google package
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - NOTICE
+  license_family: Apache
+  doc_url: https://airflow.apache.org/docs/apache-airflow-providers-google/stable/index.html
+  dev_url: https://github.com/apache/airflow/
+
+extra:
+  recipe-maintainers:
+    - xylar

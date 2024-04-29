@@ -1,0 +1,58 @@
+{% set version = "0.17.4" %}
+{% set sha256 = "70e8772fe501da05a57e84a11734bf35fdd6b7dfb556a3dbfe93b5ab6fe747ae" %}
+
+package:
+  name: ipyleaflet
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/i/ipyleaflet/ipyleaflet-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: true # [py<37 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - jupyter-packaging >=0.12,<1
+  run:
+    - python
+    - ipywidgets >=7.6.0,<9
+    - traittypes >=0.2.1,<0.3.0
+    - xyzservices >=2021.8.1
+    - branca >=0.5.0
+
+test:
+  imports:
+    - ipyleaflet
+  requires:
+    - pip
+    - m2-grep # [win]
+    - jupyterlab
+  commands:
+    - pip check
+    - jupyter labextension list
+    - jupyter labextension list 2>&1 | grep -ie " jupyter-leaflet.*OK"
+
+about:
+  home: https://github.com/jupyter-widgets/ipyleaflet
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A Jupyter / Leaflet bridge enabling interactive maps in the Jupyter notebook.
+  doc_url: https://ipyleaflet.readthedocs.io
+  dev_url: https://github.com/jupyter-widgets/ipyleaflet
+
+extra:
+  recipe-maintainers:
+    - SylvainCorlay
+    - ellisonbg
+    - jasongrout
+    - martinRenou
+    - davidbrochart

@@ -1,0 +1,38 @@
+{% set name = "pyAesCrypt" %}
+{% set version = "6.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: a26731960fb24b80bd3c77dbff781cab20e77715906699837f73c9fcb2f44a57
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - cryptography
+    - python >=3.6
+
+test:
+  imports:
+    - pyAesCrypt
+
+about:
+  home: https://github.com/marcobellaccini/pyAesCrypt
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Encrypt and decrypt files and streams in AES Crypt format (version 2)
+
+extra:
+  recipe-maintainers:
+    - tschoonj

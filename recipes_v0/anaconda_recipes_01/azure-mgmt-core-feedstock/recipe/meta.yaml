@@ -1,0 +1,52 @@
+{% set name = "azure-mgmt-core" %}
+{% set version = "1.4.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/azure-mgmt-core-{{ version }}.zip
+  sha256: d195208340094f98e5a6661b781cde6f6a051e79ce317caabd8ff97030a9b3ae
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - azure-core <2.0.0,>=1.26.2
+
+test:
+  imports:
+    - azure
+    - azure.mgmt
+    - azure.mgmt.core
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/Azure/azure-sdk-for-python
+  license: MIT
+  license_family: MIT
+  license_file:
+    - LICENSE
+    - LICENSE.md
+  summary: Microsoft Azure Management Core Library for Python.
+  description: Azure management core library defines extensions to Azure Core that are specific to ARM (Azure Resource Management) needed when you use client libraries.
+  dev_url: https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/core/azure-mgmt-core
+  doc_url: https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/core/azure-mgmt-core
+
+extra:
+  recipe-maintainers:
+    - tim-werner
+    - xylar

@@ -1,0 +1,41 @@
+{% set version = "0.9.1" %}
+
+package:
+  name: click-help-colors
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/c/click-help-colors/click-help-colors-{{ version }}.tar.gz
+  sha256: 78cbcf30cfa81c5fc2a52f49220121e1a8190cd19197d9245997605d3405824d
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools
+  run:
+    - python >=3.6
+    - click
+test:
+  imports:
+    - click_help_colors
+
+about:
+  home: https://github.com/r-m-n/click-help-colors
+  license: MIT
+  license_file: LICENSE.txt
+  # License file missing on pypi. See: https://github.com/r-m-n/click-help-colors/issues/2
+  #license_file: LICENSE.txt
+  summary: Colorization of help messages in Click
+  dev_url: https://github.com/r-m-n/click-help-colors
+  license_family: MIT
+
+extra:
+  recipe-maintainers:
+    - saketkc
+    - h-vetinari

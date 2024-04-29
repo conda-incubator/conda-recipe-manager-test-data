@@ -1,0 +1,74 @@
+{% set name = "importlib_resources" %}
+{% set version = "6.1.1" %}
+
+package:
+  name: {{ name }}-suite
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 3893a00122eafde6894c59914446a512f728a0c1a45f9bb9b63721b6bacf0b4a
+
+build:
+  number: 1
+  skip: true  # [py<38]
+
+outputs:
+  - name: importlib_resources
+    script: install.sh   # [unix]
+    script: install.bat  # [win]
+    requirements:
+      host:
+        - python
+        - pip
+        - setuptools
+        - setuptools_scm >=3.4.1
+        # setuptools_scm[toml]
+        - toml
+        - wheel
+      run:
+        - python
+        - zipp >=3.1.0  # [py<310]
+    test:
+      requires:
+        - pip
+      commands:
+        - pip check
+      imports:
+        - importlib_resources
+
+  - name: importlib-resources
+    build:
+      noarch: python
+    requirements:
+      host: 
+        - python
+      run:
+        - python
+        - {{ pin_subpackage("importlib_resources", max_pin="x.x.x") }}
+    test:
+      requires:
+        - pip
+      commands:
+        - pip check
+      imports:
+        - importlib_resources
+
+about:
+  home: https://importlib-resources.readthedocs.io
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: APACHE
+  summary: Backport of Python 3.7's standard library `importlib.resources`
+  description: |
+    importlib_resources is a backport of Python standard library importlib.resources module for older Pythons.
+
+    The key goal of this module is to replace parts of pkg_resources with a solution in Python's stdlib that 
+    relies on well-defined APIs. This makes reading resources included in packages easier, with more stable 
+    and consistent semantics.
+  dev_url: https://github.com/python/importlib_resources/
+  doc_url: https://importlib-resources.readthedocs.io
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

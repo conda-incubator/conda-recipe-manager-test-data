@@ -1,0 +1,59 @@
+package:
+  name: gts
+  version: 0.7.6
+
+source:
+  - url: https://fossies.org/linux/privat/old/gts-0.7.6.tar.gz
+    sha256: 059c3e13e3e3b796d775ec9f96abdce8f2b3b5144df8514eda0cc12e13e8b81e
+    patches:
+      - config.in.win32.patch
+      - 0001-Disable-USE_PREDICATES_INIT.patch  # [build_platform != target_platform]
+  - path: CMakeLists.txt
+
+build:
+  number: 3
+  skip: True    # [win32]
+  run_exports:
+    - {{ pin_subpackage('gts', max_pin='x.x') }}
+
+requirements:
+  build:
+    - gnuconfig  # [unix]
+    - {{ compiler('cxx') }}  # [not win]
+    - {{ compiler('c') }}    # [not win]
+    - vs2017_win-64          # [win]
+    - cmake       # [win]
+    - ninja       # [win]
+    - make        # [not win]
+    - pkg-config  # [not win]
+    - patch       # [not win]
+    - m2-patch    # [win]
+  host:
+    - glib
+
+test:
+  commands:
+    - test -f ${PREFIX}/lib/libgts.so                     # [linux]
+    - test -f ${PREFIX}/lib/libgts.dylib                  # [osx]
+    - if not exist %LIBRARY_PREFIX%\\bin\\gts.dll exit 1  # [win]
+
+about:
+  home: http://gts.sourceforge.net/
+  license: LGPL-2.0-or-later
+  license_file: COPYING
+  license_family: LGPL
+  summary: GNU Triangulated Surface Library
+  description: |
+    GTS stands for the GNU Triangulated Surface Library. It is an Open Source
+    Free Software Library intended to provide a set of useful functions to
+    deal with 3D surfaces meshed with interconnected triangles. The code is
+    written entirely in C with an object-oriented approach based mostly on
+    the design of GTK+. Careful attention is paid to performance related
+    issues as the initial goal of GTS is to provide a simple and efficient
+    library to scientists dealing with 3D computational surface meshes.
+  dev_url: http://gerris.dalembert.upmc.fr/darcs/gts-stable/
+  doc_url: http://gerris.dalembert.upmc.fr/darcs/gts-stable/
+
+extra:
+  recipe-maintainers:
+    - seanyen

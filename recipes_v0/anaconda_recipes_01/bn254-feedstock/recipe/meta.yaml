@@ -1,0 +1,47 @@
+{% set name = "bn254" %}
+{% set version = "0.1.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/nthparty/{{ name }}/archive/{{ version }}.tar.gz
+  sha256: 179a5d59f6bf2fecaac63976af810d094d3b71a5cec589e4c507dfa9dd69654a
+
+build:
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+
+test:
+  imports:
+    - bn254
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/nthparty/bn254
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - NOTICE
+  license_family: Apache
+  summary: Pure-Python library that implements operations over the BN(2,254) pairing-friendly curve.
+  description: Pure-Python library that implements operations over the BN(2,254) pairing-friendly curve.
+  doc_url: https://github.com/nthparty/bn254
+  dev_url: https://github.com/nthparty/bn254
+
+extra:
+  recipe-maintainers:
+    - boldorider4

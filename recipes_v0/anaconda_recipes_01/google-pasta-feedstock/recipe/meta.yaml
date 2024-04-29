@@ -1,0 +1,39 @@
+{% set version = "0.2.0" %}
+
+package:
+  name: google-pasta
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/g/google-pasta/google-pasta-{{ version }}.tar.gz
+  sha256: c9f2c8dfc8f96d0d5808299920721be30c9eec37f2389f28904f454565c8a16e
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - python
+    - six
+
+test:
+  imports:
+    - pasta
+    - pasta.augment
+    - pasta.base
+
+about:
+  home: https://github.com/google/pasta
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
+  summary: pasta is an AST-based Python refactoring library
+
+extra:
+  recipe-maintainers:
+    - jjhelmus

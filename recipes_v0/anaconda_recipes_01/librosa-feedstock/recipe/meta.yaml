@@ -1,0 +1,55 @@
+{% set version = "0.9.2" %}
+{% set hash_val = "e389bd21c2dc3922d232b13c55e9b965" %}
+
+package:
+  name: librosa
+  version: {{ version }}
+
+source:
+  fn: librosa-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/l/librosa/librosa-{{ version }}.tar.gz
+  md5: {{ hash_val }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools >=48
+    - wheel >=0.29.0
+
+  run:
+    - python >=3.6
+    - audioread >=2.1.9
+    - numpy >=1.17.0
+    - scipy >=1.2.0
+    - scikit-learn >=0.19.1
+    - joblib >=0.14.0
+    - matplotlib-base >=3.3.0
+    - decorator >=4.0.10
+    - resampy >=0.2.2
+    - numba >=0.45.1
+    - pysoundfile >=0.10.2
+    - pooch >=1.0
+    - packaging >=20.0
+
+test:
+  imports:
+    - librosa
+    - librosa.core
+    - librosa.feature
+    - librosa.util
+    - librosa.display
+
+about:
+  home: http://github.com/librosa/librosa
+  license: ISC
+  summary: Python module for audio and music processing
+
+extra:
+  recipe-maintainers:
+    - bmcfee

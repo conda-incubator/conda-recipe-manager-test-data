@@ -1,0 +1,53 @@
+{% set name = "jupyter_server_fileid" %}
+{% set version = "0.9.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 171538b7c7d08d11dbc57d4e6da196e0c258e4c2cd29249ef1e032bb423677f8
+
+build:
+  number: 0
+  skip: true # [py<37]
+  script: {{ PYTHON }} -m pip install .  --no-deps --no-build-isolation -vv
+  entry_points:
+    - jupyter-fileid = jupyter_server_fileid.cli:main
+
+requirements:
+  host:
+    - hatchling >=1.8
+    - python
+    - pip
+    - wheel
+  run:
+    - python
+    - jupyter_server >=1.15,<3
+    - jupyter_events >=0.5.0
+
+test:
+  imports:
+    - jupyter_server_fileid
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/jupyter-server/jupyter_server_fileid
+  summary: A Jupyter Server extension providing an implementation of the File ID service.
+  description: |
+    A Jupyter Server extension providing an implementation of the File ID service.
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  dev_url: https://github.com/jupyter-server/jupyter_server_fileid
+  doc_url: https://jupyter-server-fileid.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - davidbrochart
+    - dlqqq
+    - fcollonval

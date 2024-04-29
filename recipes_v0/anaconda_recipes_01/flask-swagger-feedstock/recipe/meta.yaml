@@ -1,0 +1,50 @@
+{% set name = "flask-swagger" %}
+{% set version = "0.2.14" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b4085f5bc36df4c20b6548cd1413adc9cf35719b0f0695367cd542065145294d
+
+build:
+  noarch: python
+  number: 2
+  script: python -m pip install --no-deps --ignore-installed .
+
+  entry_points:
+    - flaskswagger=build_swagger_spec:run
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+  run:
+    - python
+    - flask >=0.10
+    - pyyaml >=5.1
+
+test:
+  commands:
+    - flaskswagger --help
+
+  imports:
+    - flask_swagger
+
+about:
+  home: http://github.com/gangverk/flask-swagger
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'Extract swagger specs from your flask project'
+
+  dev_url: https://github.com/gangverk/flask-swagger
+
+extra:
+  recipe-maintainers:
+    - sodre
+    - xylar

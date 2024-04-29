@@ -1,0 +1,79 @@
+{% set name = "leptonica" %}
+{% set version = "1.82.0" %}
+{% set sha256 = "155302ee914668c27b6fe3ca9ff2da63b245f6d62f3061c8f27563774b8ae2d6" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://github.com/DanBloomberg/{{ name }}/releases/download/{{ version }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:         # [win]
+    - cmake.patch  # [win]
+    - 0001-Explicitly-link-against-libwebpmux-on-Windows.patch  # [win]
+
+build:
+  number: 2
+  skip: True       # [win and vc<14]
+  run_exports:
+    - {{ pin_subpackage(name, max_pin='x.x') }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - autoconf      # [not win]
+    - automake      # [not win]
+    - make          # [not win]
+    - libtool       # [not win]
+    - m4            # [not win]
+    - pkg-config
+    - cmake         # [win]
+    - ninja-base    # [win]
+    - sed           # [not win]
+    - m2-sed        # [win]
+    - gawk          # [not win]
+    - m2-gawk       # [win]
+    - m2-patch      # [win]
+  host:
+    # TODO: giflib missing headers on windows?
+    - giflib  {{ giflib }}
+    - jpeg  {{ jpeg }}
+    - libpng  {{ libpng }}
+    - libtiff  {{ libtiff }}
+    - libwebp  {{ libwebp }}
+    - openjpeg  {{ openjpeg }}
+    - zlib  {{ zlib }}
+  run:
+    - giflib   # pin through giflib run_exports
+    - jpeg   # pin through jpeg run_exports
+    - libpng   # pin through libpng run_exports
+    - libtiff   # pin through libtiff run_exports
+    - libwebp   # pin through libwebp run_exports
+    - openjpeg   # pin through openjpeg run_exports
+    - zlib   # pin through zlib run_exports
+
+test:
+  commands:
+    - convertfilestopdf --help 2>&1 | grep 'resolution' &> /dev/null  # [not win]
+    - convertfilestopdf --help || cmd /k "exit /b 0" # [win]
+
+about:
+  home: https://github.com/DanBloomberg/leptonica
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: leptonica-license.txt
+  summary: Useful for image processing and image analysis applications
+  description: |
+    Leptonica is a pedagogically-oriented open source site containing	
+    software that is broadly useful for image processing and image	
+    analysis applications.
+  # HTTPS isn't available for doc_url
+  doc_url: http://www.leptonica.org/
+  dev_url: https://github.com/DanBloomberg/leptonica
+
+extra:
+  recipe-maintainers:
+    - CurtLH
+    - izahn

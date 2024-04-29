@@ -1,0 +1,25 @@
+package:
+  name: prefect-test-build
+  version: 1.0
+
+source:
+  path: ../src
+
+build:
+  number: 7
+
+requirements:
+  build:
+    prefect-test-dependency
+  run:
+    prefect-test-dependency
+
+about:
+  home: https://github.com/AnacondaRecipes/prefect-test-build-feedstock
+  license_file: LICENSE
+  license: BSD-3-Clause
+  license_family: BSD
+
+extra:
+  recipe-maintainers:
+    - dkomisar

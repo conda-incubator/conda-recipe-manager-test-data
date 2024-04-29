@@ -1,0 +1,44 @@
+{% set name = "genderize" %}
+{% set version = "0.3.1" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  #  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  # url: "https://files.pythonhosted.org/packages/c4/8d/f617ade3ccfc4dccdc84250ddd719d4ea3216beb809b09f648b455c54270/{{ name }}-{{ version }}.tar.gz"
+  url: "https://files.pythonhosted.org/packages/c4/8d/f617ade3ccfc4dccdc84250ddd719d4ea3216beb809b09f648b455c54270/Genderize-0.3.1.tar.gz"
+  sha256: 7a1db1e37482b27581a2f2f2d03aadf43f31678b26e99e04c5b4803ca39de177
+    #sha256: 7c31c545176691b845266389d4ace20a39badba11a53a22e3aea4759562eecaa
+
+build:
+  noarch: python
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - pip
+    - python
+    - requests >=1.0.0
+  run:
+    - python
+    - requests >=1.0.0
+
+test:
+  imports:
+    - genderize
+
+about:
+  home: "https://github.com/SteelPangolin/genderize"
+  license: MIT
+  license_family: MIT
+  license_file: 
+  summary: "Client for Genderize.io web service."
+  doc_url: 
+  dev_url: 
+
+extra:
+  recipe-maintainers:
+    - your-github-id-here

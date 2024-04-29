@@ -1,0 +1,47 @@
+{% set name = "devpi-common" %}
+{% set version = "3.7.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/devpi-common-{{ version }}.tar.gz
+  sha256: 9078989279ad79e9c181c7badc4a738460445187101eb0cbade675934d5e4644
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - pip
+    - python >=3.3
+  run:
+    - lazy
+    - packaging <22
+    - py >=1.4.20
+    - python >=3.3
+    - requests >=2.3.0
+
+test:
+  imports:
+    - devpi_common
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/devpi/devpi
+  dev_url: https://github.com/devpi/devpi/tree/main/common
+  doc_url: http://doc.devpi.net/
+  summary: Devpi utilities jointly used by devpi-server and devpi-client
+  license: MIT
+  license_file:
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - thewchan

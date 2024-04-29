@@ -1,0 +1,68 @@
+{% set version = "3.25.3" %}
+{% set posix = 'm2-' if win else '' %}
+
+package:
+  name: cmake-no-system
+  version: {{ version }}
+
+source:
+  - url: https://gitlab.kitware.com/cmake/cmake/-/archive/v{{ version }}/cmake-v{{ version }}.tar.bz2
+    sha256: 21001a52f2a2068025c17597f8144e4976d6bcd20fa7d340431f004be30767b9
+    folder: cmake
+
+  # build cmake with itself on Windows
+  - url: https://cmake.org/files/v{{ version[:4] }}/cmake-{{ version }}-windows-x86_64.zip  # [win64]
+    sha256: d129425d569140b729210f3383c246dec19c4183f7d0afae1837044942da3b4b  # [win64]
+    folder: cmake-bin  # [win64]
+
+build:
+  number: 0
+  skip: True  # [win and vc<14]
+  detect_binary_files_with_prefix: False
+  ignore_run_exports:
+    - vc
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ posix }}make
+    - jom             # [win]
+
+test:
+  commands:
+    - cmake --version
+    - ctest --version
+    - cpack --version
+
+about:
+  home: https://cmake.org/
+  doc_url: https://cmake.org/documentation/
+  dev_url: https://gitlab.kitware.com/cmake/cmake
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file:
+    - cmake/Copyright.txt
+    - cmake/Utilities/cmbzip2/LICENSE
+    - cmake/Utilities/cmcurl/COPYING
+    - cmake/Utilities/cmexpat/COPYING
+    - cmake/Utilities/cmjsoncpp/LICENSE
+    - cmake/Utilities/cmlibarchive/COPYING
+    - cmake/Utilities/cmliblzma/COPYING
+    - cmake/Utilities/cmlibrhash/COPYING
+    - cmake/Utilities/cmlibuv/LICENSE
+    - cmake/Utilities/cmzlib/Copyright.txt
+    - cmake/Utilities/cmzstd/LICENSE
+  summary: CMake built without system libraries for use when building CMake dependencies.
+  
+  description: |
+    CMake is an open-source, cross-platform family of tools designed to build, test and package software.
+    CMake is used to control the software compilation process using simple platform and compiler independent configuration files,
+    and generate native makefiles and workspaces that can be used in the compiler environment of your choice.
+
+
+extra:
+  recipe-maintainers:
+    - jjhelmus
+    - beckermr
+    - xhochy

@@ -1,0 +1,59 @@
+{% set name = "enscons" %}
+{% set version = "0.28.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/enscons-{{ version }}.tar.gz
+  sha256: a5d78e7cb367e336cd020743be2fae984293b0c573d8864c750d984635468a93
+
+build:
+  number: 0
+  script:
+  # enscons builds itself, without setuptools,
+  # so 'pip install .' doesn't appear to work well.
+    - scons
+    - {{ PYTHON }} -m pip install dist/*.whl
+  noarch: python
+
+requirements:
+  host:
+    - attrs
+    - editables  # [py>30]
+    - packaging >=20.9
+    - python
+    - pytoml >=0.1
+    - scons >=3.0.5
+    - setuptools
+    - wheel
+    - pip
+  run:
+    - attrs
+    - editables  # [py>30]
+    - packaging >=20.9
+    - python
+    - pytoml >=0.1
+    - scons >=3.0.5
+    - setuptools
+    - wheel
+
+test:
+  imports:
+    - enscons
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/dholth/enscons
+  summary: Tools for building Python packages with SCons. Experimental.
+  license: MIT
+  doc_url: https://github.com/dholth/enscons/blob/master/README.rst
+
+extra:
+  recipe-maintainers:
+    - dholth

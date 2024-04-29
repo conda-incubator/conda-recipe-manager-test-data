@@ -1,0 +1,50 @@
+{% set name = "pynamodb" %}
+{% set version = "5.4.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pynamodb-{{ version }}.tar.gz
+  sha256: ac58d30c9d191ac16137571c13371a5d7125deeb21d57f0ffe2380b88275eb58
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.7
+  run:
+    - botocore >=1.12.54
+    - python >=3.7
+    - typing-extensions >=3.7
+
+test:
+  imports:
+    - pynamodb
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: http://jlafon.io/pynamodb.html
+  summary: A Pythonic Interface to DynamoDB
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  description: |
+    PynamoDB is a Pythonic interface to Amazon’s DynamoDB. By using simple,
+    yet powerful abstractions over the DynamoDB API, PynamoDB allows you
+    to start developing immediately.
+  doc_url: http://pynamodb.readthedocs.io/
+  dev_url: https://github.com/pynamodb/PynamoDB
+
+extra:
+  recipe-maintainers:
+    - sodre
+    - BastianZim

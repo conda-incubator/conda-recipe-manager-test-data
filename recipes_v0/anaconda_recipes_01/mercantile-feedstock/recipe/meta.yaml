@@ -1,0 +1,46 @@
+{% set version = "1.2.1" %}
+
+package:
+  name: mercantile
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/m/mercantile/mercantile-{{ version }}.tar.gz
+  sha256: fa3c6db15daffd58454ac198b31887519a19caccee3f9d63d17ae7ff61b3b56b
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - mercantile=mercantile.scripts:cli
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - setuptools
+    - click >=3.0
+
+test:
+  imports:
+    - mercantile
+    - mercantile.scripts
+  commands:
+    - mercantile --help
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/sgillies/mercantile
+  license: BSD-3-Clause
+  license_file: LICENSE
+  summary: Spherical mercator and XYZ tile utilities
+  license_family: BSD
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

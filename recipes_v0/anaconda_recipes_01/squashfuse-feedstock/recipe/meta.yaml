@@ -1,0 +1,44 @@
+{% set name = "squashfuse" %}
+{% set version = "0.1.104" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/vasi/squashfuse/releases/download/{{ version }}/squashfuse-{{ version }}.tar.gz
+  sha256: aa52460559e0d0b1753f6b1af5c68cfb777ca5a13913285e93f4f9b7aa894b3a
+
+build:
+  number: 2
+  skip: true  # [not linux]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - pkg-config
+    - make
+  host:
+    - libfuse 3.*
+    - zlib
+    - xz
+    - lz4-c
+    - lzo
+    - zstd
+
+test:
+  commands:
+    - test -f $PREFIX/bin/squashfuse
+    - test -f $PREFIX/bin/squashfuse_ll
+    - test -f $PREFIX/lib/libsquashfuse${SHLIB_EXT}
+    - test ! -f $PREFIX/lib/libsquashfuse.a
+
+about:
+  home: https://github.com/vasi/squashfuse
+  license: BSD-2-Clause
+  license_file: LICENSE
+  summary: FUSE filesystem to mount squashfs archives
+
+extra:
+  recipe-maintainers:
+    - xhochy

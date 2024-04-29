@@ -1,0 +1,60 @@
+{% set name = "flask-restx" %}
+{% set version = "1.0.3" %}
+{% set sha256 = "5fdacd23031d25ff4642f141a47a7fa877f07e3e261099ccc5ebc4fc254de84c" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  skip: true  # [py<37]
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - wheel
+    - setuptools
+  run:
+    - python
+    - aniso8601 >=0.82
+    - jsonschema
+    - flask >=0.8,!=2.0.0
+    - werkzeug !=2.0.0
+    - pytz
+
+test:
+  imports:
+    - flask_restx
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/python-restx/flask-restx/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  license_url: https://github.com/python-restx/flask-restx/blob/master/LICENSE
+  summary: Fully featured framework for fast, easy and documented API development with Flask
+
+  description: |
+    Flask-RESTX is an extension for Flask that adds support for quickly building REST APIs.
+    Flask-RESTX encourages best practices with minimal setup. If you are familiar with Flask,
+    Flask-RESTX should be easy to pick up. It provides a coherent collection of decorators and
+    tools to describe your API and expose its documentation properly using Swagger.
+  doc_url: https://flask-restx.readthedocs.io/
+  dev_url: https://github.com/python-restx/flask-restx/
+  doc_source_url: https://github.com/python-restx/flask-restx/blob/master/doc/index.rst
+
+extra:
+  recipe-maintainers:
+    - SVilgelm
+    - fhoehle

@@ -1,0 +1,55 @@
+{% set name = "debtcollector" %}
+{% set version = "2.5.0" %}
+{% set bundle = "tar.gz" %}
+{% set hash = "dc9d1ad3f745c43f4bbedbca30f9ffe8905a8c028c9926e61077847d5ea257ab" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.{{ bundle }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  sha256: {{ hash }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - pbr !=2.1.0,>=2.0.0
+
+  run:
+    - python >=3.7
+    - pbr !=2.1.0,>=2.0.0
+    - wrapt >=1.7.0
+    - importlib_metadata
+test:
+  imports:
+    - debtcollector
+    - debtcollector.moves
+    - debtcollector.renames
+    - debtcollector.removals
+    - debtcollector.fixtures
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: http://docs.openstack.org/developer/debtcollector/
+  license_file: LICENSE
+  license: Apache-2.0
+  license_family: Apache
+  summary: A collection of Python deprecation patterns and strategies that help you collect your technical debt in a non-destructive manner.
+  dev_url: https://git.openstack.org/cgit/openstack/debtcollector
+  doc_url: http://docs.openstack.org/developer/debtcollector/
+
+extra:
+  recipe-maintainers:
+    - anguslees
+    - tschoonj

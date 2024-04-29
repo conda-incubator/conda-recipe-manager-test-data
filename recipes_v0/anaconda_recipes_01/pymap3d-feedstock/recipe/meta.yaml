@@ -1,0 +1,59 @@
+{% set name = "pymap3d" %}
+{% set version = "2.9.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 6286acf6b36e93ee92d6cc9c0353c258709edfeacd876dc5e87ec2b90ff7ee66
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.5
+    - pip
+  run:
+    - python >=3.5
+    - python-dateutil
+    - numpy
+
+test:
+  imports:
+    - pymap3d
+
+about:
+  home: https://github.com/geospace-code/pymap3d
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Pure Python 3-D geographic coordinate conversions and geodesy
+
+  # The remaining entries in this section are optional, but recommended.
+  description: |
+    Pure Python (no prerequistes beyond Python itself) 3-D geographic
+    coordinate conversions and geodesy.
+    API similar to popular $1000 Matlab Mapping Toolbox.
+    PyMap3D is intended for non-interactive use on massively parallel (HPC)
+    and embedded systems.
+    Includes some relevant Vallado algorithms.
+    PyMap3D  provides conversion routines for the following coordinate systems:
+    * geodetic
+    * geocentric
+    * AER: Azimuth, Elevation, Range
+    * ECEF: Earth-centered, Earth-fixed
+    * ECI: Earth-centered Inertial
+    * ENU: East North Up
+    * NED: North East Down
+    * radec: right ascension, declination
+  doc_url: https://geospace-code.github.io/pymap3d/
+  dev_url: https://github.com/geospace-code/pymap3d
+
+extra:
+  recipe-maintainers:
+    - avalentino

@@ -1,0 +1,95 @@
+{% set name = "nbclassic" %}
+{% set version = "1.0.0" %}
+{% set sha256 = "0ae11eb2319455d805596bf320336cda9554b41d99ab9a3c31bf8180bffa30e3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir --no-build-isolation -vvv
+  entry_points:
+    - jupyter-nbclassic = nbclassic.notebookapp:main
+    - jupyter-nbclassic-extension = nbclassic.nbextensions:main
+    - jupyter-nbclassic-serverextension = nbclassic.serverextensions:main
+    - jupyter-nbclassic-bundlerextension = nbclassic.bundler.bundlerextensions:main
+
+requirements:
+  host:
+    - babel 2.11.0
+    - jupyter-packaging 0.12.0
+    - jupyter_server 1.23.4
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - argon2-cffi
+    - ipykernel
+    - ipython_genutils
+    - jinja2
+    - jupyter_client >=6.1.1
+    - jupyter_core >=4.6.1
+    - jupyter_server >=1.8
+    - nbconvert >=5
+    - nbformat
+    - nest-asyncio >=1.5
+    - notebook-shim >=0.2.3
+    - prometheus_client
+    - pyzmq >=17
+    - send2trash >=1.8.0
+    - terminado >=0.8.3
+    - tornado >=6.1
+    - traitlets >=4.2.1
+
+test:
+  requires:
+    - pip
+    - ripgrep
+  imports:
+    - nbclassic
+  commands:
+    - pip check
+    - jupyter nbclassic --help
+    - jupyter nbclassic-extension --help
+    - jupyter nbclassic-serverextension --help
+    - jupyter nbclassic-bundlerextension --help
+    - jupyter server extension list
+    - jupyter server extension list 1>server_extensions 2>&1
+    - cat server_extensions | rg -ie "nbclassic.*enabled"
+    - cat server_extensions | rg -ie "nbclassic.*OK"
+    - cat server_extensions | rg -ie "notebook_shim.*enabled"
+    - cat server_extensions | rg -ie "notebook_shim.*OK"
+  #downstreams:
+  #- jupyterlab
+  #- jupyterlab_server
+  #- notebook
+
+about:
+  home: https://github.com/jupyter/nbclassic
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Jupyter Notebook as a Jupyter Server Extension.
+
+  description: |
+    This project prepares for a future where JupyterLab and other frontends
+    switch to Jupyter Server for their Python Web application backend. Using
+    this package, users can launch Jupyter Notebook, JupyterLab and other
+    frontends side-by-side on top of the new Python server backend.
+  dev_url: https://github.com/jupyter/nbclassic
+  doc_url: https://nbclassic.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - jasongrout
+    - afshin
+    - jtpio
+    - bollwyvl

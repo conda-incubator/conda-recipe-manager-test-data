@@ -1,0 +1,55 @@
+{% set name = "pygal" %}
+{% set version = "3.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 2923f95d2e515930aa5a997219dccefbf3d92b7eaf5fc1c9febb95b09935fdb2
+
+build:
+  number: 0
+  noarch: python
+  script: '{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv '
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools
+    - pyquery
+    - flask
+    - cairosvg
+    - lxml
+    - pytest
+    - pytest-runner
+    - pytest-cov
+    - pytest-flake8
+    - coveralls
+    - tinycss
+    - cssselect
+
+  run:
+    - python >=3.6
+    - setuptools
+
+test:
+  imports:
+    - pygal
+    - pygal.graph
+    - pygal.maps
+    - pygal.test
+
+about:
+  home: http://pygal.org/
+  license: GNU Lesser General Public v3 or later (LGPLv3+)
+  license_family: LGPL
+  license_file: LICENSE.txt
+  summary: A python svg graph plotting library
+
+extra:
+  recipe-maintainers:
+    - bdice
+    - Matt-BF

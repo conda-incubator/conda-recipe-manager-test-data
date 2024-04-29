@@ -1,0 +1,61 @@
+{% set name = "flake8-import-order" %}
+{% set version = "0.18.2" %}
+{% set sha256 = "e23941f892da3e0c09d711babbb0c73bc735242e9b216b726616758a920d900e" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  skip: true  # [py<38]
+  number: 0
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - enum34  # [py2k]
+    - pycodestyle
+    - flake8
+
+test:
+  requires:
+    - pip
+  commands:
+    - pip check
+    - flake8 --version
+  imports:
+    - flake8_import_order
+
+about:
+  home: https://github.com/PyCQA/flake8-import-order
+  license: LGPL-3.0-or-later
+  license_family: LGPL
+  license_file: COPYING
+  summary: 'A flake8 and Pylama plugin that checks the ordering of your imports.'
+  description: |
+          A flake8 and Pylama plugin that checks the ordering of your imports.
+          In general stdlib comes first, then 3rd party, then local packages,
+          and that each group is individually alphabetized, see Configuration
+          section for details. It will not check anything else about the
+          imports. Merely that they are grouped and ordered correctly. This
+          plugin is under somewhat active development and is heavily influenced
+          by the personal preferences of the developers of cryptography. Expect
+          seemingly random changes and configuration changes as we figure out
+          how it should work.
+  dev_url: https://github.com/PyCQA/flake8-import-order
+  doc_url: https://github.com/PyCQA/flake8-import-order
+
+extra:
+  recipe-maintainers:
+    - dopplershift

@@ -1,0 +1,61 @@
+{% set name = "smart_open" %}
+{% set version = "5.2.1" %}
+{% set sha256 = "75abf758717a92a8f53aa96953f0c245c8cedf8e1e4184903db3659b419d4c17" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  skip: True  # [py<36]
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    # Strictly speaking, These are "extras" requirements, but the package
+    # wouldn't be particularly useful without them.
+    #- requests
+    #- boto3
+    #- google-cloud-storage
+
+test:
+  requires:
+    - mock
+    - responses
+    - pip
+  commands:
+    - pip check
+  imports:
+    - smart_open
+
+about:
+  home: https://github.com/RaRe-Technologies/smart_open
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Python library for efficient streaming of large files
+
+  description: |
+    smart_open is a Python 3 library for efficient streaming of very large
+    files from/to storages such as S3, GCS, Azure Blob Storage, HDFS, WebHDFS,
+    HTTP, HTTPS, SFTP, or local filesystem.  It supports transparent,
+    on-the-fly (de-)compression for a variety of different formats.
+  dev_url: https://github.com/RaRe-Technologies/smart_open
+  doc_url: https://github.com/RaRe-Technologies/smart_open/blob/develop/README.rst
+
+extra:
+  recipe-maintainers:
+    - souravsingh
+    - mpenkov

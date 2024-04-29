@@ -1,0 +1,43 @@
+{% set name = "l18n" %}
+{% set version = "2021.3" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/l18n-{{ version }}.tar.gz
+  sha256: 1956e890d673d17135cc20913253c154f6bc1c00266c22b7d503cc1a5a42d848
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - pytz >=2020.1
+    - six
+
+test:
+  imports:
+    - l18n
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/tkhyn/l18n
+  summary: Internationalization for pytz timezones and territories
+  license: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

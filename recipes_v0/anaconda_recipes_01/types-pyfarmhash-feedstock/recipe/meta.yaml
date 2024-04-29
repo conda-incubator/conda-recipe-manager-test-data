@@ -1,0 +1,48 @@
+{% set name = "types-pyfarmhash" %}
+{% set version = "0.3.1.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/types-pyfarmhash-{{ version }}.tar.gz
+  sha256: beca9c1d1bd2f0c22991337c94f0b624cd3375349dd3e64db8d50aa54adb22ea
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -v --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  requires:
+    - pip
+  commands:
+    - test -f $SP_DIR/farmhash-stubs/__init__.pyi  # [not win]
+    - if not exist %SP_DIR%\\farmhash-stubs\\__init__.pyi exit 1  # [win]
+    - pip check
+
+about:
+  home: https://github.com/python/typeshed
+  summary: Typing stubs for pyfarmhash
+  description: Typing stubs for pyfarmhash
+  license: Apache-2.0 AND MIT
+  license_family: OTHER
+  license_file: LICENSE
+  dev_url: https://github.com/python/typeshed
+  doc_url: https://github.com/python/typeshed
+
+extra:
+  recipe-maintainers:
+    - fhoehle
+    - conda-forge/mypy
+  skip-lints:
+    - missing_imports_or_run_test_py

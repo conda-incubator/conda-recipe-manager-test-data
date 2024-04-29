@@ -1,0 +1,59 @@
+{% set name = "cuda-nvdisasm" %}
+{% set version = "12.4.127" %}
+{% set cuda_version = "12.4" %}
+{% set platform = "linux-x86_64" %}  # [linux64]
+{% set platform = "linux-ppc64le" %}  # [ppc64le]
+{% set platform = "linux-sbsa" %}  # [aarch64]
+{% set platform = "windows-x86_64" %}  # [win]
+{% set extension = "tar.xz" %}  # [not win]
+{% set extension = "zip" %}  # [win]
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvdisasm/{{ platform }}/cuda_nvdisasm-{{ platform }}-{{ version }}-archive.{{ extension }}
+  sha256: 44018a76ee5977b603b0a1f3176a8398eaa893008dadf23e82d01733c20b5542  # [linux64]
+  sha256: 8407848aea496afd7708c9ed61c6a1d19c56362798341e1adcfeb77d34a5fea7  # [ppc64le]
+  sha256: ec0480837e789f14803ae148f5ada2cfbd02216afc832c23d6a38037b88be381  # [aarch64]
+  sha256: 62a15a4ef3c0641352d7e5c184243d20f9e4992f040538c0f14cd40ec7e5ef7b  # [win]
+
+build:
+  number: 0
+  skip: true  # [osx]
+  script:
+    - cp -rv bin $PREFIX        # [linux]
+    - move bin\* %LIBRARY_BIN%  # [win]
+
+requirements:
+  build:
+    - {{ compiler("c") }}
+    - {{ compiler("cxx") }}
+    - arm-variant * {{ arm_variant_type }}  # [aarch64]
+  host:
+    - cuda-version {{ cuda_version }}
+  run:
+    - {{ pin_compatible("cuda-version", max_pin="x.x") }}
+  run_constrained:
+    - arm-variant * {{ arm_variant_type }}  # [aarch64]
+
+test:
+  commands:
+    - test -f $PREFIX/bin/nvdisasm                    # [linux]
+    - if not exist %LIBRARY_BIN%\nvdisasm.exe exit 1  # [win]
+
+about:
+  home: https://developer.nvidia.com/cuda-toolkit
+  license_file: LICENSE
+  license: LicenseRef-NVIDIA-End-User-License-Agreement
+  license_url: https://docs.nvidia.com/cuda/eula/index.html
+  summary: nvdisasm extracts information from standalone cubin files
+  description: |
+    nvdisasm extracts information from standalone cubin files and presents them in
+    human readable format.
+  doc_url: https://docs.nvidia.com/cuda/cuda-binary-utilities/
+
+extra:
+  recipe-maintainers:
+    - conda-forge/cuda

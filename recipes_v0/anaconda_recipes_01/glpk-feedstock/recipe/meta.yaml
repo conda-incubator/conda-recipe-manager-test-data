@@ -1,0 +1,87 @@
+{% set name = "glpk" %}
+{% set version = "4.65" %}
+{% set build = 3 %}
+{% set sha256 = "4281e29b628864dfe48d393a7bedd781e5b475387c20d8b0158f329994721a10" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: http://ftp.gnu.org/gnu/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    # https://lists.nongnu.org/archive/html/bug-glpk/2018-03/msg00000.html
+    # patch will be in next release
+    - remove_unnecessary_warning.diff
+
+build:
+   number: {{ build }}
+   run_exports:
+     # changes SONAME at minor rev.
+     - {{ pin_subpackage("glpk", max_pin="x.x") }}
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - make   # [unix]
+    - libtool  # [not win]
+    - patch       # [not win]
+    - m2-patch    # [win]
+  host:
+    - gmp         # [not win]
+
+  run:
+    # gmp has run exports, but we're leaving this in until conda-forge has done more of a rebuild
+    - gmp         # [not win]
+
+test:
+  requires:
+    - {{ compiler('c') }}
+    - python 3.8.*
+    - setuptools
+    - cython
+    - pip
+    - wheel
+  files:
+    - test.c
+    - setup.py
+    - spam.c
+    - plan.mps
+    - test_ctypes.py
+
+  commands:
+    # test glpsol executable
+    - echo "glpsol --mps plan.mps execution ..."
+    - glpsol --mps plan.mps
+
+    # test python extension using cython
+    - echo "python setup.py ..."
+    - python setup.py develop test   # [not win]
+
+    # test shared library using python ctypes module
+    - echo "python test_ctypes.py ..."
+    - python test_ctypes.py 
+
+    - test -f ${PREFIX}/lib/libglpk.a        # [linux]
+    - test -f ${PREFIX}/lib/libglpk.so       # [linux]
+    # static library not available on os x
+    - test -f ${PREFIX}/lib/libglpk.dylib    # [osx]
+
+about:
+  home: https://www.gnu.org/software/glpk/
+  license: GPL3
+  summary: GNU Linear Programming Kit
+  description: |
+    The GLPK (GNU Linear Programming Kit) package is intended for solving
+    large-scale linear programming (LP), mixed integer programming (MIP), and
+    other related problems. It is a set of routines written in ANSI C and
+    organized in the form of a callable library.
+
+extra:
+  recipe-maintainers:
+    - jjhelmus
+    - aebrahim
+    - jakirkham
+    - snorfalorpagus

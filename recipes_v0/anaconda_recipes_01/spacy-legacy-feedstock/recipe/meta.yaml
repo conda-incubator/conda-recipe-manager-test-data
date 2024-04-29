@@ -1,0 +1,57 @@
+{% set name = "spacy-legacy" %}
+{% set modulename = "spacy_legacy" %}
+{% set version = "3.0.12" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: b37d6e0c9b6e1d7ca1cf5bc7152ab64a4c4671f59c85adaf7a3fcb870357a774
+
+build:
+  skip: True # [py<36]
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - {{ modulename }}
+  requires:
+    - pip
+    - pytest >=5.0.1
+    # spacy is a ciclic dependency
+    - spacy >=3.1.0,<3.3.2  # [py<311 and not (linux and s390x)]
+  commands:
+    - pip check
+    # wandb package isn't available for test_logger
+    # spacy <3.4.2 hasn't Python 3.11 support
+    - python -m pytest --tb=native --pyargs {{ modulename }} -k "not test_logger"  # [py<311 and not (linux and s390x)]
+
+about:
+  home: https://github.com/explosion/spacy-legacy
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Legacy functions and architectures for backwards compatibility
+  description: |
+    This package includes outdated registered functions for spaCy v3.x, for
+    example model architectures, pipeline components and utilities.
+  doc_url: https://github.com/explosion/spacy-legacy
+  dev_url: https://github.com/explosion/spacy-legacy
+
+extra:
+  recipe-maintainers:
+    - honnibal
+    - ines
+    - adrianeboyd

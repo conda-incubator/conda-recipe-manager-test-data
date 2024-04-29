@@ -1,0 +1,92 @@
+{% set name = "kivy" %}
+{% set version = "2.1.0" %}
+{% set sha256 = "c4e611b823bd5440cfccbfdfe6501037bd82d21c45c26f7ec0f22155e0286bd4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/kivy/{{ name }}/archive/{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 4
+
+requirements:
+  run_constrained:
+    - __osx >={{ MACOSX_DEPLOYMENT_TARGET|default("10.9") }}  # [osx]
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    # See http://conda-forge.org/docs/maintainer/knowledge_base.html?highlight=libgl#libgl
+    - {{ cdt('mesa-libgl-devel') }}  # [linux]
+    - {{ cdt('mesa-dri-drivers') }}  # [linux]
+    - {{ cdt('libselinux') }}  # [linux]
+    - {{ cdt('libxdamage') }}  # [linux]
+    - {{ cdt('libxxf86vm') }}  # [linux]
+  host:
+    - python
+    - pip
+    - nose
+    - setuptools
+    - cython <=0.29.28
+    - sdl2
+    - sdl2_mixer
+    - sdl2_image
+    - sdl2_ttf
+    - pkgconfig
+    - msinttypes  # [win]
+    - gstreamer                         # [linux or osx]
+    - gst-plugins-base {{ gstreamer }}  # [linux or osx]
+    - glib  # [linux or osx]
+    - xorg-libx11  # [linux]
+    - glew  # [win]
+    - xorg-libxrender  # [linux]
+    - xvfbwrapper  # [linux]
+    # See http://conda-forge.org/docs/maintainer/knowledge_base.html?highlight=libgl#libgl
+    - xorg-libxfixes  # [linux]
+  run:
+    - python
+    - glew  # [win]
+    - docutils
+    - pillow
+    - pygments
+
+test:
+  imports:
+    - kivy
+    - kivy.properties
+  commands:
+    - export KIVY_GL_BACKEND=mock  # [not win]
+    - set KIVY_GL_BACKEND=mock  # [win]
+  requires:
+    - nose
+    - xvfbwrapper  # [linux]
+    - xorg-libxrender  # [linux]
+    - xvfbwrapper  # [linux]
+    - ffmpeg  # [linux]
+  source_files:
+    - examples
+    - kivy/tests
+
+about:
+  home: http://kivy.org/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Open source UI framework written in Python, running on Windows, Linux, macOS, Android and iOS.
+
+  description: |
+    Kivy is an open source, cross-platform Python framework for the development of
+    applications that make use of innovative, multi-touch user interfaces. The aim
+    is to allow for quick and easy interaction design and rapid prototyping whilst
+    making your code reusable and deployable.
+  doc_url: https://kivy.org/docs/gettingstarted/intro.html
+  dev_url: https://github.com/kivy/kivy
+
+extra:
+  recipe-maintainers:
+    - matham
+    - akshayaurora
+    - tito

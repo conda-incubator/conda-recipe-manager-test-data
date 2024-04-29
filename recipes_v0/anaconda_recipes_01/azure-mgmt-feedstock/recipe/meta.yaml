@@ -1,0 +1,51 @@
+{% set version = "4.0.0" %}
+
+package:
+  name: azure-mgmt
+  version: {{ version }}
+
+source:
+  fn: azure-mgmt-{{ version }}.zip
+  url: https://pypi.io/packages/source/a/azure-mgmt/azure-mgmt-{{ version }}.zip
+  md5: cc1879aa47576be528f33e2e58af5b3f
+  
+build:
+  noarch: python
+  script: python -m pip install --no-deps --ignore-installed .
+  number: 0
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - azure-mgmt-compute ==0.20.1
+    - azure-mgmt-network ==0.20.1
+    - azure-mgmt-resource ==0.20.1
+    - azure-mgmt-storage ==0.20.0
+  run:
+    - python
+    - azure-mgmt-compute ==0.20.1
+    - azure-mgmt-network ==0.20.1
+    - azure-mgmt-resource ==0.20.1
+    - azure-mgmt-storage ==0.20.0
+
+test:
+  imports:
+    - azure
+    - azure.mgmt
+    - azure.mgmt.compute
+    - azure.mgmt.network
+    - azure.mgmt.storage
+    - azure.mgmt.resource
+  commands:
+    - python -m unittest discover -p "test_*.py"
+
+about:
+  home: https://github.com/Azure/azure-sdk-for-python
+  license: Apache-2.0
+  summary: 'Microsoft Azure Client Libraries for Python'
+
+extra:
+  recipe-maintainers:
+    - Maxyme

@@ -1,0 +1,74 @@
+{% set name = "sqlmodel" %}
+{% set version = "0.0.8" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/sqlmodel-{{ version }}.tar.gz
+  sha256: 3371b4d1ad59d2ffd0c530582c2140b6c06b090b32af9b9c6412986d7b117036
+
+build:
+  number: 0
+  noarch: python
+  script:
+    # Unfortunately sqlmodel relies on a custom plugin called "poetry-version-plugin"
+    # which relies on the development version of poetry, which is annoying to install
+    # on conda-forge. But why install some weird plugin when we can just use a simple
+    # Bash hack? ;)
+
+    # Verify that the version is correctly set in __init__.py
+    - grep __version__ sqlmodel/__init__.py | grep {{ version }}
+    # Replace the version number in the pyproject.toml with the one we extracted
+    - sed -i "s/version = \"0\"/version = \"{{ version }}\"/" pyproject.toml
+    # Install
+    - {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6.1,<4.0
+    - pip
+    - poetry-core
+  run:
+    - python >=3.6.1,<4.0
+    - sqlalchemy >=1.4.17,<=1.4.41
+    - pydantic >=1.8.2,<2.0.0
+    - sqlalchemy2-stubs
+
+test:
+  imports:
+    - sqlmodel
+    - sqlmodel.engine
+  commands:
+    - pip check
+    # Extract the version of the built package
+    - VERSION=$(python -c 'from importlib import metadata; print(metadata.version("sqlmodel"))')
+    - echo "sqlmodel version $VERSION"
+    # Ensure that version is not 0. (This conditional looks redundant, but YAML thinks
+    # that [...] denotes a list.)
+    - if [ "0" == "$VERSION" ]; then false; fi
+  requires:
+    - pip
+
+about:
+  home: https://github.com/tiangolo/sqlmodel
+  summary: SQL databases in Python, designed for simplicity, compatibility, and robustness.
+  doc_url: https://sqlmodel.tiangolo.com/
+  license: MIT
+  license_file: LICENSE
+  description: |
+    SQLModel is designed to simplify interacting with SQL databases in FastAPI
+     applications, it was created by the same author. It combines SQLAlchemy
+     and Pydantic and tries to simplify the code you write as much as possible,
+     allowing you to reduce the code duplication to a minimum, but while getting
+     the best developer experience possible. SQLModel is, in fact, a thin layer
+     on top of Pydantic and SQLAlchemy, carefully designed to be compatible with
+     both.
+
+extra:
+  recipe-maintainers:
+    - tiangolo
+    - maresb
+    - thewchan

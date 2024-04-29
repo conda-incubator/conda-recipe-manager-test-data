@@ -1,0 +1,60 @@
+{% set name = "jupyterlab_code_formatter" %}
+{% set version = "2.2.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 85322819da61f025ebc7c4a842979994fa812ad44c334fdb6ebb9ebad58dae08
+
+build:
+  number: 0
+  skip: true # [py<37 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - hatchling >=1.4.0
+    - hatch-nodejs-version
+    - hatch-jupyter-builder >=0.5
+    - python
+    - pip
+  run:
+    - jupyter_server >=1.21,<3
+    - packaging
+    - python
+  run_constrained:
+    # infered from changelog 
+    - jupyterlab >=3.6,<5
+    - notebook >=6,<8
+
+test:
+  imports:
+    - jupyterlab_code_formatter
+  requires:
+    - jupyterlab
+    - pip
+    - m2-grep # [win]
+  commands:
+    - pip check
+    - jupyter server extension list
+    - jupyter server extension list 2>&1 | grep -ie "jupyterlab_code_formatter.*OK"
+    - jupyter labextension list
+    # extension is marked as enbaled and outdated, contrary to what the changelog states, but is still functional
+    #- jupyter labextension list 2>&1 | grep -ie "jupyterlab_code_formatter.*OK.*(python, jupyterlab-code-formatter)"
+
+about:
+  home: https://github.com/ryantam626/jupyterlab_code_formatter
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A JupyterLab plugin to facilitate invocation of code formatters.
+  dev_url: https://github.com/ryantam626/jupyterlab_code_formatter
+  doc_url: https://github.com/ryantam626/jupyterlab_code_formatter
+
+extra:
+  recipe-maintainers:
+    - dbast
+    - xhochy

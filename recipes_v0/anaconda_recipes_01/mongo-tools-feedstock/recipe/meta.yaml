@@ -1,0 +1,59 @@
+{% set name = "mongo-tools" %}
+{% set version = "4.0.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - git_url: https://github.com/mongodb/{{ name }}.git
+    git_rev: r{{ version }}
+
+build:
+  number: 1
+  # there is no go support but for linux-64
+  skip: True  # [not (linux and x86_64)]
+  detect_binary_files_with_prefix: False
+
+requirements:
+  build:
+    - {{ compiler('go') }}
+    - {{ compiler('c') }}  # [unix]
+    - git
+    - make                 # [unix]
+  host:
+    - libpcap     # [unix]
+    - cyrus-sasl  # [unix]
+    - openssl     # [unix]
+
+test:
+  commands:
+    # Binary Import and Export Tools
+    - bsondump --help
+    - mongodump --help
+    - mongorestore --help
+
+    # Data Import and Export Tools
+    - mongoimport --help
+    - mongoexport --help
+
+    # Diagnostic Tools
+    - mongostat --help
+    - mongotop --help
+    - if [ $(nproc) -ge 2 ]; then  mongoreplay --version; fi  # [linux]
+    # - mongoldap is not available in the OpenSource repo
+    
+    # GridFS
+    - mongofiles --help
+
+about:
+  home: https://www.mongodb.com
+  license: Apache 2.0
+  summary: Tools for managing and monitoring MongoDB clusters
+  dev_url: https://github.com/mongodb/mongo-tools
+  doc_url: https://docs.mongodb.com/master/reference/program/
+
+extra:
+  recipe-maintainers:
+    - sodre
+    - nehaljwani

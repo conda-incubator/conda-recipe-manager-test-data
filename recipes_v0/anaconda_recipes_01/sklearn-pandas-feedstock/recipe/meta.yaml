@@ -1,0 +1,64 @@
+{% set name = "sklearn-pandas" %}
+{% set version = "2.2.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  # Using GH to get the tests.
+  url: https://github.com/scikit-learn-contrib/sklearn-pandas/archive/refs/tags/v2.2.0.tar.gz
+  sha256: 33b5ac5f18ebbde9798944357db0af1289986e502763fc0f8392c31d62af1961
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -v --no-deps --no-build-isolation
+  skip: true  # [py<38]
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    # Some tests fail with scikit-learn>=1.2
+    - scikit-learn >=0.23.0,<1.2
+    - scipy >=1.5.1
+    - pandas >=1.1.4
+    - numpy >=1.18.1
+
+test:
+  source_files:
+    - tests
+  imports:
+    - sklearn_pandas
+  commands:
+    - pip check
+    - pytest -v tests  # [not win]
+    # Skipping test_numerical_transformer_serialization due to permission issues on Windows.
+    - pytest -v tests -k "not test_numerical_transformer_serialization"  # [win]
+  requires:
+    - pip
+    - python
+    - pytest
+
+about:
+  home: https://github.com/scikit-learn-contrib/sklearn-pandas
+  summary: Pandas integration with sklearn
+  description: >
+    This module provides a bridge between Scikit-Learn's machine learning methods and
+    pandas-style Data Frames. In particular, it provides a way to map DataFrame columns
+    to transformations, which are later recombined into features
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  dev_url: https://github.com/scikit-learn-contrib/sklearn-pandas
+  doc_url: https://github.com/scikit-learn-contrib/sklearn-pandas
+
+extra:
+  recipe-maintainers:
+    - FernandezMathieu
+    - ragrawal

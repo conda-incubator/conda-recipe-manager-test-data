@@ -1,0 +1,55 @@
+{% set name = "pyinstaller-hooks-contrib" %}
+{% set version = "2022.14" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/pyinstaller/pyinstaller-hooks-contrib/archive/v{{ version }}.tar.gz
+  sha256: e5c94b9720545f8dadc105270ae16cafb2b4189e08dbf469104218cdcda2abef
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  skip: True  # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - _pyinstaller_hooks_contrib
+    - _pyinstaller_hooks_contrib.hooks
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/pyinstaller/pyinstaller-hooks-contrib
+  summary: Community maintained hooks for PyInstaller
+  license: Apache-2.0 OR GPL-2.0-or-later
+  license_family: Other
+  license_file:
+    - LICENSE.GPL.txt
+    - LICENSE.APL.txt
+  description: |
+    A "hook" file extends PyInstaller to adapt it to the special needs and
+    methods used by a Python package. The word "hook" is used for two kinds of
+    files. A runtime hook helps the bootloader to launch an app, setting up the
+    environment. A package hook (there are several types of those) tells
+    PyInstaller what to include in the final app - such as the data files and
+    (hidden) imports mentioned above.
+  doc_url: https://github.com/pyinstaller/pyinstaller-hooks-contrib/blob/master/README.md
+  dev_url: https://github.com/pyinstaller/pyinstaller-hooks-contrib
+
+extra:
+  recipe-maintainers:
+    - nehaljwani

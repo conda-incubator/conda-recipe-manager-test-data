@@ -1,0 +1,101 @@
+{% set version = '2.2.2' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-argparse
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/argparse_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/argparse/argparse_{{ version }}.tar.gz
+  sha256: b62c9bf5e6ca35fb7a2e614a916815c04cbf6c6db3f89f99b4df76470a4a856d
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: knitr (>= 1.15.19), rmarkdown, testthat
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-r6
+    - r-findpython
+    - r-jsonlite
+
+  run:
+    - r-base
+    - r-r6
+    - r-findpython
+    - r-jsonlite
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('argparse')"           # [not win]
+    - "\"%R%\" -e \"library('argparse')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://github.com/trevorld/r-argparse
+  license: GPL-2
+  summary: A command line parser to be used with 'Rscript' to write "#!" shebang scripts that
+    gracefully accept positional and optional arguments and automatically generate usage.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: argparse
+# Type: Package
+# Title: Command Line Optional and Positional Argument Parser
+# Version: 2.2.2
+# Authors@R: c(person("Trevor L", "Davis", role=c("aut", "cre"), email="trevor.l.davis@gmail.com", comment = c(ORCID = "0000-0001-6341-4639")), person("Allen", "Day", role="ctb", comment="Some documentation and examples ported from the getopt package."), person("Python Software Foundation", role="ctb", comment="Some documentation from the argparse Python module."), person("Paul", "Newell", role="ctb"))
+# Description: A command line parser to be used with 'Rscript' to write "#!" shebang scripts that gracefully accept positional and optional arguments and automatically generate usage.
+# License: GPL (>= 2)
+# Copyright: See file (inst/)COPYRIGHTS.
+# URL: https://github.com/trevorld/r-argparse
+# BugReports: https://github.com/trevorld/r-argparse/issues
+# LazyLoad: yes
+# Depends: R (>= 3.6.0)
+# Imports: R6, findpython, jsonlite
+# SystemRequirements: python (>= 3.2)
+# Suggests: knitr (>= 1.15.19), rmarkdown, testthat
+# VignetteBuilder: knitr
+# RoxygenNote: 7.1.2
+# Encoding: UTF-8
+# NeedsCompilation: no
+# Packaged: 2023-02-15 19:40:37 UTC; trevor
+# Author: Trevor L Davis [aut, cre] (<https://orcid.org/0000-0001-6341-4639>), Allen Day [ctb] (Some documentation and examples ported from the getopt package.), Python Software Foundation [ctb] (Some documentation from the argparse Python module.), Paul Newell [ctb]
+# Maintainer: Trevor L Davis <trevor.l.davis@gmail.com>
+# Repository: CRAN
+# Date/Publication: 2023-02-15 19:50:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

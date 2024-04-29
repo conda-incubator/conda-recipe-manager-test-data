@@ -1,0 +1,48 @@
+{% set version = "1.0.1" %}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-here
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/here_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/here/here_{{ version }}.tar.gz
+  sha256: 08ed908033420d3d665c87248b3a14d1b6e2b37844bf736be620578c20ca346b
+
+build:
+  merge_build_host: true  # [win]
+  number: 1
+  noarch: generic
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+  host:
+    - r-base
+    - r-rprojroot >=2.0.2
+  run:
+    - r-base
+    - r-rprojroot >=2.0.2
+
+test:
+  commands:
+    - $R -e "library('here')"           # [not win]
+    - "\"%R%\" -e \"library('here')\""  # [win]
+
+about:
+  home: https://github.com/krlmlr/here, http://krlmlr.github.io/here
+  license: MIT
+  summary: Constructs paths to your project's files. The 'here()' function uses a reasonable heuristics to find your project's files, based on the current working directory at the time when the package is loaded. Use it as a drop-in replacement for 'file.path()', it will always locate the files relative to your project root.
+  license_family: MIT
+  license_file:
+    - {{ environ["PREFIX"] }}/lib/R/share/licenses/MIT
+
+extra:
+  recipe-maintainers:
+    - conda-forge/r
+    - brisk022

@@ -1,0 +1,54 @@
+{% set name = "sql-metadata" %}
+{% set version = "2.10.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/macbre/sql-metadata/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 7577a26fb095a4ee71090d254ee83c1e6be46174739efccbc8ccdd3f7559045b
+
+build:
+  skip: true  # [py<38]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 1
+
+requirements:
+  host:
+    - python
+    - pip
+    - poetry-core >=1.0.0
+  run:
+    - python
+    - sqlparse >=0.4.1,<0.5.0
+
+test:
+  imports:
+    - sql_metadata
+  source_files:
+    - test
+  commands:
+    - pip check
+    - pytest -v test
+  requires:
+    - pip
+    - pytest
+
+about:
+  home: https://github.com/macbre/sql-metadata
+  summary: Uses tokenized query returned by python-sqlparse and generates query metadata
+  description: |
+    Uses tokenized query returned by python-sqlparse and generates query metadata.
+    Extracts column names and tables used by the query. Automatically conduct column alias resolution, 
+    sub queries aliases resolution as well as tables aliases resolving.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  doc_url: https://github.com/macbre/sql-metadata/blob/master/README.md
+  dev_url: https://github.com/macbre/sql-metadata
+
+extra:
+  recipe-maintainers:
+    - timkpaine
+    - OstapStefakQC

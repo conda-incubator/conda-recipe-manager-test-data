@@ -1,0 +1,91 @@
+{% set name = "glue-core" %}
+{% set version = "1.2.4" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: glue-core-{{version}}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e8747b5a4f98241d707a5d6ba7498033d0c450130cc1f6074a0cc9ef6de12853
+
+build:
+  number: 0
+  skip: True  # [ppc64le or py<37]
+  script: python -m pip install --no-deps --ignore-installed .
+  entry_points:
+    - glue = glue.main:main
+    - glue-config = glue.config_gen:main
+    - glue-deps = glue._deps:main
+  osx_is_app: True
+  ignore_run_exports:
+    - pyqt
+
+requirements:
+  host:
+    - python
+    - pip
+    # We need to include PyQt5 here to make sure that PyQt5 doesn't
+    # get included in install_requires
+    - pyqt >=5.9
+    - setuptools_scm
+    - setuptools >=30.3.0
+    - wheel
+  run:
+    # The following is needed to make sure that the package works as a GUI
+    # application (glue needs to be run with python.app, not python)
+    - python.app  # [osx]
+
+    # Required dependencies
+    - python
+    - numpy >=1.17
+    - matplotlib-base >=3.2
+    - scipy >=1.1
+    - pandas >=1.2
+    - echo >=0.5
+    - astropy >=4.0
+    - setuptools >=30.3.0
+    - qtpy >=1.9
+    - ipython >=4.0
+    - ipykernel >=4.0,!=5.0.0,!=5.1.0
+    - qtconsole >=4.3
+    - dill >=0.2
+    - xlrd >=1.2
+    - h5py >=2.10
+    - mpl-scatter-density >=0.7
+    - openpyxl >=3.0
+
+    # Optional dependencies (defined in ``extras_require``)
+    - scikit-image
+    - pillow !=7.1.0
+    # Used to export plots to Plot.ly
+    - plotly
+
+test:
+  requires:
+    - pip
+  imports:
+    - glue
+    - glue.core
+    - glue.app.qt
+  commands:
+    - pip check
+    - glue --version
+    - glue-deps list
+
+# NOTE: we deliberately do NOT include an app entry here, because we instead do this
+# in the glueviz meta-package (we don't want glue to appear twice in the navigator)
+
+about:
+  home: http://glueviz.org
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Multi-dimensional linked data exploration
+  dev_url: https://github.com/glue-viz/glue
+  doc_url: http://docs.glueviz.org/
+
+extra:
+  recipe-maintainers:
+    - astrofrog-conda-forge

@@ -1,0 +1,49 @@
+{% set name = "tomli-w" %}
+{% set version = "1.0.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/tomli_w-{{ version }}.tar.gz
+  sha256: f463434305e0336248cac9c2dc8076b707d8a12d019dd349f5c1e382dd1ae1b9
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python
+    # We cannot use flit-core >=3.2.0,<4
+    # b/c we need to avoid a cyclic dependency on tomli-w
+    - flit-core 3.3.0
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python >=3.7
+
+test:
+  imports:
+    - tomli_w
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://pypi.org/project/tomli_w/
+  summary: A lil' TOML writer
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  dev_url: https://github.com/hukkin/tomli-w
+  doc_url: https://github.com/hukkin/tomli-w/blob/master/README.md
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

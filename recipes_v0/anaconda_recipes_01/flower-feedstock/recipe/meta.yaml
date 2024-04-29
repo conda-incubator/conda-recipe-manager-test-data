@@ -1,0 +1,59 @@
+{% set name = "flower" %}
+{% set version = "0.9.7" %}
+{% set sha256 = "cf27a254268bb06fd4972408d0518237fcd847f7da4b4cd8055e228150ace8f3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+    number: 0
+    noarch: python
+    script: {{ PYTHON }} -m pip install --no-deps -vv .
+    entry_points:
+        - flower = flower.__main__:main
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+
+  run:
+    - python >=3.7
+    - setuptools
+    - prometheus_client
+    - celery >=4.3.0,<5.0.0
+    - tornado >=5.0.0,<7.0.0
+    - humanize >=0.5.1
+    - babel >=1.0
+    - pytz
+
+test:
+  imports:
+    - flower
+    - flower.api
+    - flower.utils
+    - flower.views
+
+  commands:
+    - flower --help
+    
+  requires:
+    - mock
+    
+about:
+    home: https://github.com/mher/flower
+    license: BSD 3-Clause
+    summary: Celery Flower
+    license_file: LICENSE
+
+extra:
+    recipe-maintainers:
+        - kwilcox
+        - ukaratay
+        - thebestnom

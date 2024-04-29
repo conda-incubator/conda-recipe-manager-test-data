@@ -1,0 +1,42 @@
+{% set name = "pygtrie" %}
+{% set version = "2.5.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 203514ad826eb403dab1d2e2ddd034e0d1534bbe4dbe0213bb0593f66beba4e2
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+    - packaging
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - pygtrie
+
+about:
+  home: https://github.com/google/pygtrie
+  license: Apache 2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Python library implementing a trie data structure.
+  doc_url: https://pygtrie.readthedocs.io/en/latest/
+  dev_url: https://github.com/google/pygtrie
+
+extra:
+  recipe-maintainers:
+    - Suor
+    - efiop
+    - shcheklein

@@ -1,0 +1,57 @@
+{% set name = "bump2version" %}
+{% set version = "1.0.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 762cb2bfad61f4ec8e2bdf452c7c267416f8c70dd9ecb1653fd0bbb01fa936e6
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  entry_points:
+    - bumpversion = bumpversion.cli:main
+    - bump2version = bumpversion.cli:main
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - bumpversion
+  commands:
+    - bumpversion -h
+    - bump2version -h
+
+about:
+  home: https://github.com/c4urself/bump2version
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.rst
+  summary: Version-bump your software with a single command!
+
+  description: |
+    A small command line tool to simplify releasing software by updating all
+    version strings in your source code by the correct increment. Also creates
+    commits and tags:
+
+    * version formats are highly configurable
+    * works without any VCS, but happily reads tag information from and writes
+      commits and tags to Git and Mercurial if available
+    * just handles text files, so it's not specific to any programming language
+    * supports Python2, Python3 and Pypy
+  doc_url: https://github.com/c4urself/bump2version
+  dev_url: https://github.com/c4urself/bump2version
+
+extra:
+  recipe-maintainers:
+    - fcollonval
+    - kynan

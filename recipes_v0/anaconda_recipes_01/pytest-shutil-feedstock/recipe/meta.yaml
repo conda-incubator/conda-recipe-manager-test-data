@@ -1,0 +1,54 @@
+{% set name = "pytest-shutil" %}
+{% set version = "1.7.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pytest-shutil-{{ version }}.tar.gz
+  sha256: d8165261de76e7508505c341d94c02b113dc963f274543abca74dbfabd021261
+
+build:
+  number: 1
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools-git
+  run:
+    - contextlib2
+    - execnet
+    - mock
+    - path.py
+    - pytest
+    - python >=3.6
+    - six
+    - termcolor
+
+test:
+  imports:
+    - pytest_shutil
+  # pip looks for path-py but the package name is path.py :-(
+  # requires:
+  #   - pip
+  # commands:
+  #   - pip check
+
+about:
+  home: https://github.com/manahl/pytest-plugins
+  license: MIT
+  license_family: MIT
+  license_file: 'LICENSE'
+  summary: A goodie-bag of unix shell and environment tools for py.test
+  doc_url: https://github.com/manahl/pytest-plugins/tree/master/pytest-shutil#readme
+  dev_url: https://github.com/manahl/pytest-plugins
+
+extra:
+  recipe-maintainers:
+    - jcfr
+    - ocefpaf

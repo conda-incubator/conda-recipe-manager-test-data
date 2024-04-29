@@ -1,0 +1,48 @@
+{% set name = "sarif_om" %}
+{% set version = "1.0.4" %}
+
+package:
+  name: "{{ name|lower }}"
+  version: "{{ version }}"
+
+source:
+  url: "https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz"
+  sha256: cd5f416b3083e00d402a92e449a7ff67af46f11241073eea0461802a3b5aef98
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation"
+
+requirements:
+  host:
+    - pip
+    - python
+    - wheel
+    - setuptools
+    - pbr ==5.6.0
+  run:
+    - python
+    - pbr
+    - attrs
+
+test:
+  requires:
+    - pip
+  imports:
+    - sarif_om
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/microsoft/sarif-python-om
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: "Classes implementing the SARIF 2.1.0 object model."
+  description: "This package provides classes implementing the SARIF 2.1.0 object model."
+  doc_url: https://github.com/microsoft/sarif-python-om
+  dev_url: https://github.com/microsoft/sarif-python-om
+
+extra:
+  recipe-maintainers:
+    - JamesRobertsonGames

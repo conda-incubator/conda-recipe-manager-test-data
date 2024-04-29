@@ -1,0 +1,122 @@
+{% set version = '1.34.0' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-reticulate
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/reticulate_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/reticulate/reticulate_{{ version }}.tar.gz
+  sha256: 8d0d8922cd811153836e95354357615968b005a4d0d4c5734441953c526e4206
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: callr, knitr, glue, cli, rmarkdown, pillar, testthat
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('cxx') }}            # [not win]
+    - {{ compiler('m2w64_cxx') }}      # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - python
+    - r-base
+    - r-matrix
+    - r-rcpp >=1.0.7
+    - r-rcpptoml
+    - r-here
+    - r-jsonlite
+    - r-png
+    - r-rappdirs
+    - r-rlang
+    - r-withr
+
+  run:
+    - python
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-matrix
+    - r-rcpp >=1.0.7
+    - r-rcpptoml
+    - r-here
+    - r-jsonlite
+    - r-png
+    - r-rappdirs
+    - r-rlang
+    - r-withr
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('reticulate')"           # [not win]
+    - "\"%R%\" -e \"library('reticulate')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://rstudio.github.io/reticulate/, https://github.com/rstudio/reticulate
+  license: Apache License 2.0
+  summary: Interface to 'Python' modules, classes, and functions. When calling into 'Python',
+    R data types are automatically converted to their equivalent 'Python' types. When
+    values are returned from 'Python' to R they are converted back to R types. Compatible
+    with all versions of 'Python' >= 2.7.
+  license_family: APACHE
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: reticulate
+# Type: Package
+# Title: Interface to 'Python'
+# Version: 1.34.0
+# Authors@R: c( person("Tomasz", "Kalinowski", role = c("ctb", "cre"), email = "tomasz@posit.co"), person("Kevin", "Ushey", role = c("aut"), email = "kevin@posit.co"), person("JJ", "Allaire", role = c("aut"), email = "jj@posit.co"), person("RStudio", role = c("cph", "fnd")), person("Yuan", "Tang", role = c("aut", "cph"), email = "terrytangyuan@gmail.com", comment = c(ORCID = "0000-0001-5243-233X")), person("Dirk", "Eddelbuettel", role = c("ctb", "cph"), email = "edd@debian.org"), person("Bryan", "Lewis", role = c("ctb", "cph"), email = "blewis@illposed.net"), person("Sigrid", "Keydana", role = c("ctb"), email = "sigrid@posit.co"), person("Ryan", "Hafen", role = c("ctb", "cph"), email = "rhafen@gmail.com"), person("Marcus", "Geelnard", role = c("ctb", "cph"), comment = "TinyThread library, http://tinythreadpp.bitsnbites.eu/") )
+# Description: Interface to 'Python' modules, classes, and functions. When calling into 'Python', R data types are automatically converted to their equivalent 'Python' types. When values are returned from 'Python' to R they are converted back to R types. Compatible with all versions of 'Python' >= 2.7.
+# License: Apache License 2.0
+# URL: https://rstudio.github.io/reticulate/, https://github.com/rstudio/reticulate
+# BugReports: https://github.com/rstudio/reticulate/issues
+# SystemRequirements: Python (>= 2.7.0)
+# Encoding: UTF-8
+# Depends: R (>= 3.5)
+# Imports: Matrix, Rcpp (>= 1.0.7), RcppTOML, graphics, here, jsonlite, methods, png, rappdirs, utils, rlang, withr
+# Suggests: callr, knitr, glue, cli, rmarkdown, pillar, testthat
+# LinkingTo: Rcpp
+# RoxygenNote: 7.2.3
+# VignetteBuilder: knitr
+# NeedsCompilation: yes
+# Packaged: 2023-10-12 18:34:13 UTC; tomasz
+# Author: Tomasz Kalinowski [ctb, cre], Kevin Ushey [aut], JJ Allaire [aut], RStudio [cph, fnd], Yuan Tang [aut, cph] (<https://orcid.org/0000-0001-5243-233X>), Dirk Eddelbuettel [ctb, cph], Bryan Lewis [ctb, cph], Sigrid Keydana [ctb], Ryan Hafen [ctb, cph], Marcus Geelnard [ctb, cph] (TinyThread library, http://tinythreadpp.bitsnbites.eu/)
+# Maintainer: Tomasz Kalinowski <tomasz@posit.co>
+# Repository: CRAN
+# Date/Publication: 2023-10-12 23:20:02 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

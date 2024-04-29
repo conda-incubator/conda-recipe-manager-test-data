@@ -1,0 +1,86 @@
+{% set name = "conan" %}
+{% set version = "1.58.0" %}
+{% set sha256 = "001039c40b523ac3b26bb675eb90887760b06c657a0d10d60157e382ba2f9b73" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  number: 0
+  noarch: python
+  entry_points:
+    - conan=conans.conan:run
+    - conan_server=conans.conan_server:run
+    - conan_build_info=conans.build_info.command:run
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+  run:
+    - python >=3.6
+    - pyjwt >=2.4.0,<3.0.0
+    - requests >=2.25,<3.0.0
+    - urllib3 >=1.26.6,<1.27
+    - colorama >=0.3.3,<0.5.0
+    - pyyaml >=3.11,<=6.0
+    - patch-ng >=1.17.4, <1.18
+    - fasteners >=0.14.1
+    - six >=1.10.0,<=1.16.0
+    - python-node-semver ==0.6.1
+    - distro >=1.0.2,<=1.6.0
+    - pygments >=2.0,<3.0
+    - tqdm >=4.28.1,<5
+    - jinja2 >=3.0,<4.0.0
+    - python-dateutil >=2.7.0,<3
+    - bottle >=0.12.8,<0.13
+    - pluginbase >=0.5
+
+test:
+  requires:
+    - pip
+  imports:
+    - conans
+    - conans.build_info
+    - conans.client
+    - conans.client.build
+    - conans.client.cmd
+    - conans.client.conf
+    - conans.client.generators
+    - conans.client.rest
+    - conans.client.store
+    - conans.client.tools
+    - conans.model
+    - conans.search
+    - conans.server
+    - conans.server.conf
+    - conans.server.crypto
+    - conans.server.crypto.jwt
+    - conans.server.rest
+    - conans.server.service
+    - conans.server.store
+    - conans.util
+  commands:
+    - pip check
+    - conan --help
+    - conan_build_info --help
+
+about:
+  home: https://conan.io
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.md
+  summary: Conan C/C++ package manager
+  doc_url: http://docs.conan.io/en/latest/
+  dev_url: https://github.com/conan-io/conan
+
+extra:
+  recipe-maintainers:
+    - abloemert

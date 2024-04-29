@@ -1,0 +1,75 @@
+{% set name = "signal_processing_algorithms" %}
+{% set version = "2.1.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 90275a0f315eebba857b6a8e5e13d997d3b285c4d9ca1cfbce985f8026c90e8c
+  - git_url: https://github.com/mongodb/signal-processing-algorithms
+    git_rev: 7d0a2030d520402e04fedc34eb57191ecbd883a6
+    folder: gh-test
+
+build:
+  # skipping py<39 because of missing numpy >=1.24.4
+  skip: True  # [py<39]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - git  # [not win]
+  host:
+    - python
+    - setuptools
+    - wheel
+    - poetry-core
+    - pip
+  run:
+    - python
+    - more-itertools >=8.2.0,<9.0.0
+    - scipy >=1.8.1,<2.0.0
+    - structlog >=19.1.0,<20.0.0
+    - typing-extensions >=4.5.0,<5.0.0
+    - pyyaml >=6.0.0,<7.0.0
+    - gevent >=23.9.1,<24.0.0
+    - typed-ast >=1.5.0,<2.0.0
+    - numpy >=1.24.4,<2.0.0
+
+# skipping test_diff_equivalence because og negligible numerical calculation error
+# skipping test_version_is_updated because version is not recognized on GH although officially released and version
+# number is also update on GH at commit 7d0a2030d520402e04fedc34eb57191ecbd883a6
+{% set tests_to_skip='test_diff_equivalence or test_version_is_updated' %}
+
+test:
+  source_files:
+    - gh-test/tests
+  imports:
+    - signal_processing_algorithms
+  commands:
+    - pytest gh-test/tests -k "not ({{ tests_to_skip }})"
+    - pip check
+  requires:
+    - pip
+    - pytest
+    - hypothesis
+    - setuptools >=65.5.1,<66.0.0
+
+about:
+  home: https://github.com/mongodb/signal-processing-algorithms
+  summary: Signal Processing Algorithms from MongoDB
+  description: |
+    A suite of algorithms implementing Energy Statistics, E-Divisive with Means and Generalized ESD Test for Outliers
+    in python. See The Use of Change Point Detection to Identify Software Performance Regressions in a Continuous Integration System and Creating a Virtuous Cycle in Performance Testing at MongoDB for background on the development and use of this library.
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  doc_url: https://github.com/mongodb/signal-processing-algorithms
+  dev_url: https://github.com/mongodb/signal-processing-algorithms
+
+extra:
+  recipe-maintainers:
+    - boldorider4

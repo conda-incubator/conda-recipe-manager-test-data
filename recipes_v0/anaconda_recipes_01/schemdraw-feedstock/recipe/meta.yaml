@@ -1,0 +1,55 @@
+{% set name = "schemdraw" %}
+{% set version = "0.15" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 9a59a43b12fc168cc4c681017f4647f01376c9b5abf1e814ae61b7cde208f070
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - typing-extensions  # [py<38]
+
+test:
+  imports:
+    - schemdraw
+    - schemdraw.elements
+    - schemdraw.logic
+    - schemdraw.dsp
+    - schemdraw.flow
+    - schemdraw.backends
+    - schemdraw.parsing
+  requires:
+    - pip
+    # for schemdraw.parsing
+    - pyparsing
+  commands:
+    - pip check
+
+about:
+  home: https://schemdraw.readthedocs.io/
+  dev_url: https://bitbucket.org/cdelker/schemdraw
+  doc_url: https://bitbucket.org/cdelker/schemdraw
+  summary: Electrical circuit schematic drawing
+  description: Electrical circuit schematic drawing
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - dkozel

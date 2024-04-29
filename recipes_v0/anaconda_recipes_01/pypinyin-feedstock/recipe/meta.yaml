@@ -1,0 +1,47 @@
+{% set name = "pypinyin" %}
+{% set version = "0.48.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pypinyin-{{ version }}.tar.gz
+  sha256: 63d18b8f10dd38a3e57f26b6833a983d9176f2e9c4a53157c23e1343d0b3dbf8
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - pypinyin = pypinyin.__main__:main
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - pypinyin
+    - pypinyin.contrib
+    - pypinyin.seg
+    - pypinyin.style
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/mozillazg/python-pinyin
+  summary: Converts Chinese idiograms to Pinyin romanization.
+  doc_url: https://github.com/mozillazg/python-pinyin/blob/master/README_en.rst
+  license: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - thewchan

@@ -1,0 +1,61 @@
+{% set name = "json_stream" %}
+{% set version = "2.3.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/json-stream-{{ version }}.tar.gz
+  sha256: b8b450ea8e8e3c239e9e7e38d12fed934e77a353c14b297f8ee345a5ceb25b91
+
+build:
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+  run:
+    - python
+    - json-stream-rs-tokenizer >=0.4.17
+
+test:
+  imports:
+    - json_stream
+  requires:
+    - pip
+    - pytest
+  source_files:
+    - src/json_stream/tests
+  commands:
+    - pip check
+    - cd src/json_stream/tests
+    # remove tests that fail because the package author
+    # mocks json_stream_rs_tokenizer.py by overwriting it
+    # before executing tests with:
+    # - cp stub_json_stream_rs_tokenizer.py src/json_stream_rs_tokenizer.py
+    - del test_tokenizer_integration.py test_buffering.py  # [win]
+    - rm test_tokenizer_integration.py test_buffering.py   # [unix]
+    - pytest
+
+about:
+  dev_url: https://github.com/daggaz/json-stream
+  doc_url: https://github.com/daggaz/json-stream/tree/2.3.2#usage
+  description: |
+    Simple streaming JSON parser and encoder.
+    When reading JSON data, json-stream can decode JSON data in a streaming manner, providing a pythonic dict/list-like interface, or a visitor-based interfeace. Can stream from files, URLs or iterators.
+    When writing JSON data, json-stream can stream JSON objects as you generate them.
+    These techniques allow you to reduce memory consumption and latency.
+  summary: Streaming JSON encoder and decoder
+  home: https://github.com/daggaz/json-stream
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - rxm7706

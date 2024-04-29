@@ -1,0 +1,51 @@
+{% set name = "pyrogram" %}
+{% set version = "2.0.99" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/Pyrogram-{{ version }}.tar.gz
+  sha256: 817c080d2c1b412594f7c89eacb895cb14eac4ed4b07c75fedcf80dfd92deef6
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - python >=3.7
+    - pyaes
+    - pysocks
+
+test:
+  source_files:
+    - tests
+  imports:
+    - pyrogram
+  commands:
+    - pytest -vv tests
+    - pip check
+  requires:
+    - pip
+    - pytest
+    - pytest-asyncio
+
+about:
+  home: https://github.com/pyrogram
+  summary: Elegant, modern and asynchronous Telegram MTProto API framework in Python for users and bots
+  dev_url: https://github.com/pyrogram/pyrogram
+  license: LGPL-3.0-or-later
+  license_file:
+    - COPYING.lesser
+    - NOTICE
+    - COPYING
+
+extra:
+  recipe-maintainers:
+    - nehaljwani

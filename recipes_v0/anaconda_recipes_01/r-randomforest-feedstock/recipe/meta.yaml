@@ -1,0 +1,94 @@
+{% set version = '4.7-1.1' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-randomforest
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/randomForest_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/randomForest/randomForest_{{ version }}.tar.gz
+  sha256: f59ea87534480edbcd6baf53d7ec57e8c69f4532c2d2528eacfd48924efa2cd6
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: RColorBrewer, MASS
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ compiler('fortran') }}        # [not win]
+    - {{ compiler('m2w64_fortran') }}  # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('randomForest')"           # [not win]
+    - "\"%R%\" -e \"library('randomForest')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://www.stat.berkeley.edu/~breiman/RandomForests/
+  license: GPL-2
+  summary: Classification and regression based on a forest of trees using random inputs, based
+    on Breiman (2001) <DOI:10.1023/A:1010933404324>.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: randomForest
+# Title: Breiman and Cutler's Random Forests for Classification and Regression
+# Version: 4.7-1.1
+# Date: 2022-01-24
+# Depends: R (>= 4.1.0), stats
+# Suggests: RColorBrewer, MASS
+# Author: Fortran original by Leo Breiman and Adele Cutler, R port by Andy Liaw and Matthew Wiener.
+# Description: Classification and regression based on a forest of trees using random inputs, based on Breiman (2001) <DOI:10.1023/A:1010933404324>.
+# Maintainer: Andy Liaw <andy_liaw@merck.com>
+# License: GPL (>= 2)
+# URL: https://www.stat.berkeley.edu/~breiman/RandomForests/
+# NeedsCompilation: yes
+# Packaged: 2022-05-23 08:06:39 UTC; hornik
+# Repository: CRAN
+# Date/Publication: 2022-05-23 08:27:49 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

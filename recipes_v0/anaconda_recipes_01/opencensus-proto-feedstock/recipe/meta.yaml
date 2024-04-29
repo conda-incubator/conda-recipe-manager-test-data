@@ -1,0 +1,55 @@
+{% set name = "opencensus-proto" %}
+{% set version = "0.4.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/census-instrumentation/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: e3d89f7f9ed84c9b6eee818c2e9306950519402bf803698b15c310b77ca2f0f3
+
+build:
+  number: 2
+  script: 
+    - cd gen-python
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - grpcio >=1.0.0,<2.0.0a0
+
+test:
+  imports:
+    - opencensus
+    - opencensus.proto
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/census-instrumentation/opencensus-proto
+  summary: OpenCensus Proto - Language Independent Interface Types For OpenCensus
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  description: |
+    Census provides a framework to define and collect stats against metrics and to
+    break those stats down across user-defined dimensions.
+
+    The Census framework is natively available in many languages (e.g. C++, Go,
+    and Java). The API interface types are defined using protos to ensure
+    consistency and interoperability for the different implementations.
+  doc_url: https://github.com/census-instrumentation/opencensus-proto/blob/master/README.md
+  dev_url: https://github.com/census-instrumentation/opencensus-proto
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk

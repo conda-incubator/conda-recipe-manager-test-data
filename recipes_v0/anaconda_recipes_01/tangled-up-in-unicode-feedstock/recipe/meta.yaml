@@ -1,0 +1,50 @@
+{% set name = "tangled-up-in-unicode" %}
+{% set version = "0.2.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name | replace("-", "_") }}-{{ version }}.tar.gz
+  sha256: de56dbaf32de1b8c65621f97b06b7de21cba18c8e61f3988a426ffe3c40fed36
+
+build:
+  number: 0
+  script: "{{ PYTHON }} -m pip install . -vv"
+  skip: True  # [py<36]
+
+requirements:
+  host:
+    - python 
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python 
+
+test:
+  imports:
+    - tangled_up_in_unicode
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/dylan-profiler/tangled-up-in-unicode
+  summary: Access to the Unicode Character Database (UCD)
+  license: BSD-4-Clause
+  license_file: LICENSE
+  license_family: BSD
+  description: |
+    This module provides access to character properties for all Unicode 
+    characters, from the Unicode Character Database (UCD). This module 
+    provides an alternative to Python's standard library unicodedata. 
+  dev_url: https://github.com/dylan-profiler/tangled-up-in-unicode
+  doc_url: https://github.com/dylan-profiler/tangled-up-in-unicode
+
+extra:
+  recipe-maintainers:
+    - philip-khor
+    - sbrugman

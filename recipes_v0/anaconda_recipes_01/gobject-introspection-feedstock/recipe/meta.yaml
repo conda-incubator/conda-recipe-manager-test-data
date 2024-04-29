@@ -1,0 +1,110 @@
+{% set name = "gobject-introspection" %}
+{% set version = "1.78.1" %}
+{% set posix = 'm2-' if win else '' %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://download.gnome.org/sources/{{ name }}/{{ '.'.join(version.split('.')[:2]) }}/{{ name }}-{{ version }}.tar.xz
+  sha256: bd7babd99af7258e76819e45ba4a6bc399608fe762d83fde3cac033c50841bb4
+  patches:
+    - test-fix.patch  # [linux]
+    # https://gitlab.gnome.org/GNOME/gobject-introspection/-/merge_requests/265
+    - pkg-config.patch
+    # workaround for conflicting "import ast" - observerd on cpython 3.12 osx-arm64
+    - 0001-Don-t-add-build_root-giscanner-to-PYTHONPATH-for-run.patch
+
+build:
+  number: 0
+  detect_binary_files_with_prefix: true
+  skip: true  # [win and vc<14]
+  ignore_run_exports:
+   # cairo (and dep pixman) is only needed to run the full test suite.
+   - cairo
+   - pixman
+  missing_dso_whitelist:      # [linux]
+    - $RPATH/libm.so.6        # [linux]
+    - $RPATH/libpthread.so.0  # [linux]
+    - $RPATH/libc.so.6        # [linux]
+
+requirements:
+  build:
+    - python
+    # run-dep as a workaround for now; upstream package still imports from distutils
+    - setuptools  # [py>311]
+    - {{ posix }}bison
+    - {{ posix }}flex
+    - meson >=0.60.0
+    - ninja-base
+    - pkg-config
+    - {{ compiler('c') }}
+    - {{ cdt('libx11-devel') }}          # [linux]
+    - {{ cdt('libxrender-devel') }}      # [linux]
+    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('libxau-devel') }}          # [linux]
+    - {{ cdt('libxext-devel') }}         # [linux]
+    - {{ posix }}patch
+    - {{ posix }}sed
+  host:
+    - pkg-config
+    - python
+    - cairo {{ cairo }}
+    - glib 2.78
+    - libffi 3.4
+    - pthread-stubs 0.3
+    - zlib {{ zlib }} # [win]
+    - setuptools
+  run:
+    - python
+    # through run_exports
+    - libffi
+    - libglib
+    # run-dep as a workaround for now; upstream package still imports from distutils
+    - setuptools  # [py>311]
+
+test:
+  requires:
+    - python  # [win]
+    - pkg-config
+    - conda-build  # [not win]
+  commands:
+    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
+    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
+    - g-ir-scanner --help  # [not win]
+    - python "%PREFIX%\\Library\\bin\\g-ir-scanner" --help  # [win]
+    - g-ir-compiler --help
+
+    # check that g-ir-scanner can be found through pkg-config (used by downstream builds)
+    - test -f `pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`  # [unix]
+    - pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0
+    - for /f "tokens=*" %%a in (`pkg-config --variable=g_ir_scanner --dont-define-prefix gobject-introspection-1.0`) do if not exist "%%a" exit 1  # [win]
+  downstreams:
+    - pygobject
+
+about:
+  home: https://wiki.gnome.org/action/show/Projects/GObjectIntrospection
+  license: LGPL-2.0-or-later
+  license_family: LGPL
+  license_file: 
+    - COPYING
+    - COPYING.GPL
+    - COPYING.LGPL
+  summary: Middleware for binding GObject-based code to other languages.
+  description: |
+    GObject introspection is a middleware layer between C libraries (using GObject)
+    and language bindings. The C library can be scanned at compile time and generate
+    a metadata file, in addition to the actual native C library. Then at runtime,
+    language bindings can read this metadata and automatically provide bindings to
+    call into the C library.
+  doc_url: https://gi.readthedocs.io/en/latest/
+  dev_url: https://gitlab.gnome.org/GNOME/gobject-introspection/-/tree/main
+  doc_source_url: https://gitlab.gnome.org/GNOME/gobject-introspection/-/tree/main/docs
+
+extra:
+  recipe-maintainers:
+    - pkgw
+    - ocefpaf
+    - scopatz
+    - tschoonj

@@ -1,0 +1,43 @@
+{% set name = "notion-client" %}
+{% set version = "1.0.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/notion-client-{{ version }}.tar.gz
+  sha256: 281b37a1512abeccb81377d4a3461833f1c1fbd0ceb6e681e38b7cd446bf1bce
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6,<4.0
+  run:
+    - httpx >=0.15.0
+    - python >=3.6,<4.0
+
+test:
+  imports:
+    - notion_client
+    - tests
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/ramnes/notion-sdk-py
+  summary: Python client for the official Notion API
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - mariusvniekerk

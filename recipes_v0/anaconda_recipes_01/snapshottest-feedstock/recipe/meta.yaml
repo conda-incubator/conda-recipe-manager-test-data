@@ -1,0 +1,71 @@
+{% set name = "snapshottest" %}
+{% set version = "0.6.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: bbcaf81d92d8e330042e5c928e13d9f035e99e91b314fe55fda949c2f17b653c
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - fastdiff >=0.1.4,<1
+    - python >=3.6
+    - six >=1.10.0
+    - termcolor
+
+test:
+  requires:
+    - django
+    - nose
+    - pip
+    - pytest
+  commands:
+    - python -m pip check
+
+  imports:
+    - snapshottest
+    - snapshottest.diff
+    - snapshottest.django
+    - snapshottest.error
+    - snapshottest.file
+    - snapshottest.formatter
+    - snapshottest.formatters
+    - snapshottest.generic_repr
+    - snapshottest.module
+    - snapshottest.nose
+    - snapshottest.pytest
+    - snapshottest.reporting
+    - snapshottest.snapshot
+    - snapshottest.sorted_dict
+    - snapshottest.unittest
+
+about:
+  home: https://github.com/syrusakbary/snapshottest
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Snapshot Testing utils for Python
+
+  # The remaining entries in this section are optional, but recommended
+  description: |
+    Snapshot testing is a way to test your APIs without writing actual test cases.
+
+      1. A snapshot is a single state of your API, saved in a file.
+      2. You have a set of snapshots for your API endpoints.
+      3. Once you add a new feature, you can generate automatically new snapshots
+         for the updated API.
+
+extra:
+  recipe-maintainers:
+    - bollwyvl

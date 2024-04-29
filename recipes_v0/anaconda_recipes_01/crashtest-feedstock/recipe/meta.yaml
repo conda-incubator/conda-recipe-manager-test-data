@@ -1,0 +1,50 @@
+{% set name = "crashtest" %}
+{% set version = "0.4.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 80d7b1f316ebfbd429f648076d6275c877ba30ba48979de4191714a75266f0ce
+
+build:
+  number: 0
+  skip: true  # [py<38]
+  script:
+    - rm -f pyproject.toml
+    - {{ PYTHON }} -m pip install --no-deps . -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - crashtest
+    - crashtest.contracts
+    - crashtest.solution_providers
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/sdispater/crashtest
+  summary: Manage Python errors with ease
+  description: Crashtest is a Python library that makes exceptions handling and inspection easier.
+  license: MIT
+  license_file: LICENSE
+  license_family: MIT
+  dev_url: https://github.com/sdispater/crashtest
+  doc_url: https://github.com/sdispater/crashtest/blob/master/README.md
+
+extra:
+  recipe-maintainers:
+    - ocefpaf

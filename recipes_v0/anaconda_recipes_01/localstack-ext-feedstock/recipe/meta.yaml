@@ -1,0 +1,56 @@
+{% set name = "localstack-ext" %}
+{% set version = "0.13.3.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/localstack-ext-{{ version }}.tar.gz
+  sha256: 2046017d008d64b78ad40a3054212e706cb455d238ba444e08f730b114d2baa9
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - localstack-plugin-loader >=0.1.0
+    - pip
+    - python >=3.6
+    - wheel
+  run:
+    - deepdiff >=5.5.0
+    - dill ==0.3.2
+    - dnslib >=0.9.10
+    - dnspython >=1.16.0
+    - dulwich >=0.19.16
+    - localstack >=0.13.2
+    - localstack-plugin-loader >=0.1.0
+    - pyaes >=1.6.0
+    - python >=3.6
+    - requests >=2.20.0,<2.26
+    - tabulate
+
+test:
+  imports:
+    - localstack_ext
+    - localstack_ext.bootstrap
+  commands:
+    - python -c "import importlib.util; assert importlib.util.find_spec('localstack_ext')"
+
+about:
+  home: https://github.com/localstack/localstack
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE.txt
+  summary: Extensions for LocalStack
+  doc_url: https://pypi.org/project/localstack-ext/
+  dev_url: https://github.com/localstack/localstack
+
+extra:
+  recipe-maintainers:
+    - mwilson8
+    - mxr-conda

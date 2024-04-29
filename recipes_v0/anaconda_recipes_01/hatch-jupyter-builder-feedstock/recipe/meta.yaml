@@ -1,0 +1,61 @@
+{% set name = "hatch-jupyter-builder" %}
+{% set version = "0.8.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/hatch_jupyter_builder-{{ version }}.tar.gz
+  sha256: 0dbd14a8aef6636764f88a8fd1fcc9a91921e5c50356e6aab251782f264ae960
+
+build:
+  script: {{ PYTHON }} -m pip install --no-deps --no-build-isolation . -vv
+  number: 0
+# Note s390x supressed because of conflicts installing test packages, and some
+# breakage around ffi/cffi loading
+  skip: true  # [py<38 or s390x]
+
+requirements:
+  host:
+    - pip
+    - python
+    - hatchling >=1.5
+    - wheel
+  run:
+    - python
+    - hatchling >=1.5
+
+
+test:
+  source_files:
+    - .
+  imports:
+    - hatch_jupyter_builder
+{% if python != "3.12" %}
+  commands:
+    - pip check
+# Note windows tests supressed because of problems with utils.run(shlex.split(cmd))
+    - python -m pytest -vv     # [not (win or s390x)]
+  requires:
+    - pip
+    - pytest               # [ not win]
+    - pytest-mock          # [ not win]
+    - tomli                # [ not win]
+    - cryptography =39.0.1 # [ not win]
+{% endif %}
+
+about:
+  home: https://pypi.org/project/hatch-jupyter-builder/
+  summary: A hatch plugin to help build Jupyter packages
+  description: A build hook plugin for Hatch that adds a build step for use with Jupyter packages.
+  dev_url: https://github.com/jupyterlab/hatch-jupyter-builder
+  doc_url: https://hatch-jupyter-builder.readthedocs.io
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - blink1073
+    - zsailer

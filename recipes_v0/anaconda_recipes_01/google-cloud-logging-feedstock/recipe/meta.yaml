@@ -1,0 +1,53 @@
+{% set name = "google-cloud-logging" %}
+{% set version = "3.5.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/google-cloud-logging-{{ version }}.tar.gz
+  sha256: f11544a21ea3556f70ebac7bc338ffa8a197913834ecdd8853d176b870823aaa
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+  run:
+    - python >=3.7
+    - google-api-core-grpc >=1.33.2,<3.0.0dev,!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.*,!=2.4.*,!=2.5.*,!=2.6.*,!=2.7.*
+    - google-cloud-appengine-logging >=0.1.0,<2.0.0dev
+    - google-cloud-audit-log >=0.1.0,<1.0.0dev
+    - google-cloud-core >=2.0.0,<3.0.0dev
+    - grpc-google-iam-v1 >=0.12.4,<1.0.0dev
+    - proto-plus >=1.22.0,<2.0.0dev
+    - protobuf >=3.19.5,<5.0.0dev,!=3.20.0,!=3.20.1,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5
+
+test:
+  imports:
+    - google.cloud.logging
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/googleapis/python-logging
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: Stackdriver Logging API client library
+  description: "The Stackdriver Logging API writes log entries and manages your Stackdriver Logging configuration.\nSee the [usage guide](https://googleapis.dev/python/logging/latest/usage.html)."
+
+  doc_url: https://googleapis.dev/python/logging/latest/index.html
+  dev_url: https://github.com/googleapis/python-logging
+
+extra:
+  recipe-maintainers:
+    - parthea
+    - xylar

@@ -1,0 +1,53 @@
+{% set name = "griffe" %}
+{% set version = "0.25.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/griffe-{{ version }}.tar.gz
+  sha256: f190edf8ef58d43c856d2d6761ec324a043ff60deb8c14359263571e8b91fe68
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+  noarch: python
+  entry_points:
+    - griffe = griffe.cli:main
+
+requirements:
+  host:
+    - python >=3.7
+    - pdm >2
+    - pdm-pep517
+  run:
+    - python >=3.7
+    - cached-property
+    - colorama >=0.4
+
+test:
+  imports:
+    - griffe
+    - griffe.loader
+    - griffe.docstrings.parsers
+    - griffe.dataclasses
+  commands:
+    - griffe -h
+    #- griffe dump
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://mkdocstrings.github.io/griffe
+  doc_url: https://mkdocstrings.github.io/griffe
+  dev_url: https://github.com/mkdocstrings/griffe
+  summary: Signatures for entire Python programs. Extract the structure, the frame, the skeleton of your project, to generate API documentation or find breaking changes in your API.
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - bandersen23
+    - dbast

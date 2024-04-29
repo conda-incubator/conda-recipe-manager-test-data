@@ -1,0 +1,49 @@
+{% set xorg_name = "util-macros" %}
+{% set xorg_category = "util" %}
+{% set name = "xorg-" ~ xorg_name %}
+{% set version = "1.19.0" %}
+{% set sha256 = "2835b11829ee634e19fa56517b4cfc52ef39acea0cd82e15f68096e27cbed0ba" %}
+{% set am_version = "1.15" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.bz2
+  url: https://www.x.org/releases/individual/{{ xorg_category }}/{{ xorg_name }}-{{ version }}.tar.bz2
+  sha256: {{ sha256 }}
+
+build:
+  number: 1
+  detect_binary_files_with_prefix: true
+  skip: True  # [osx]
+
+requirements:
+  build:
+    - m2-autoconf  # [win]
+    - m2-automake{{ am_version }}  # [win]
+    - m2-libtool  # [win]
+    - m2w64-pkg-config  # [win]
+    - m2w64-toolchain  # [win]
+    - pkg-config  # [not win]
+    - posix                 # [win]
+    - {{ compiler('c') }}   # [linux]
+    - make  # [unix]
+
+test:
+  commands:
+    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
+    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
+
+about:
+  home: https://www.x.org/
+  license: MIT
+  license_family: MIT
+  license_file: COPYING
+  summary: 'Development utility macros for X.org software.'
+
+extra:
+  recipe-maintainers:
+    - pkgw
+    - msarahan

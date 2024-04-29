@@ -1,0 +1,85 @@
+{% set name = "nltk" %}
+{% set version = "3.8.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.zip
+  sha256: 1834da3d0682cba4f2cede2f9aad6b0fafb6461ba451db0efb6f9c39798d64d3
+
+build:
+  number: 0
+  skip: True  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - nltk = nltk.cli:cli
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - click
+    - joblib
+    - regex >=2021.8.3
+    - tqdm
+
+test:
+  imports:
+    - nltk
+    - nltk.app
+    - nltk.ccg
+    - nltk.chat
+    - nltk.chunk
+    - nltk.classify
+    - nltk.cluster
+    - nltk.corpus
+    - nltk.corpus.reader
+    - nltk.draw
+    - nltk.inference
+    - nltk.lm
+    - nltk.metrics
+    - nltk.misc
+    - nltk.parse
+    - nltk.sem
+    - nltk.sentiment
+    - nltk.stem
+    - nltk.tag
+    - nltk.tbl
+    - nltk.test
+    - nltk.test.unit
+    - nltk.test.unit.translate
+    - nltk.tokenize
+    - nltk.translate
+    - nltk.twitter
+  requires:
+    - pip
+    # tqdm and click requires colorama
+    - colorama  # [win]
+  commands:
+    - pip check
+    - nltk -h
+
+about:
+  home: https://www.nltk.org/
+  license_file: LICENSE.txt
+  license: Apache-2.0
+  license_family: Apache
+  summary: Natural Language Toolkit
+  description: |
+    NLTK has been called a wonderful tool for teaching and working in
+    computational linguistics using Python and an amazing library to play with
+    natural language.
+  dev_url: https://github.com/nltk/nltk
+  doc_url: https://www.nltk.org/
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - quartox

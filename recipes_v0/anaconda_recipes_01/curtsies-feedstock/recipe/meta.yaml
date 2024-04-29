@@ -1,0 +1,45 @@
+{% set name = "curtsies" %}
+{% set version = "0.3.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 4ca543998d8bbba7185db099f8b7bb30baeb47426f7ac1a271e4d9ca8bbb2b05
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  skip: true  # [py2k]
+  skip: true  # [win]
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - blessings >=1.5
+    - python
+    - wcwidth >=0.1.4
+
+test:
+  imports:
+    - curtsies
+  requires:
+    - mock
+    - nose
+    - pyte
+
+about:
+  home: https://github.com/bpython/curtsies
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Curses-like terminal wrapper, with colored strings!
+
+extra:
+  recipe-maintainers:
+    - scopatz
+    - mariusvniekerk

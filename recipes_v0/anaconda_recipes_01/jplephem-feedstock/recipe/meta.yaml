@@ -1,0 +1,54 @@
+{% set name = "jplephem" %}
+{% set version = "2.18" %}
+{% set sha256 = "492911e8a4c47830791b03b9a0ffdf7fc65f685d1cbb3a1790b1ea288ae7fae5" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - 0001_use-setuptools.patch
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.3
+    - setuptools
+    - numpy
+  run:
+    - python >=3.3
+    - numpy
+
+test:
+  requires:
+    - curl
+  imports:
+    - jplephem
+  commands:
+    - curl -sS -O https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/a_old_versions/de421.bsp
+    - curl -sS -O https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/a_old_versions/de405.bsp
+    - curl -sS -O https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/moon_pa_de421_1900-2050.bpc
+    - python -m unittest discover jplephem
+
+about:
+  home: https://pypi.python.org/pypi/jplephem
+  license: MIT
+  license_file: LICENSE.txt
+  summary: Python version of NASA DE4xx ephemerides, the basis for the Astronomical Alamanac
+
+extra:
+  recipe-maintainers:
+    - brandon-rhodes
+    - jochym
+    - astrojuanlu
+    - ReimarBauer
+    - EndlessDex

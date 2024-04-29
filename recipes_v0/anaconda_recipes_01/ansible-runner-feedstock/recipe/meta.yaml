@@ -1,0 +1,83 @@
+{% set name = "ansible-runner" %}
+{% set version = "2.3.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - folder: dist
+    url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 1d2f02d3a62573f38e68a23790118b7981791c2bed2b5f22f7a36a221c288756
+  - folder: src
+    url: https://github.com/ansible/{{ name }}/archive/{{ version }}.tar.gz
+    sha256: 608c02a8f639cddba2931d99eab9145b56bf2f5d9e174d8b4d2bba2218880f6c
+
+build:
+  number: 0
+  noarch: python
+  script: cd dist && {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - ansible-runner = ansible_runner.__main__:main
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - pbr
+  run:
+    - pexpect >=4.5
+    - psutil
+    - python >=3.6
+    - python-daemon
+    - pyyaml
+    - six
+
+{% set skips = [
+  "containerization",
+  "env_vars",
+  "prepare_env_sshkey",
+  "container_volmount",
+  "registry_auth_cleanup",
+  "prepare_env_directory_isolation_from_settings",
+] %}
+
+test:
+  source_files:
+    - src/test
+  requires:
+    # from /test/requirements.txt
+    - ansible >=5.4.0,<5.5.0
+    # TODO: unpin after https://github.com/conda-forge/ansible-feedstock/pull/93
+    - ansible-core >=2.12.2,<2.13.0
+    - pip
+    - pytest
+    - pytest-cov
+    - pytest-timeout
+    - pytest-mock
+  imports:
+    - ansible_runner
+  commands:
+    - python -m pip check
+    - ansible-runner --version
+    - ansible-runner --help
+    - cd src
+    - pytest test/unit --cov ansible_runner -vv -k "not ({{ ' or '.join(skips) }})" --cov-report term-missing:skip-covered --no-cov-on-fail
+
+about:
+  home: https://github.com/ansible/ansible-runner
+  license: Apache-2.0
+  license_family: Apache
+  license_file: dist/LICENSE.md
+  doc_url: https://ansible-runner.readthedocs.io
+  doc_source_url: https://github.com/ansible/ansible-runner/tree/master/docs
+  summary: |
+    A tool and python library that helps when interfacing with Ansible directly
+    or as part of another system whether that be through a container image
+    interface, as a standalone tool, or as a Python module that can be
+    imported. The goal is to provide a stable and consistent interface
+    abstraction to Ansible.
+
+extra:
+  recipe-maintainers:
+    - bollwyvl

@@ -1,0 +1,47 @@
+{% set name = "flake8-markdown" %}
+{% set version = "0.4.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/flake8-markdown-{{ version }}.tar.gz
+  sha256: c1d1f2c5055df2d6af22597aca401e6693a3d1389d06d2105272cb80478e686c
+
+build:
+  number: 0
+  noarch: python
+  entry_points:
+    - flake8-markdown = flake8_markdown:main
+  script:
+    - {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - poetry >=1.0.0
+    - python >=3.7
+  run:
+    - flake8 >=5.0
+    - python >=3.7
+
+test:
+  imports:
+    - flake8_markdown
+  commands:
+    - pip check
+    - flake8-markdown --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/johnfraney/flake8-markdown
+  summary: Lints Python code blocks in Markdown files using flake8
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - thewchan

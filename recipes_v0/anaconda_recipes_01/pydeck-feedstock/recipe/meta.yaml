@@ -1,0 +1,66 @@
+{% set name = "pydeck" %}
+{% set version = "0.8.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 07edde833f7cfcef6749124351195aa7dcd24663d4909fd7898dbd0b6fbc01ec
+  patches:
+    - 0001-fix-version.patch
+
+build:
+  number: 2
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: true  # [py<37]
+
+requirements:
+  build:
+    - patch  # [not win]
+    - m2-patch  # [win]
+  host:
+    - python 
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - jinja2 >=2.10.1
+    - numpy >=1.16.4
+  # jupyter dependencies are extra dependencies - no ipywidgets<8 for py312
+  # https://github.com/visgl/deck.gl/blob/v8.9.34/bindings/pydeck/setup.py#L209
+  run_constrained:      # [py>=312]
+    - traitlets >=4.3.2
+    - ipywidgets >=7,<8
+    - ipykernel >=5.1.2
+
+test:
+  imports:
+    - pydeck
+    - pydeck.bindings
+    - pydeck.data_utils
+    - pydeck.io
+    - pydeck.nbextension  # [py<312]
+    - pydeck.widget       # [py<312]
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/uber/deck.gl/tree/master/bindings/pydeck
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE.txt
+  summary: Widget for deck.gl maps
+  description: |
+    The pydeck library is a set of Python bindings for making spatial visualizations
+    with deck.gl, optimized for a Jupyter environment.
+  doc_url: https://pydeck.gl
+  dev_url: https://github.com/uber/deck.gl/tree/master/bindings/pydeck
+
+extra:
+  recipe-maintainers:
+    - ajduberstein

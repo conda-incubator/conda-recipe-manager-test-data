@@ -1,0 +1,49 @@
+{% set name = "executor" %}
+{% set version = "23.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e1c6c18ceca9e64f3f9e691bc5271806037c9a96c01e683ce46c03494af6033d
+
+build:
+  number: 0
+  noarch: python
+  entry_points:
+    - executor = executor.cli:main
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python
+  run:
+    - coloredlogs >=3.5
+    - fasteners >=0.14.1
+    - humanfriendly >=8.0
+    - property-manager >=3.0
+    - python
+    - six >=1.9.0
+
+test:
+  imports:
+    - executor
+    - executor.ssh
+  commands:
+    - executor --help
+
+about:
+  home: https://executor.readthedocs.io
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE.txt
+  summary: Programmer friendly subprocess wrapper
+  doc_url: https://executor.readthedocs.io/en/latest/
+  dev_url: https://github.com/xolox/python-executor
+
+extra:
+  recipe-maintainers:
+    - rpetit3

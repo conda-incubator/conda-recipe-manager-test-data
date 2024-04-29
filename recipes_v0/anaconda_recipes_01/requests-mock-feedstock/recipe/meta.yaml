@@ -1,0 +1,48 @@
+{% set name = "requests-mock" %}
+{% set version = "1.11.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: ef10b572b489a5f28e09b708697208c4a3b2b89ef80a9f01584340ea357ec3c4
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - python
+    - pbr
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - requests >=2.3,<3
+    - six
+
+test:
+  imports:
+    - requests_mock
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/jamielennox/requests-mock
+  license: Apache-2.0
+  license_family: APACHE
+  license_file: LICENSE
+  summary: requests-mock provides a building block to stub out the HTTP requests portions of your testing code.
+  description: requests-mock provides a building block to stub out the HTTP requests portions of your testing code.
+  doc_url: https://requests-mock.readthedocs.io
+  dev_url: https://github.com/jamielennox/requests-mock
+
+extra:
+  recipe-maintainers:
+    - nicoddemus

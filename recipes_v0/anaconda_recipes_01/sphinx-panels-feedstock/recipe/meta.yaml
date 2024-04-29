@@ -1,0 +1,45 @@
+{% set name = "sphinx-panels" %}
+{% set version = "0.6.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: d36dcd26358117e11888f7143db4ac2301ebe90873ac00627bf1fe526bf0f058
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+    - setuptools
+  run:
+    - docutils
+    - python >=3.6
+    - sphinx >=2,<5
+
+test:
+  requires:
+    - pip
+  imports:
+    - sphinx_panels
+  commands:
+    - python -m pip check
+
+about:
+  home: https://github.com/executablebooks/sphinx-panels
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A sphinx extension for creating panels in a grid layout.
+  doc_url: https://sphinx-panels.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - choldgraf

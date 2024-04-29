@@ -1,0 +1,43 @@
+{% set version = "1.2.0" %}
+
+package:
+  name: pytest-flask
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pytest-flask/pytest-flask-{{ version }}.tar.gz
+  sha256: 46fde652f77777bf02dc91205aec4ce20cdf2acbbbd66a918ab91f5c14693d3d
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv
+
+requirements:
+  host:
+    - python >=3.5
+    - pip
+    - setuptools_scm
+  run:
+    - python >=3.5
+    - flask
+    - werkzeug >=0.7
+
+test:
+  imports:
+    - pytest_flask
+
+about:
+  home: https://github.com/pytest-dev/pytest-flask
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A set of py.test fixtures to test Flask applications
+
+  doc_url: http://pytest-flask.readthedocs.io/
+  dev_url: https://github.com/pytest-dev/pytest-flask
+
+extra:
+  recipe-maintainers:
+    - sodre
+    - nicoddemus

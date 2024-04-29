@@ -1,0 +1,41 @@
+{% set name = "awacs" %}
+{% set version = "2.3.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/cloudtools/{{ name }}/archive/{{ version }}.tar.gz
+  sha256: 236406efa8d751c64ced1c0cc669e0744f72c0bb27cdd348eb8a57663f6510ec
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - python >=3.6
+
+test:
+  imports:
+    - awacs
+    - awacs.helpers
+
+about:
+  home: https://github.com/cloudtools/awacs
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: AWS Access Policy Language creation library
+  dev_url: https://github.com/cloudtools/awacs
+
+extra:
+  recipe-maintainers:
+    - rluria14
+    - oblute
+    - mxr-conda

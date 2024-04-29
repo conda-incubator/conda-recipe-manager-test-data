@@ -1,0 +1,68 @@
+{% set name = "accelerate" %}
+{% set version = "0.21.0" %}
+
+package:
+  name: huggingface_{{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/accelerate-{{ version }}.tar.gz
+  sha256: e2959a0bf74d97c0b3c0e036ed96065142a060242281d27970d4c4e34f11ca59
+
+build:
+  number: 0
+  skip: true  # [py<38]
+  # ppc64le is missing pytorch for 3.11
+  skip: true  # [py>310 and (linux and ppc64le)]
+  entry_points:
+    - accelerate=accelerate.commands.accelerate_cli:main
+    - accelerate-config=accelerate.commands.config:main
+    - accelerate-launch=accelerate.commands.launch:main
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    # https://github.com/huggingface/accelerate/blob/665d5180fcc01d5700f7a9aa3f9bdb75c6055dce/src/accelerate/utils/torch_xla.py#L18
+    - setuptools
+    - numpy >=1.17
+    - packaging >=20.0
+    - psutil
+    - pytorch >=1.10.0  # [linux]
+    # pytorch first built with USE_DISTRIBUTED=1 at v2.0.1 for win/osx.
+    - pytorch >=2.0.1  # [win or osx]
+    - pyyaml
+
+test:
+  requires:
+    - pip
+  imports:
+    - accelerate
+    - accelerate.commands
+  commands:
+    - pip check
+    - accelerate --help
+    - accelerate-config --help
+    - accelerate-launch --help
+
+about:
+  home: https://github.com/huggingface/accelerate
+  summary: Training loop of PyTorch without boilerplate code
+  description: |
+    Accelerate was created for PyTorch users who like to write the training loop of PyTorch models but are reluctant to write and maintain the boilerplate code needed to use multi-GPUs/TPU/fp16.
+
+    Accelerate abstracts exactly and only the boilerplate code related to multi-GPUs/TPU/fp16 and leaves the rest of your code unchanged.
+  license: Apache-2.0
+  license_file: LICENSE
+  license_family: Apache
+  doc_url: https://huggingface.co/docs/accelerate/index
+  dev_url: https://github.com/huggingface/accelerate
+
+extra:
+  recipe-maintainers:
+    - thewchan

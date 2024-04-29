@@ -1,0 +1,54 @@
+{% set name = "sdmetrics" %}
+{% set version = "0.10.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/sdmetrics-{{ version }}.tar.gz
+  sha256: 3d0f9ec77c1dd107d56dcac4b549931cfc9f03f0964e8d97bfb5769ae5a0f653
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - pytest-runner >=2.11.1
+    - python >=3.7,<3.11
+  run:
+    - copulas >=0.9.0,<0.10
+    - numpy >=1.20.0,<2
+    - pandas >=1.1.3
+    - python >=3.7,<3.11
+    - scikit-learn >=0.24,<2
+    - scipy >=1.5.4,<2
+    - tqdm >=4.15,<5
+    - plotly >=5.10.0,<6
+
+test:
+  imports:
+    - sdmetrics
+    - sdmetrics.column_pairs
+  commands:
+    - pytest
+  requires:
+    - pip
+    - pytest
+  source_files:
+    - tests/unit
+    - tests/utils.py
+
+about:
+  home: https://github.com/sdv-dev/SDMetrics
+  summary: Metrics for Synthetic Data Generation Projects
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - conda-forge/sdv

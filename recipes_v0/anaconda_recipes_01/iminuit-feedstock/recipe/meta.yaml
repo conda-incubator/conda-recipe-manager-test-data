@@ -1,0 +1,75 @@
+{% set name = "iminuit" %}
+{% set version = "2.18.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 7ee2c6a0bcdac581b38fae8d0f343fdee55f91f1f6a6cc9643fcfbcc6c2dc3e6
+
+build:
+  number: 0
+  # This package doesn't included in the SOW Packages on s390x
+  skip: True  # [s390x]
+  skip: True  # [py<37]
+  script:
+    - export CMAKE_BUILD_PARALLEL_LEVEL=${CPU_COUNT}
+    - {{ PYTHON }} -m pip install . -vvv --no-deps
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - cmake
+    - make  # [unix]
+  host:
+    - python
+    - pip
+    - setuptools >=42
+    - wheel
+    - numpy
+  run:
+    - python
+    # use cibuildwheels to make wheels (#512) https://github.com/scikit-hep/iminuit/pull/512
+    - {{ pin_compatible('numpy') }}
+
+test:
+  source_files:
+    - tests
+  requires:
+    - pytest
+    - pip
+  imports:
+    - iminuit
+  commands:
+    - python -m pytest tests
+    - pip check
+
+about:
+  home: https://github.com/scikit-hep/iminuit
+  license: LGPL-2.1-or-later AND MIT
+  license_family: LGPL
+  license_file: LICENSE
+  summary: Interactive Minimization Tools based on MINUIT
+  description: |
+    iminuit is designed from ground up to be fast, interactive and cython
+    friendly. iminuit extract function signature very permissively starting
+    from checking func_code down to last resort of parsing docstring (or you
+    could tell iminuit to stop looking and take your answer). The interface is
+    inspired heavily by PyMinuit and the status printout is inspired by ROOT
+    Minuit. iminuit is mostly compatible with PyMinuit (with few exceptions).
+    Existing PyMinuit code can be ported to iminuit by just changing the
+    import statement.
+  doc_url: https://iminuit.readthedocs.io
+  dev_url: https://github.com/scikit-hep/iminuit
+
+extra:
+  recipe-maintainers:
+    - mwcraig
+    - bsipocz
+    - piti118
+    - HDembinski
+    - chrisburr
+    - henryiii

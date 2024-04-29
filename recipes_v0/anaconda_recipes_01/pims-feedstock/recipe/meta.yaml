@@ -1,0 +1,77 @@
+{% set name = "PIMS" %}
+{% set version = "0.6.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e2b704461d4ea9bce8b6a22ca35836fe67d6d34537736b405341ae5547194f3b
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - imageio
+    - numpy >=1.19
+    - slicerator >=0.9.8
+# The following dependencies are only required for rich IPython display
+    - jinja2
+    - pillow
+# The following dependencies are optional (for specific readers)
+    - matplotlib-base  # one of { scikit-image | matplotlib-base }
+    - tifffile
+
+test:
+  imports:
+    - pims
+    - pims.api
+    - pims.base_frames
+    - pims.bioformats
+    - pims.cine
+    - pims.display
+    - pims.ffmpeg_reader
+    - pims.frame
+    - pims.image_reader
+    - pims.image_sequence
+    - pims.imageio_reader
+    - pims.moviepy_reader
+    - pims.norpix_reader
+    - pims.pyav_reader
+    - pims.spe_stack
+    - pims.tiff_stack
+    - pims.tests
+    - pims.utils
+    - pims.utils.misc
+    - pims.utils.sort
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/soft-matter/pims
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: license.txt
+  summary: >
+    Python Image Sequence. Load video and sequential images in many formats with a simple, consistent interface.
+  dev_url: https://github.com/soft-matter/pims
+  doc_url: https://soft-matter.github.io/pims/
+
+extra:
+  recipe-maintainers:
+    - danielballan
+    - jakirkham
+    - tacaswell
+    - caspervdw
+    - nkeim

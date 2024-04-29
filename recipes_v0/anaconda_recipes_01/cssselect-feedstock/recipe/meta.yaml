@@ -1,0 +1,49 @@
+{% set name = "cssselect" %}
+{% set version = "1.2.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 666b19839cfaddb9ce9d36bfe4c969132c647b92fc9088c4e23f786b30f1b3dc
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - pip
+    - wheel
+  run:
+    - python
+
+test:
+  imports:
+    - cssselect
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://pythonhosted.org/cssselect/
+  license: BSD-3-Clause
+  license_file: LICENSE
+  license_family: BSD
+  summary: CSS Selectors for Python
+  description: |
+    Cssselect parses CSS3 Selectors and translate them to XPath 1.0
+    expressions. Such expressions can be used in lxml or another XPath engine
+    to find the matching elements in an XML or HTML document.
+  doc_url: https://cssselect.readthedocs.io/
+  dev_url: https://github.com/scrapy/cssselect
+
+extra:
+  recipe-maintainers:
+    - vamega

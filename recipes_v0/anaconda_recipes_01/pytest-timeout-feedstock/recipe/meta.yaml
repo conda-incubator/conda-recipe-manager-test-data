@@ -1,0 +1,51 @@
+{% set name = "pytest-timeout" %}
+{% set version = "2.2.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 3b0b95dabf3cb50bac9ef5ca912fa0cfc286526af17afc806824df20c2f72c90
+
+build:
+  number: 0
+  script: python -m pip install --no-deps --no-build-isolation --ignore-installed -vv .
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - pytest >=5.0.0
+
+test:
+  requires:
+    - pytest
+    - pip
+  imports:
+    - pytest_timeout
+  commands:
+    - pip check
+    - py.test --help
+
+about:
+  home: https://github.com/pytest-dev/pytest-timeout
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: This is a plugin which will terminate tests after a certain timeout.
+  description: |
+    pytest-timeout is a plugin which will terminate tests after a certain timeout.
+    When doing so it will show a stack dump of all threads running at the time.
+  doc_url: https://github.com/pytest-dev/pytest-timeout
+  dev_url: https://github.com/pytest-dev/pytest-timeout
+
+extra:
+  recipe-maintainers:
+    - flub
+    - nicoddemus

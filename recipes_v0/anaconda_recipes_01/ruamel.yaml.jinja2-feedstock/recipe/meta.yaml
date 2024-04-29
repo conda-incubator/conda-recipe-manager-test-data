@@ -1,0 +1,54 @@
+{% set name = "ruamel.yaml.jinja2" %}
+{% set version = "0.2.7" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 8449be29d9a157fa92d1648adc161d718e469f0d38a6b21e0eabb76fd5b3e663
+
+build:
+  number: 0
+  # trigger 1
+  skip: True  # [py<37]
+  script: 
+    - {{ PYTHON }} -m pip install . -vv --no-deps
+    - {{ PYTHON }} {{ RECIPE_DIR }}/rm_broken_file.py
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - ruamel.yaml >=0.15.10
+
+test:
+  imports:
+    - ruamel.yaml.jinja2
+  requires:
+    - pip
+  commands:
+    - pip check
+    - python -c "from ruamel.yaml import YAML; YAML(typ='jinja2')"
+
+about:
+  home: https://sourceforge.net/projects/ruamel-yaml-jinja2/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: jinja2 pre and post-processor to update YAML
+  description: |
+    jinja2 templates for YAML files can normally not be loaded as YAML before
+    rendering. This plugin allows pre and post-processing based on the
+    round-trip processor.
+  dev_url: https://sourceforge.net/p/ruamel-yaml-jinja2/code/ci/default/tree/
+  doc_url: https://sourceforge.net/projects/ruamel-yaml-jinja2/
+
+extra:
+  recipe-maintainers:
+    - marcelotrevisani

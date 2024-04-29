@@ -1,0 +1,44 @@
+{% set name = "sse-starlette" %}
+{% set version = "0.10.3" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/sse-starlette-{{ version }}.tar.gz
+  sha256: 840607fed361360cc76f8408a25f0eca887e7cab3c3ee44f9762f179428e2bd4
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - python >=3.6
+    - starlette
+
+test:
+  imports:
+    - sse_starlette
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/sysid/sse-starlette
+  summary: SSE plugin for Starlette
+  license: BSD-3-Clause
+  license_file: LICENSE.md
+  dev_url: https://github.com/sysid/sse-starlette
+
+
+extra:
+  recipe-maintainers:
+    - cyprienc

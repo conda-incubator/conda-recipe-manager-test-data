@@ -1,0 +1,51 @@
+{% set name = "oslo.i18n" %}
+{% set version = "5.1.0" %}
+{% set bundle = "tar.gz" %}
+{% set hash = "6bf111a6357d5449640852de4640eae4159b5562bbba4c90febb0034abc095d0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  sha256: {{ hash }}
+
+build:
+  noarch: python
+  number: 1
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+    - pbr !=2.1.0,>=2.0.0
+
+  run:
+    - python >=3.6
+    - pbr !=2.1.0,>=2.0.0
+
+test:
+  imports:
+    - oslo_i18n
+    
+  requires:
+    - pip
+  
+  commands:
+    - pip check
+
+about:
+  home: http://docs.openstack.org/developer/oslo.i18n/
+  license_file: LICENSE
+  license: Apache-2.0
+  license_family: Apache
+  summary: Utilities for working with internationalization (i18n) features, especially translation for text strings in an application or library.
+  doc_url: http://docs.openstack.org/developer/oslo.i18n/
+  dev_url: http://git.openstack.org/cgit/openstack/oslo.i18n
+
+extra:
+  recipe-maintainers:
+    - anguslees
+    - tschoonj

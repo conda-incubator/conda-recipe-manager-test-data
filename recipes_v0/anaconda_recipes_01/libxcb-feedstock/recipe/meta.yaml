@@ -1,0 +1,99 @@
+{% set version = "1.15" %}
+{% set am_version = "1.15" %} # keep synchronized with build.sh
+
+package:
+  name: libxcb_and_xcb-proto
+  version: {{ version }}
+
+source:
+  - url: https://xcb.freedesktop.org/dist/libxcb-{{ version }}.tar.gz
+    sha256: 1cb65df8543a69ec0555ac696123ee386321dfac1964a3da39976c9a05ad724d
+    patches:
+      - windows.patch  # [win]
+      - 0001-Re-introduce-_xcb_lock_io-for-SLES11.patch
+  - url: https://xcb.freedesktop.org/dist/xcb-proto-{{ version }}.tar.xz
+    sha256: d34c3b264e8365d16fa9db49179cfa3e9952baaf9275badda0f413966b65955f
+    folder: proto
+    patches:
+      - windows-pythondir.patch  # [win]
+
+build:
+  skip: True  # [not linux]
+  number: 0
+
+requirements:
+  build:
+    - patch       # [not win]
+    - m2-patch    # [win]
+ 
+outputs:
+  - name: libxcb
+    script: install_libxcb.sh
+    build:
+      run_exports:
+        #  Excellent: only new symbols
+        #   https://abi-laboratory.pro/tracker/timeline/libxcb/
+        - {{ pin_subpackage('libxcb') }}
+      missing_dso_whitelist:                 # [linux]
+        - $RPATH/libc.so.6                   # [linux]
+    requirements:
+      build:
+        - {{ compiler('c') }}                # [not win]
+        - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+        - {{ cdt('xorg-x11-util-macros') }}  # [linux]
+        - {{ cdt('libx11-devel') }}          # [linux]
+        - {{ cdt('libxau-devel') }}          # [linux]
+        - m2-autoconf                        # [win]
+        - m2-automake{{ am_version }}        # [win]
+        - m2-libtool                         # [win]
+        - m2w64-pkg-config                   # [win]
+        - m2w64-toolchain                    # [win]
+        - posix                              # [win]
+        - xorg-util-macros                   # [win]
+        - pkg-config                         # [not win]
+        - make                               # [not win]
+      host:
+        - {{ pin_subpackage('xcb-proto') }}
+        - pthread-stubs
+    about:
+      summary: "This is the C-language Binding (XCB) package to the X Window System protocol"
+
+  - name: xcb-proto
+    script: install_proto.sh
+    requirements:
+      build:
+        - {{ compiler('c') }}                # [not win]
+        - {{ cdt('xorg-x11-util-macros') }}  # [linux]
+        - m2-autoconf                        # [win]
+        - m2-automake{{ am_version }}        # [win]
+        - m2-libtool                         # [win]
+        - m2w64-pkg-config                   # [win]
+        - m2w64-toolchain                    # [win]
+        - posix                              # [win]
+        - pkg-config                         # [not win]
+        - make                               # [not win]
+        - python
+      host:
+        - python
+      run:
+        - python
+    test:
+      imports:
+        - xcbgen
+    about:
+      summary: "Provides the XML-XCB protocol descriptions that libxcb uses to generate the majority of its code and API"
+
+about:
+  home: https://xcb.freedesktop.org/
+  license: MIT
+  license_family: MIT
+  license_file: COPYING
+  dev_url: https://gitlab.freedesktop.org/xorg/lib/libxcb
+  doc_url: https://xcb.freedesktop.org/XcbApi/
+
+extra:
+  recipe-maintainers:
+    - ccordoba12
+    - mingwandroid
+    - pkgw
+    - msarahan

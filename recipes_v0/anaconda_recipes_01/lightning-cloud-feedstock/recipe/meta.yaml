@@ -1,0 +1,62 @@
+{% set name = "lightning-cloud" %}
+{% set version = "0.5.57" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/lightning_cloud-{{ version }}.tar.gz
+  sha256: 1d30427a2935a367e0bd19873decb564425f1b648901abab2da9318a8b88c80b
+
+build:
+  entry_points:
+    - lightning_cloud=lightning_cloud.cli.__main__:main
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+  number: 0
+  # Skip on linux-s390x because fastapi isn't available.
+  skip: true  # [py<37 or s390x]
+
+requirements:
+  host:
+    - pip
+    - python
+    - wheel
+    - setuptools
+  run:
+    - boto3
+    - click
+    - fastapi
+    - pyjwt
+    - python-multipart
+    - python
+    - requests
+    - rich
+    - six
+    - urllib3
+    - uvicorn
+    - websocket-client
+
+test:
+  imports:
+    - lightning_cloud
+  commands:
+    - pip check
+    - lightning_cloud --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/Lightning-AI/pytorch-lightning
+  summary: Lightning AI Command Line Interface
+  description: Lightning AI Command Line Interface
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  dev_url: https://github.com/Lightning-AI/pytorch-lightning
+  doc_url: https://github.com/Lightning-AI/pytorch-lightning
+
+extra:
+  recipe-maintainers:
+    - Borda
+    - weiji14

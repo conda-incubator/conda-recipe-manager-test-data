@@ -1,0 +1,108 @@
+{% set version = '0.5.2' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-pbkrtest
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/pbkrtest_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/pbkrtest/pbkrtest_{{ version }}.tar.gz
+  sha256: 8e79adf035a0fcf3c82145ad55847497379e009f7be880ba3007ebeb2e69b6e3
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: knitr
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-mass
+    - r-matrix >=1.2.3
+    - r-broom
+    - r-dplyr
+    - r-lme4 >=1.1.31
+    - r-numderiv
+
+  run:
+    - r-base
+    - r-mass
+    - r-matrix >=1.2.3
+    - r-broom
+    - r-dplyr
+    - r-lme4 >=1.1.31
+    - r-numderiv
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('pbkrtest')"           # [not win]
+    - "\"%R%\" -e \"library('pbkrtest')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://people.math.aau.dk/~sorenh/software/pbkrtest/
+  license: GPL-2
+  summary: "Computes p-values based on (a) Satterthwaite or Kenward-Rogers degree of freedom
+    methods and (b) parametric bootstrap for mixed effects models as implemented in
+    the 'lme4' package. Implements parametric bootstrap test for generalized linear
+    mixed models as implemented in 'lme4' and generalized linear models. The package
+    is documented in the paper by Halekoh and H\xF8jsgaard, (2012, <doi:10.18637/jss.v059.i09>).
+    \ Please see 'citation(\"pbkrtest\")' for citation details."
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: pbkrtest
+# Version: 0.5.2
+# Title: Parametric Bootstrap, Kenward-Roger and Satterthwaite Based Methods for Test in Mixed Models
+# Authors@R: c( person(given = "Ulrich", family = "Halekoh", email = "uhalekoh@health.sdu.dk", role = c("aut", "cph")), person(given = "Sren", family = "Hjsgaard", email = "sorenh@math.aau.dk", role = c("aut", "cre", "cph")) )
+# Maintainer: Sren Hjsgaard <sorenh@math.aau.dk>
+# Description: Computes p-values based on (a) Satterthwaite or Kenward-Rogers degree of freedom methods and (b) parametric bootstrap for mixed effects models as implemented in the 'lme4' package. Implements parametric bootstrap test for generalized linear mixed models as implemented in 'lme4' and generalized linear models. The package is documented in the paper by Halekoh and Hjsgaard, (2012, <doi:10.18637/jss.v059.i09>).  Please see 'citation("pbkrtest")' for citation details.
+# URL: https://people.math.aau.dk/~sorenh/software/pbkrtest/
+# Depends: R (>= 4.1.0), lme4 (>= 1.1.31)
+# Imports: broom, dplyr, MASS, Matrix (>= 1.2.3), methods, numDeriv, parallel
+# Suggests: knitr
+# Encoding: UTF-8
+# VignetteBuilder: knitr
+# License: GPL (>= 2)
+# ByteCompile: Yes
+# RoxygenNote: 7.2.3
+# LazyData: true
+# NeedsCompilation: no
+# Packaged: 2023-01-19 07:09:26 UTC; sorenh
+# Author: Ulrich Halekoh [aut, cph], Sren Hjsgaard [aut, cre, cph]
+# Repository: CRAN
+# Date/Publication: 2023-01-19 18:00:10 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

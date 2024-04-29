@@ -1,0 +1,52 @@
+{% set name = "adagio" %}
+{% set version = "0.2.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: e58abc4539184a65faf9956957d3787616bedeb1303ac5c9b1a201d8af6b87d7
+
+build:
+  # triad is missing on s390x. 
+  skip: true  # [py<36 or s390x]
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed -vvv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - triad >=0.6.1
+
+test:
+  imports:
+    - adagio
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/fugue-project/adagio
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: A Dag IO framework for Fugue projects.
+  description: A Dag IO framework for Fugue projects.
+  dev_url: https://github.com/fugue-project/adagio
+  doc_url: https://github.com/fugue-project/adagio/blob/master/README.md
+
+extra:
+  recipe-maintainers:
+    - charlesbluca
+    - thewchan
+    - kvnkho
+    - goodwanghan
+    - rdmolony

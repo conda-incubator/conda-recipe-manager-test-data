@@ -1,0 +1,48 @@
+{% set version = "0.2.1" %}
+
+package:
+  name: pastel
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pastel/pastel-{{ version }}.tar.gz
+  sha256: e6581ac04e973cac858828c6202c1e1e81fee1dc7de7683f3e1ffe0bfd8a573d
+
+build:
+  number: 0
+  noarch: python
+  script:
+    # pastel cannot depend on itself via poetry
+    - rm -f pyproject.toml
+    - {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    # - poetry >=1.0.0
+  run:
+    - python
+
+test:
+  imports:
+    - pastel
+
+about:
+  home: https://github.com/sdispater/pastel
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Bring colors to your terminal
+  description: "Pastel is a simple library to help you colorize strings in your terminal."
+  doc_url: https://pypi.org/project/pastel/
+  dev_url: https://github.com/sdispater/pastel
+
+extra:
+  recipe-maintainers:
+    - nick-youngblut
+    - johanneskoester
+    - bgruening
+    - daler
+    - jdblischak
+    - cbrueffer

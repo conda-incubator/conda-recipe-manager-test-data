@@ -1,0 +1,45 @@
+{% set name = "python-fsutil" %}
+{% set version = "0.10.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/python-fsutil-{{ version }}.tar.gz
+  sha256: 5f02ed7764cac27633b4aaaa9cf56af2245a64a6cc048866b6f02792a8c5bf86
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.5
+  run:
+    - python >=3.5
+    - requests
+
+test:
+  imports:
+    - fsutil
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/fabiocaccamo/python-fsutil
+  summary: file-system utilities for lazy devs.
+  license: MIT
+  license_file: LICENSE.txt
+
+extra:
+  recipe-maintainers:
+    - pmrowla
+    - efiop
+    - shcheklein
+    - fabiocaccamo

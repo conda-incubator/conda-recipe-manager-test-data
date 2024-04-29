@@ -1,0 +1,67 @@
+{% set name = "MonkeyType" %}
+{% set version = "22.2.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - folder: dist
+    url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 6b0c00b49dcc5095a2c08d28246cf005e05673fc51f64d203f9a6bca2036dfab
+  - folder: src
+    url: https://github.com/Instagram/{{ name }}/archive/v{{ version }}.tar.gz
+    sha256: 8ef6cb3cdcf00128e5ee60fd01bee0f7f953fe1f5acac5d02f31198e42535ca6
+
+build:
+  number: 0
+  noarch: python
+  entry_points:
+    - monkeytype=monkeytype.cli:entry_point_main
+  script: cd dist && {{ PYTHON }} -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - libcst >=0.3.7
+    - mypy_extensions
+    - python >=3.6
+
+test:
+  source_files:
+    - src/tests
+  requires:
+    - {{ compiler('c') }}
+    - cython
+    - django
+    - pip
+    - pytest
+  imports:
+    - monkeytype
+  commands:
+    - python -m pip check
+    - monkeytype --help
+    - cd src && cd tests
+    - python -m pytest -k "not test_includes_otherwise"
+
+
+about:
+  home: https://github.com/Instagram/MonkeyType
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: src/LICENSE
+  summary: Generating type annotations from sampled production types
+  doc_url: https://monkeytype.readthedocs.io
+  doc_source_url: https://github.com/Instagram/MonkeyType/tree/master/doc
+  description: |
+    MonkeyType collects runtime types of function arguments and return values,
+    and can automatically generate stub files or even add draft type
+    annotations directly to your Python code based on the types collected at
+    runtime.
+
+extra:
+  recipe-maintainers:
+    - bollwyvl
+    - nehaljwani

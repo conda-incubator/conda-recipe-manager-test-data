@@ -1,0 +1,117 @@
+{% set name = "scikit-learn" %}
+{% set version = "1.3.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: "8be549886f5eda46436b6e555b0e4873b4f10aa21c07df45c4bc1735afbccd7a"
+
+build:
+  number: 2
+  skip: true  # [py<38]
+  script: 
+    - {{ PYTHON }} -m pip install --no-deps --ignore-installed --no-build-isolation . -vv
+  missing_dso_whitelist:
+    - '*/libc++.1.dylib'  # [osx]
+    - '*/libomp.dylib'    # [osx]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    # Host dependencies are pinned to last build
+    - python
+    - cython 0.29
+    - numpy {{ numpy }}
+    - llvm-openmp 14.0.6  # [osx]
+    - pip
+    - scipy 1.9.3   # [py<311]
+    - scipy 1.10.0  # [py==311]
+    - scipy 1.11  # [py==312]
+    - setuptools
+    - wheel
+    # mkl variant pulls in intel-openmp which conflicts with llvm-openmp. i.e. force to use openblas variant of numpy, scipy, etc.
+    - blas=*=openblas  # [osx and x86_64]
+  run:
+    - python
+    - joblib >=1.1.1
+    - {{ pin_compatible('numpy') }}
+    # There is some problem on osx-64 when numpy 1.25 for python 3.11 is used - 48 tests fail badly.
+    - numpy <1.25  # [osx-64 and py==311]
+    - scipy >=1.5.0
+    - threadpoolctl >=2.0.0
+    - llvm-openmp  # [osx]
+    - _openmp_mutex  # [linux]
+    # mkl variant pulls in intel-openmp which conflicts with llvm-openmp. i.e. force to use openblas variant of numpy, scipy, etc.
+    - blas=*=openblas  # [osx and x86_64]
+
+# Some tests take alot of memory, and seem to cause segfaults when memory runs out
+{% set test_cpus = 1 %}
+
+{% set tests_to_skip = "_not_a_real_test" %}
+# https://github.com/scikit-learn/scikit-learn/issues/20335
+{% set tests_to_skip = tests_to_skip + " or test_loadings_converges" %}
+# Numerically unstable test numerical difference in test
+{% set tests_to_skip = tests_to_skip + " or test_mlp_regressor_dtypes_casting" %}         # [ppc64le]
+# The following test seems to be crashing CI OS.
+{% set tests_to_skip = tests_to_skip + " or test_non_negative_factorization_consistency" %}         # [osx and arm64]
+
+test:
+  requires:
+    - cython >=0.29.24
+    - pip
+    - pytest >=7.1.2
+    - pytest-timeout
+    - pytest-xdist
+  imports:
+    - sklearn
+    - sklearn.cluster
+    - sklearn.datasets
+    - sklearn.decomposition
+    - sklearn.ensemble
+    - sklearn.feature_extraction
+    - sklearn.linear_model
+    - sklearn.manifold
+    - sklearn.metrics
+    - sklearn.neighbors
+    - sklearn.tree
+    - sklearn.utils
+    - sklearn.svm
+  commands:
+    - pip check
+    - set OPENBLAS_NUM_THREADS=1          # [win]
+    - set OMP_NUM_THREADS=1               # [win]
+    - export OPENBLAS_NUM_THREADS=1       # [not win]
+    - export OMP_NUM_THREADS=1            # [not win]
+    - pytest --timeout 300 -n {{ test_cpus }} --verbose --pyargs sklearn -k "not ({{ tests_to_skip }})"
+
+about:
+  home: https://scikit-learn.org/
+  license: BSD-3-Clause
+  license_file: COPYING
+  license_family: BSD
+  summary: A set of python modules for machine learning and data mining
+  description: |
+    Scikit-learn is an open source machine learning library that supports supervised and unsupervised learning. 
+    It also provides various tools for model fitting, data preprocessing, model selection, model evaluation, 
+    and many other utilities.
+  doc_url: https://scikit-learn.org/dev/user_guide.html
+  dev_url: https://github.com/scikit-learn/scikit-learn
+
+extra:
+  recipe-maintainers:
+    - amueller
+    - astaric
+    - jakirkham
+    - ogrisel
+    - ocefpaf
+    - lesteve
+    - jnothman
+    - rth
+    - adrinjalali
+    - glemaitre
+    - jeremiedbb

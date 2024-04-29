@@ -1,0 +1,60 @@
+{% set name = "pdm-backend" %}
+{% set version = "2.1.6" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pdm_backend-{{ version }}.tar.gz
+  sha256: 75cdee279ce99df3ce9c53c5c81e3cc1cd3f9fa901eeb14d2bc88ab770daf92d
+
+build:
+  number: 0
+  skip: true  # [py<37]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    # "pdb-backend" bootstraps itself using its own code, so we need to have the runtime dependencies at build time
+    - importlib-metadata >=3.6  # [py<310]
+  run:
+    - python
+    - importlib-metadata >=3.6  # [py<310]
+
+test:
+  imports:
+    - pdm.backend
+  source_files:
+    - tests/
+  requires:
+    - {{ compiler('c') }}  # [linux or win]
+    - git                  # [linux or win]
+    - editables
+    - pip
+    - pytest
+    - pytest-xdist
+  commands:
+    - pip check
+    - pytest tests -vv
+
+about:
+  home: https://pdm-backend.fming.dev/
+  summary: The build backend used by PDM that supports latest packaging standards.
+  description: |
+    The build backend used by PDM that supports latest packaging standards.
+    This is the backend for PDM projects that is fully-compatible with PEP 517 spec, 
+    but you can also use it alone. It reads the metadata of PEP 621 format and coverts it to Core metadata.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  dev_url: https://github.com/pdm-project/pdm-backend
+  doc_url: https://pdm-backend.fming.dev/
+
+extra:
+  recipe-maintainers:
+    - theAeon
+    - xhochy

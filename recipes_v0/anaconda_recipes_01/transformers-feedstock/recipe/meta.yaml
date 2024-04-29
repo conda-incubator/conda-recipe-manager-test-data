@@ -1,0 +1,93 @@
+{% set name = "transformers" %}
+{% set version = "4.37.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: f307082ae5d528b8480611a4879a4a11651012d0e9aaea3f6cf17219ffd95542
+
+build:
+  skip: True  # [py<38]
+  # s390x is missing pyrarrow that datasets depends on
+  skip: True  # [linux and s390x]
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - transformers-cli=transformers.commands.transformers_cli:main
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    # datasets required for transformers-cli.
+    #- datasets !=2.5.0
+    - importlib-metadata
+    - filelock
+    - huggingface_hub >=0.19.3,<1
+    - numpy >=1.17
+    - packaging >=20.0
+    - pyyaml >=5.1
+    - regex !=2019.12.17
+    - requests
+    - safetensors >=0.4.1
+    - tokenizers >=0.14,<0.19
+    - tqdm >=4.27
+
+test:
+  requires:
+    - pip
+    # to satisfy `transformers-cli --help` because it raises a warning of missing pytorch/tensorflow/flax for models.
+    # skip ppc64le because of lack of pytorch
+    - pytorch  # [not (linux and ppc64le)]
+  imports:
+    - transformers
+    - transformers.benchmark
+    - transformers.commands
+    - transformers.data
+    - transformers.kernels
+    - transformers.models
+    - transformers.pipelines
+    - transformers.tools
+    - transformers.utils
+  commands:
+    - pip check
+    - transformers-cli --help
+
+about:
+  home: https://github.com/huggingface/transformers
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: State-of-the-art Machine Learning for JAX, PyTorch and TensorFlow
+  description: |
+    Transformers provides thousands of pretrained models to perform tasks on different modalities such as text, vision, and audio.
+
+    These models can be applied on:
+
+    - 📝 Text, for tasks like text classification, information extraction, question answering, summarization, translation, text generation, in over 100 languages.
+    - 🖼️ Images, for tasks like image classification, object detection, and segmentation.
+    - 🗣️ Audio, for tasks like speech recognition and audio classification.
+    
+    Transformer models can also perform tasks on several modalities combined, such as table question answering, optical character recognition, information extraction from scanned documents, video classification, and visual question answering.
+  doc_url: https://huggingface.co/docs/transformers/index
+  dev_url: https://github.com/huggingface/transformers
+
+extra:
+  recipe-maintainers:
+    - mxr-conda
+    - roccqqck
+    - oblute
+    - rluria14
+    - ndmaxar
+    - setu4993
+    - hadim
+    - wietsedv
+  skip-lints:
+    - python_build_tool_in_run

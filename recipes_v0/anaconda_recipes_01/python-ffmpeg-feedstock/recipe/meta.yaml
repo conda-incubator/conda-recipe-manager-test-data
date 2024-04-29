@@ -1,0 +1,60 @@
+{% set name = "python-ffmpeg" %}
+{% set version = "2.0.4" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  # Source from GH archive because additional test files are missing in
+  # the tarballs of the source distribution.
+  # Check this PR: https://github.com/jonghwanhyeon/python-ffmpeg/pull/37
+  url: https://github.com/jonghwanhyeon/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: a7977cc3d8658f94a33cd15c5710e008c9e5442df32f57e7df8cbb4ad38a97f3
+
+build:
+  # ffmpeg is not available for s390x
+  skip: true  # [s390x]
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel
+  run:
+    - python
+    - pyee
+    - typing_extensions
+    - ffmpeg
+
+test:
+  requires:
+    - pip
+    - pytest
+    - pytest-asyncio
+  imports:
+    - ffmpeg
+  source_files:
+    - tests
+  commands:
+    - pip check
+    - pytest -v tests
+
+about:
+  home: https://github.com/jonghwanhyeon/python-ffmpeg
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: |
+    A python binding for FFmpeg which provides sync and async APIs
+  description: |
+    A python binding for FFmpeg which provides sync and async APIs
+  doc_url: https://python-ffmpeg.readthedocs.io
+  dev_url: https://github.com/jonghwanhyeon/python-ffmpeg
+
+extra:
+  recipe-maintainers:
+    - lorepirri

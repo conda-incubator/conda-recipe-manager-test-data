@@ -1,0 +1,61 @@
+{% set name = "formulaic" %}
+{% set version = "0.6.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 54905a297a40f6d8b23b94b6652d622ad4756a2b14fb83c0aa76473254d4dd7b
+
+build:
+  number: 1
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: True  # [py<38]
+
+requirements:
+  host:
+    - python
+    - pip
+    - hatchling
+    - hatch-vcs
+    - setuptools
+    - wheel
+  run:
+    - python
+    - astor >=0.8
+    - cached-property >=1.3.0  # [py<38]
+    - graphlib-backport >=1.0.0  # [py<39]
+    - interface_meta >=1.2.0
+    - numpy >=1.16.5
+    - pandas >=1.0
+    - scipy >=1.6
+    - typing-extensions >=4.2.0
+    - wrapt >=1.0
+  run_constrained:
+    - pyarrow >=1
+    - sympy >=1.3,!=1.10
+
+test:
+  imports:
+    - formulaic
+  requires: 
+    - pip
+  commands: 
+    - pip check
+
+about:
+  home: https://github.com/matthewwardrop/formulaic
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: A high-performance implementation of Wilkinson formulas for Python.
+  description: |
+    Formulaic is a high-performance implementation of Wilkinson formulas for Python.
+  doc_url: https://matthewwardrop.github.io/formulaic
+  dev_url: https://github.com/matthewwardrop/formulaic
+
+extra:
+  recipe-maintainers:
+    - matthewwardrop

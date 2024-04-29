@@ -1,0 +1,55 @@
+{% set name = "dunamai" %}
+{% set version = "1.17.0" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 459381b585a1e78e4070f0d38a6afb4d67de2ee95064bf6b0438ec620dde0820
+
+build:
+  number: 1
+  skip: True  # [py<35]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - dunamai = dunamai.__main__:main
+
+requirements:
+  host:
+    - pip
+    - poetry-core 1.5
+    - python
+    - setuptools
+    - wheel
+  run:
+    - importlib-metadata >=1.6.0  # [py<38]
+    - packaging >=20.9
+    - python
+
+test:
+  imports:
+    - dunamai
+  requires:
+    - pip
+  commands:
+    - pip check
+    - dunamai --help
+
+about:
+  home: https://github.com/mtkennerly/dunamai
+  dev_url: https://github.com/mtkennerly/dunamai
+  doc_url: https://github.com/mtkennerly/dunamai
+  summary: Dynamic versioning library and CLI
+  description: |
+    Dunamai is a Python library and command line tool for producing dynamic, standards-compliant version strings, derived from tags in your version control system. This facilitates uniquely identifying nightly or per-commit builds in continuous integration and releasing new versions of your software simply by creating a tag.
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - dhirschfeld
+    - BastianZim

@@ -1,0 +1,102 @@
+{% set version = '3.99-0.14' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-xml
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/XML_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/XML/XML_{{ version }}.tar.gz
+  sha256: 2cb6a61a4d8d89e311994f47df09913d4ce5281317d42c78af4aafd75a31f1f9
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: bitops, RCurl
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}sed               # [win]
+    - {{ posix }}grep              # [win]
+    - {{ posix }}autoconf
+    - {{ posix }}automake          # [not win]
+    - {{ posix }}automake-wrapper  # [win]
+    - {{ posix }}pkg-config
+    - {{ posix }}make
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - libxml2
+
+  run:
+    - r-base
+    - libxml2
+    - {{native}}gcc-libs         # [win]
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('XML')"           # [not win]
+    - "\"%R%\" -e \"library('XML')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://www.omegahat.net/RSXML/
+  license: BSD_3_clause
+  summary: Many approaches for both reading and creating XML (and HTML) documents (including
+    DTDs), both local and accessible via HTTP or FTP.  Also offers access to an 'XPath'
+    "interpreter".
+  license_family: BSD
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/BSD_3_clause'
+    - LICENSE
+
+extra:
+  recipe-maintainers:
+    - croth1
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: XML
+# Version: 3.99-0.14
+# Authors@R: c(person("CRAN Team", role = c('ctb', 'cre'), email = "CRAN@r-project.org", comment = "de facto maintainer since 2013"), person("Duncan", "Temple Lang", role = c("aut"), email = "duncan@r-project.org", comment = c(ORCID = "0000-0003-0159-1546")), person("Tomas", "Kalibera", role = "ctb"))
+# Title: Tools for Parsing and Generating XML Within R and S-Plus
+# Depends: R (>= 4.0.0), methods, utils
+# Suggests: bitops, RCurl
+# SystemRequirements: libxml2 (>= 2.6.3)
+# Description: Many approaches for both reading and creating XML (and HTML) documents (including DTDs), both local and accessible via HTTP or FTP.  Also offers access to an 'XPath' "interpreter".
+# URL: https://www.omegahat.net/RSXML/
+# License: BSD_3_clause + file LICENSE
+# Collate: AAA.R DTD.R DTDClasses.R DTDRef.R SAXMethods.R XMLClasses.R applyDOM.R assignChild.R catalog.R createNode.R dynSupports.R error.R flatTree.R nodeAccessors.R parseDTD.R schema.R summary.R tangle.R toString.R tree.R version.R xmlErrorEnums.R xmlEventHandler.R xmlEventParse.R xmlHandler.R xmlInternalSource.R xmlOutputDOM.R xmlNodes.R xmlOutputBuffer.R xmlTree.R xmlTreeParse.R htmlParse.R hashTree.R zzz.R supports.R parser.R libxmlFeatures.R xmlString.R saveXML.R namespaces.R readHTMLTable.R reflection.R xmlToDataFrame.R bitList.R compare.R encoding.R fixNS.R xmlRoot.R serialize.R xmlMemoryMgmt.R keyValueDB.R solrDocs.R XMLRErrorInfo.R xincludes.R namespaceHandlers.R tangle1.R htmlLinks.R htmlLists.R getDependencies.R getRelativeURL.R xmlIncludes.R simplifyPath.R
+# NeedsCompilation: yes
+# Packaged: 2023-03-19 10:59:44 UTC; ripley
+# Author: CRAN Team [ctb, cre] (de facto maintainer since 2013), Duncan Temple Lang [aut] (<https://orcid.org/0000-0003-0159-1546>), Tomas Kalibera [ctb]
+# Maintainer: CRAN Team <CRAN@r-project.org>
+# Repository: CRAN
+# Date/Publication: 2023-03-19 11:04:35 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

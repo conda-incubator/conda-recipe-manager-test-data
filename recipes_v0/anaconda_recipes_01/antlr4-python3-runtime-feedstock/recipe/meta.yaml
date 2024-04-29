@@ -1,0 +1,56 @@
+{% set name = "antlr4-python3-runtime" %}
+{% set version = "4.11.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/antlr4-python3-runtime-{{ version }}.tar.gz
+  sha256: a53de701312f9bdacc5258a6872cd6c62b90d3a90ae25e494026f76267333b60
+
+build:
+  number: 0
+  skip: true  # [py<30]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation  --ignore-installed --no-cache-dir -vvv
+  entry_points:
+    - pygrun=antlr4._pygrun:main
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - wheel 
+  run:
+    - python
+    - typing  # [py<35]
+
+test:
+  imports:
+    - antlr4
+    - antlr4.atn
+    - antlr4.dfa
+    - antlr4.error
+    - antlr4.tree
+    - antlr4.xpath
+  commands:
+    - pip check
+    - pygrun -h
+  requires:
+    - pip
+
+about:
+  home: https://www.antlr.org/
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Python runtime for ANTLR.
+  description: Runtime library for ANTLR4 that is specifically designed for use with the Python 3 programming language.
+  dev_url: https://github.com/antlr/antlr4
+  doc_url: https://github.com/antlr/antlr4/blob/master/doc/python-target.md
+
+extra:
+  recipe-maintainers:
+    - agonopol

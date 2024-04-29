@@ -1,0 +1,39 @@
+{% set version = "3.0.1" %}
+
+package:
+  name: uritemplate
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/u/uritemplate/uritemplate-{{ version }}.tar.gz
+  sha256: 5af8ad10cec94f215e3f48112de2022e1d5a37ed427fbd88652fa908f2ab7cae
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - simplejson >=2.5.0
+
+test:
+  imports:
+    - uritemplate
+
+about:
+  home: http://github.com/uri-templates/uritemplate-py/
+  license: Apache 2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: 'URI Templates'
+  dev_url: http://github.com/uri-templates/uritemplate-py/
+
+extra:
+  recipe-maintainers:
+    - pmlandwehr
+    - ocefpaf

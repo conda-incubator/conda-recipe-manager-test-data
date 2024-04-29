@@ -1,0 +1,46 @@
+{% set name = "suds-py3" %}
+{% set version = "1.4.5.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+    sha256: 2b0d433e569c0190ff5e7ed2dfb3287b51bbfb3e51e82361c8bd652c78807167
+  - path: .
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6,<4
+  run:
+    - python >=3.6,<4
+
+test:
+  requires:
+    - pip
+  imports:
+    - suds
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/cackharot/suds-py3
+  license: LGPL-3.0-only
+  license_family: LGPL
+  license_file: LICENSE
+  summary: Lightweight SOAP client
+  description: |
+    The "suds-py3" is a lightweight soap-based client for python3
+    licensed under LGPL. This is a mirror of http://svn.fedorahosted.org/svn/suds/trunk/
+    supporting Python3 and some fixes.
+
+extra:
+  recipe-maintainers:
+    - fcollonval

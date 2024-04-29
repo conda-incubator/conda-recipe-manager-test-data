@@ -1,0 +1,99 @@
+{% set version = '1.8-12' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-zoo
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/zoo_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/zoo/zoo_{{ version }}.tar.gz
+  sha256: e6c3862668f9e3422bced3b6fba485c76a1e91b48f5d6153822d6a61863b2fb8
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: AER, coda, chron, ggplot2 (>= 3.0.0), mondate, scales, stinepack, strucchange, timeDate, timeSeries, tis, tseries, xts
+requirements:
+  build:
+    - {{ compiler('c') }}              # [not win]
+    - {{ compiler('m2w64_c') }}        # [win]
+    - {{ posix }}filesystem        # [win]
+    - {{ posix }}make
+    - {{ posix }}sed               # [win]
+    - {{ posix }}coreutils         # [win]
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-lattice >=0.20_27
+
+  run:
+    - r-base
+    - {{native}}gcc-libs         # [win]
+    - r-lattice >=0.20_27
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('zoo')"           # [not win]
+    - "\"%R%\" -e \"library('zoo')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://zoo.R-Forge.R-project.org/
+  license: GPL-2 | GPL-3
+  summary: An S3 class with methods for totally ordered indexed observations. It is particularly
+    aimed at irregular time series of numeric vectors/matrices and factors. zoo's key
+    design goals are independence of a particular index/date/time class and consistency
+    with ts and base R by providing methods to extend standard generics.
+  license_family: GPL3
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'
+
+extra:
+  recipe-maintainers:
+    - croth1
+    - mingwandroid
+    - katietz
+
+# The original CRAN metadata for this package was:
+
+# Package: zoo
+# Version: 1.8-12
+# Date: 2023-04-11
+# Title: S3 Infrastructure for Regular and Irregular Time Series (Z's Ordered Observations)
+# Authors@R: c(person(given = "Achim", family = "Zeileis", role = c("aut", "cre"), email = "Achim.Zeileis@R-project.org", comment = c(ORCID = "0000-0003-0918-3766")), person(given = "Gabor", family = "Grothendieck", role = "aut", email = "ggrothendieck@gmail.com"), person(given = c("Jeffrey", "A."), family = "Ryan", role = "aut", email = "jeff.a.ryan@gmail.com"), person(given = c("Joshua", "M."), family = "Ulrich", role = "ctb", email = "josh.m.ulrich@gmail.com"), person(given = "Felix", family = "Andrews", role = "ctb", email = "felix@nfrac.org"))
+# Description: An S3 class with methods for totally ordered indexed observations. It is particularly aimed at irregular time series of numeric vectors/matrices and factors. zoo's key design goals are independence of a particular index/date/time class and consistency with ts and base R by providing methods to extend standard generics.
+# Depends: R (>= 3.1.0), stats
+# Suggests: AER, coda, chron, ggplot2 (>= 3.0.0), mondate, scales, stinepack, strucchange, timeDate, timeSeries, tis, tseries, xts
+# Imports: utils, graphics, grDevices, lattice (>= 0.20-27)
+# License: GPL-2 | GPL-3
+# URL: https://zoo.R-Forge.R-project.org/
+# NeedsCompilation: yes
+# Packaged: 2023-04-11 21:24:32 UTC; zeileis
+# Author: Achim Zeileis [aut, cre] (<https://orcid.org/0000-0003-0918-3766>), Gabor Grothendieck [aut], Jeffrey A. Ryan [aut], Joshua M. Ulrich [ctb], Felix Andrews [ctb]
+# Maintainer: Achim Zeileis <Achim.Zeileis@R-project.org>
+# Repository: CRAN
+# Date/Publication: 2023-04-13 12:13:20 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

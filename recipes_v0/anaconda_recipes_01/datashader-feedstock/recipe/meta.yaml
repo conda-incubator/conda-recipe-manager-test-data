@@ -1,0 +1,85 @@
+{% set name = "datashader" %}
+{% set version = "0.16.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/datashader-{{ version }}.tar.gz
+  sha256: ed4c111957578dcb3fcff972d954f77586dafd71a7345fd5cd069d9fb050d0d1
+
+build:
+  number: 0
+  # Currently it's not available on s390x:
+  # There are missing datashape, numba, fastparquet, netcdf4.
+  skip: True  # [py<39 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vvv
+  entry_points:
+    - datashader = datashader.__main__:main
+
+requirements:
+  host:
+    - python
+    - pip
+    - param
+    - pyct
+    - setuptools
+    - wheel
+  run:
+    - python
+    - colorcet
+    - dask-core
+    - multipledispatch
+    - numba
+    - numpy
+    - pandas
+    - param
+    - pillow
+    - pyct
+    - requests
+    - scipy
+    - toolz
+    - xarray
+
+test:
+  imports:
+    - datashader
+  requires:
+    - fastparquet
+    - flake8
+    - holoviews
+    - nbsmoke >0.5.0
+    - netcdf4
+    - pip
+    - pytest
+    - pytest-benchmark
+  commands:
+    - pip check || true    # [not win]
+    - pip check || exit 0  # [win]
+    - datashader --version
+    - datashader --help
+    - datashader copy-examples --path=. --force
+    # just run one notebook for now; increase in the future if notebooks can be run quickly with test/tiny data
+    - pytest --nbsmoke-run -k ".ipynb" getting_started/2_Pipeline.ipynb
+
+about:
+  home: https://datashader.org
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Data visualization toolchain based on aggregating into a grid
+  description: |
+    Datashader is a data rasterization pipeline for automating the process of
+    creating meaningful representations of large amounts of data.
+  doc_url: https://datashader.org
+  dev_url: https://github.com/holoviz/datashader
+
+extra:
+  recipe-maintainers:
+    - jbednar
+    - ocefpaf
+    - philippjfr
+    - jsignell
+  skip-lints:
+    - host_section_needs_exact_pinnings

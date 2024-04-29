@@ -1,0 +1,81 @@
+{% set name = "EasyOCR" %}
+{% set version = "1.7.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://github.com/JaidedAI/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: 6f26c99ecfd3f715932e470836c2dd80fb55509df18955ff863f0212d19c23ad
+
+build:
+  # STOP!!!
+  # This is a custom build for the Snowflake private channel, because they need
+  # this package to depend on opencv-python-headless (present only on their channel)
+  # instead of the regular OpenCV. If you are updating this package for defaults
+  # then please reset this back to 0 but also remove the dependency on the 
+  # headless version.
+  number: 1
+  # torchvision currently isn't available on s390x and ppc64le.
+  skip: True  # [s390x or ppc64le]
+  skip: True  # [py<37]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  entry_points:
+    - easyocr= easyocr.cli:main
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - pytorch
+    - torchvision >=0.5
+    # Snowflake wants this package to depend on the headless
+    # version of OpenCV.
+    # - pyopencv >=4.6.0
+    - opencv-python-headless >=4.6.0
+    - scipy
+    - numpy
+    - pillow
+    - scikit-image
+    - python-bidi
+    - pyyaml
+    - shapely
+    - pyclipper
+    - ninja
+
+test:
+  # Imports in run_test.py
+  #imports:
+  #  - easyocr
+  requires:
+    - pip
+  files:
+    - english.png
+
+about:
+  home: https://www.jaided.ai/
+  license: Apache-2.0
+  license_family: Apache
+  license_file: LICENSE
+  summary: End-to-End Multi-Lingual Optical Character Recognition (OCR) Solution
+  description: |
+    Ready-to-use OCR with 80+ supported languages and all popular writing
+    scripts including: Latin, Chinese, Arabic, Devanagari, Cyrillic, etc.
+
+  doc_url: https://github.com/JaidedAI/EasyOCR/blob/master/README.md
+  dev_url: https://github.com/JaidedAI/EasyOCR
+
+extra:
+  recipe-maintainers:
+    - skupr-anaconda
+  skip-lints:
+    - missing_pip_check
+    - has_run_test_and_commands
+    - build_tools_must_be_in_build

@@ -1,0 +1,48 @@
+{% set name = "kneed" %}
+{% set version = "0.8.5" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: a4847ac4f1d04852fea278d5de7aa8bfdc3beb7fbca4a182fec0f0efee43f4b1
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-build-isolation --no-deps -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - hatchling
+  run:
+    - python
+    - numpy >=1.14.2
+    - scipy >=1.0.0
+test:
+  imports:
+    - kneed
+  requires:
+    - pip
+  commands:
+    - pip check
+  
+about:
+  home: https://github.com/arvkevi/kneed
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Knee point detection using Python
+  description: |
+    This repository is an attempt to implement the kneedle algorithm. 
+    Given a set of x and y values, kneed will return the knee point of the function. 
+    The knee point is the point of maximum curvature.
+  doc_url: https://kneed.readthedocs.io
+  dev_url: https://github.com/arvkevi/kneed
+
+extra:
+  recipe-maintainers:
+    - arvkevi

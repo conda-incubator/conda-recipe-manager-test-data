@@ -1,0 +1,48 @@
+{% set version = "2.0.2" %}
+
+package:
+  name: pydotplus
+  version: {{ version }}
+
+source:
+  fn: pydotplus-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/p/pydotplus/pydotplus-{{ version }}.tar.gz
+  md5: 0e2fc3dbdfd846819d4cd3769cb4595b
+
+build:
+  noarch: python
+  number: 1
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+    - pyparsing >=2.0.1
+
+  run:
+    - python
+    - pyparsing >=2.0.1
+
+test:
+  imports:
+    - pydotplus
+
+about:
+  home: http://pydotplus.readthedocs.org/
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: "Python interface to Graphviz's Dot language"
+  description: |
+    PyDotPlus is an improved version of the old pydot project that provides a
+    Python Interface to the Graphviz Dot language.
+  dev_url: https://github.com/carlos-jenkins/pydotplus
+  doc_url: http://pydotplus.readthedocs.io/
+  doc_source_url: https://github.com/carlos-jenkins/pydotplus/tree/master/doc
+
+extra:
+  recipe-maintainers:
+    - chrisfilo
+    - satra

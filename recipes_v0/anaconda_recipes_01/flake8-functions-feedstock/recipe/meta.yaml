@@ -1,0 +1,47 @@
+{% set name = "flake8-functions" %}
+{% set version = "0.0.7" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/flake8_functions-{{ version }}.tar.gz
+  sha256: 40584b05d57e5ab185545bcfa08aa0edca52b04646d0df266e2b1667d6437184
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - mr-proper
+    - pytest
+    - python >=3.6
+    - setuptools
+
+test:
+  imports:
+    - flake8_functions
+  commands:
+    - pip check
+    - flake8 --version | grep flake8-functions
+  requires:
+    - flake8
+    - m2-grep  # [win]
+    - pip
+
+about:
+  home: https://github.com/best-doctor/flake8-functions
+  summary: A flake8 extension that checks functions
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - thewchan

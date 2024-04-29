@@ -1,0 +1,100 @@
+{% set name = "aiohttp" %}
+{% set version = "3.9.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/aiohttp-{{ version }}.tar.gz
+  sha256: 90842933e5d1ff760fae6caca4b2b3edba53ba8f4b71e95dacf2818a2aca06f7
+
+build:
+  skip: true  # [py<38]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - cython
+    - setuptools
+    - wheel
+  run:
+    - python
+    - attrs >=17.3.0
+    - multidict >=4.5,<7.0
+    - async-timeout >=4.0,<5.0  # [py<311]
+    - yarl >=1.0,<2.0
+    - frozenlist >=1.1.1
+    - aiosignal >=1.1.2
+
+test:
+  imports:
+    - aiohttp
+  source_files:
+    - tests
+    - setup.cfg
+    # used by a test
+    - README.rst
+  requires:
+    - pip
+{% if python != "3.12" %}
+    - pytest
+    - pytest-mock
+    - pytest-cov
+    - trustme
+    - gunicorn  # [not (win or s390x)]
+    - uvloop    # [not win]
+    - brotli-python
+    - re-assert
+    - freezegun
+{% endif %}
+  commands:
+    - pip check
+
+{% if python != "3.12" %}
+
+    # don't want the docker tests in the autobahn subfolder
+    - rm -rf tests/autobahn         # [unix]
+    - rmdir /s /q tests\autobahn    # [win]
+
+    {% set tests_to_skip = "_not_a_real_test" %}
+    # would requires package time-machine
+    {% set tests_to_skip = tests_to_skip + " or test_expires or test_max_age or test_cookie_jar_clear_expired" %}
+    # not sure why, they do appear in that issue: https://github.com/aio-libs/aiohttp/issues/7675
+    {% set tests_to_skip = tests_to_skip + " or test_http_response_parser_bad_chunked_strict_c[pyloop]" %}
+    {% set tests_to_skip = tests_to_skip + " or test_http_response_parser_bad_chunked_strict_py[pyloop]" %}
+    {% set tests_to_skip = tests_to_skip + " or test_http_response_parser_strict_headers[c-parser-pyloop]" %}
+    {% set tests_to_skip = tests_to_skip + " or test_access_root_of_static_handler[pyloop-index_forbidden]" %}
+    {% set tests_to_skip = tests_to_skip + " or test_client_session_timeout_zero" %}
+    # OSError regarding socket assigment
+    {% set tests_to_skip = tests_to_skip + " or test_run_app_preexisting_inet6_socket[pyloop] " %}
+    {% set tests_to_skip = tests_to_skip + " or test_handler_cancellation" %}
+    {% set tests_to_skip = tests_to_skip + " or test_no_handler_cancellation" %}
+    {% set tests_to_skip = tests_to_skip + " or test_shutdown_pending_handler_responds" %}
+    # would requires package gunicorn
+    {% set tests_to_skip = tests_to_skip + " or test_no_warnings[aiohttp.worker]" %} # [win or s390x]
+    # ignore test files due to currently unavailable test dependencies (proxy.py)
+    - pytest -k "not ({{ tests_to_skip }})" --ignore=tests/test_proxy_functional.py
+
+{% endif %}
+
+about:
+  home: https://github.com/aio-libs/aiohttp
+  license: Apache-2.0
+  license_file: LICENSE.txt
+  license_family: Apache
+  summary: Async http client/server framework (asyncio)
+  description: Async http client/server framework (asyncio)
+  doc_url: https://docs.aiohttp.org/
+  dev_url: https://github.com/aio-libs/aiohttp
+
+extra:
+  recipe-maintainers:
+    - sodre
+    - xhochy
+    - ocefpaf

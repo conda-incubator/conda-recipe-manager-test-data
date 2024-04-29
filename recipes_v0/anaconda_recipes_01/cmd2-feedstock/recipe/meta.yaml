@@ -1,0 +1,58 @@
+{% set name = "cmd2" %}
+{% set version = "2.3.3" %}
+{% set bundle = "tar.gz" %}
+{% set hash = "750d7eb04d55c3bc2a413e191bc177856f388102de47d11f2210a35266543640" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.{{ bundle }}
+  sha256: {{ hash }}
+
+build:
+  number: 1
+  script: "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+  host:
+    - python
+    - pip
+    - setuptools_scm
+
+  run:
+    - python
+    - setuptools
+    - attrs >=16.3.0
+    - importlib_metadata >=1.6.0  # [py<38]
+    - pyperclip >=1.6
+    - typing_extensions >=1.6.0  # [py<38]
+    - pyreadline  # [win and py<38]
+    - pyreadline3  # [win and py>=38]
+    - wcwidth >=0.1.7
+
+test:
+  imports:
+    - cmd2
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://github.com/python-cmd2/cmd2
+  license_file: LICENSE
+  license: MIT
+  license_family: MIT
+  summary: Extra features for standard library's cmd module
+  dev_url: https://github.com/python-cmd2/cmd2
+  doc_url: https://cmd2.readthedocs.io/
+
+extra:
+  recipe-maintainers:
+    - anguslees
+    - tschoonj

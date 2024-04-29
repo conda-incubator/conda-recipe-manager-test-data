@@ -1,0 +1,48 @@
+{% set name = "pinotdb" %}
+{% set version = "0.4.13" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pinotdb-{{ version }}.tar.gz
+  sha256: e8adf957e53ded7e0aff579482e7905bd28c9f5c445fc66972713294ec2ebaf9
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - python >=3.7,<4.0
+    - pip
+    - poetry-core
+  run:
+    - python >=3.7,<4.0
+    - ciso8601 >=2.1.3,<3.0.0
+    - httpx >=0.23.0,<0.24.0
+    - requests >=2.28.1,<3.0.0
+    # six is not listed but apparently wasn't removed completely
+    - six
+
+test:
+  imports:
+    - pinotdb
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/python-pinot-dbapi/pinot-dbapi
+  summary: Python DB-API and SQLAlchemy dialect for Pinot.
+  license: MIT
+  license_file: LICENSE
+  doc_url: http://kylin.apache.org/docs/
+  dev_url: https://github.com/python-pinot-dbapi/pinot-dbapi
+
+extra:
+  recipe-maintainers:
+    - xylar

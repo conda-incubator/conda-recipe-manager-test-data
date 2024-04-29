@@ -1,0 +1,59 @@
+{% set name = "pyLDAvis" %}
+{% set version = "3.3.1" %}
+{% set sha256 = "f181b88401f6f8f17d5a99ab69ef99b2c496faa276919262f8ec246307b7050c" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - python >=3.7.0
+    - pip
+  run:
+    - python >=3.7.0
+    - numpy >=1.14.0
+    - scipy >=0.18.0
+    - pandas >=0.22.0
+    - joblib >=0.8.4
+    - jinja2 >=2.7.2
+    - numexpr
+    - future
+    - funcy
+
+test:
+  imports:
+    - pyLDAvis
+
+about:
+  home: https://github.com/bmabey/pyLDAvis
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Python library for interactive topic model visualization
+
+  description: |
+    pyLDAvis is designed to help users interpret the topics in a topic 
+    model that has been fit to a corpus of text data. The package extracts
+    information from a fitted LDA topic model to inform an interactive 
+    web-based visualization.
+
+    The visualization is intended to be used within an IPython notebook
+    but can also be saved to a stand-alone HTML file for easy sharing.
+  doc_url: http://pyldavis.readthedocs.io/
+  dev_url: https://github.com/bmabey/pyLDAvis
+
+extra:
+  recipe-maintainers:
+    - sodre
+    - CurtLH
+    - thewchan

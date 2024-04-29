@@ -1,0 +1,46 @@
+{% set name = "docformatter" %}
+{% set version = "1.5.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 3fa3cdb90cdbcdee82747c58410e47fc7e2e8c352b82bed80767915eb03f2e43
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - docformatter = docformatter.__main__:main
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+    - poetry-core >=1.0.0
+  run:
+    - charset-normalizer
+    - python >=3.6
+    - untokenize
+
+test:
+  commands:
+    - docformatter -h
+
+about:
+  home: https://github.com/myint/docformatter
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: Formats docstrings to follow `PEP 257 <https://www.python.org/dev/peps/pep-0257/>`_.
+  description: |
+    docformatter currently automatically formats docstrings to follow a subset of the PEP 257 conventions. 
+  dev_url: https://github.com/myint/docformatter
+
+extra:
+  recipe-maintainers:
+    - weiji14
+    - carlodri

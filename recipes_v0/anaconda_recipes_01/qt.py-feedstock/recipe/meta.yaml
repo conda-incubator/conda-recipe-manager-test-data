@@ -1,0 +1,43 @@
+{% set name = "Qt.py" %}
+{% set version = "1.3.8" %}
+{% set sha256 = "6d330928f7ec8db8e329b19116c52482b6abfaccfa5edef0248e57d012300895" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+
+build:
+  noarch: python
+  number: 0
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools
+  run:
+    - python
+
+test:
+  requires:
+    - pyside2
+  imports:
+    - Qt
+
+about:
+  home: http://github.com/mottosso/Qt.py
+  license: MIT
+  license_family: MIT
+  license_file: {{ environ["RECIPE_DIR"] }}/LICENSE
+  summary: Minimal Python 2 & 3 shim around all Qt bindings - PySide, PySide2, PyQt4 and PyQt5.
+
+extra:
+  recipe-maintainers:
+    - fredrikaverpil
+    - mottosso

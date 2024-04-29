@@ -1,0 +1,49 @@
+{% set name = "apache-airflow-providers-apache-spark" %}
+{% set version = "4.0.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/apache-airflow-providers-apache-spark-{{ version }}.tar.gz
+  sha256: c0ed57e276e90405ed89013707f31f8937de21ee5a778f3941ab75b2dd397983
+
+build:
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+  number: 0
+
+requirements:
+  host:
+    - python >=3.7
+    - pip
+    - setuptools
+  run:
+    - python >=3.7
+    - apache-airflow >=2.3.0
+    - pyspark
+
+test:
+  imports:
+    - airflow.providers.apache.spark
+    - airflow.providers.apache.spark.hooks
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://airflow.apache.org/
+  summary: Provider for Apache Airflow. Implements apache-airflow-providers-apache-spark package
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - NOTICE
+  license_family: Apache
+  doc_url: https://airflow.apache.org/docs/apache-airflow-providers-apache-spark/stable/index.html
+  dev_url: https://github.com/apache/airflow/
+
+extra:
+  recipe-maintainers:
+    - xylar

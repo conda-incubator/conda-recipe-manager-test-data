@@ -1,0 +1,50 @@
+{% set name = "pysaml2" %}
+{% set version = "7.2.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/pysaml2-{{ version }}.tar.gz
+  sha256: f40f9576dce9afef156469179277ffeeca36829248be333252af0517a26d0b1f
+
+build:
+  script: {{ PYTHON }} -m pip install . -vv
+  noarch: python
+  number: 0
+
+requirements:
+  host:
+    - pip
+    - python >=3.6
+  run:
+    - cryptography >=3.1
+    - defusedxml
+    - pyopenssl
+    - python >=3.6
+    - python-dateutil
+    - pytz
+    - requests >=1.0.0
+    - six
+    - importlib_resources
+    - xmlschema >=1.2.1
+    - setuptools
+
+test:
+  imports:
+    - saml2
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://idpy.org
+  summary: Python implementation of SAML Version 2 Standard
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - xhochy

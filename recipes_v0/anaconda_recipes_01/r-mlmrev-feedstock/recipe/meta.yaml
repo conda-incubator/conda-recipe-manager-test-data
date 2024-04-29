@@ -1,0 +1,89 @@
+{% set version = '1.0-8' %}
+
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+
+package:
+  name: r-mlmrev
+  version: {{ version|replace("-", "_") }}
+
+source:
+  url:
+    - {{ cran_mirror }}/src/contrib/mlmRev_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/mlmRev/mlmRev_{{ version }}.tar.gz
+  sha256: d57f3ff5d49e5f0079d4367cdbc1a273f48d8ce8f03bb82bb5f90606bfb2c452
+
+build:
+  merge_build_host: True  # [win]
+  # If this is a new build for the same version, increment the build number.
+  number: 0
+  # no skip
+  noarch: generic
+
+  # This is required to make R link correctly on Linux.
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+# Suggests: lattice
+requirements:
+  build:
+    - {{ posix }}zip               # [win]
+
+  host:
+    - r-base
+    - r-lme4
+
+  run:
+    - r-base
+    - r-lme4
+
+test:
+  commands:
+    # You can put additional test commands to be run here.
+    - $R -e "library('mlmRev')"           # [not win]
+    - "\"%R%\" -e \"library('mlmRev')\""  # [win]
+
+  # You can also put a file called run_test.py, run_test.sh, or run_test.bat
+  # in the recipe that will be run at test time.
+
+  # requires:
+    # Put any additional test requirements here.
+
+about:
+  home: https://CRAN.R-project.org/package=mlmRev
+  license: GPL-2
+  summary: Data and examples from a multilevel modelling software review as well as other well-known
+    data sets from the multilevel modelling literature.
+  license_family: GPL2
+  license_file:
+    - '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-2'
+
+extra:
+  recipe-maintainers:
+    - johanneskoester
+    - bgruening
+    - mingwandroid
+
+# The original CRAN metadata for this package was:
+
+# Package: mlmRev
+# Version: 1.0-8
+# Date: 2020-04-04
+# Title: Examples from Multilevel Modelling Software Review
+# Author: Douglas Bates <bates@stat.wisc.edu>, Martin Maechler <maechler@R-project.org> and Ben Bolker <bolker@mcmaster.ca>
+# Contact: LME4 Authors <lme4-authors@lists.r-forge.r-project.org>
+# Maintainer: Steve Walker <steve.walker@utoronto.ca>
+# Description: Data and examples from a multilevel modelling software review as well as other well-known data sets from the multilevel modelling literature.
+# Depends: lme4, R (>= 2.10)
+# Suggests: lattice
+# LazyData: yes
+# License: GPL (>= 2)
+# NeedsCompilation: no
+# Packaged: 2020-04-05 02:41:42 UTC; stevew
+# Repository: CRAN
+# Date/Publication: 2020-04-05 04:50:05 UTC
+
+# See
+# https://docs.conda.io/projects/conda-build for
+# more information about meta.yaml

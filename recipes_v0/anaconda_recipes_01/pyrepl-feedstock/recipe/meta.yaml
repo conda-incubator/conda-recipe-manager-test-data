@@ -1,0 +1,54 @@
+{% set version = "0.9.0" %}
+
+package:
+  name: pyrepl
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/pyrepl/pyrepl-{{ version }}.tar.gz
+  sha256: 292570f34b5502e871bbb966d639474f2b57fbfcd3373c2d6a2f3d56e681a775
+
+build:
+  number: 7
+  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-cache-dir -vvv"
+  skip: true  # [win]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+  host:
+    - python
+    - pip
+  run:
+    - python
+    - ncurses
+
+test:
+  imports:
+    - pyrepl
+
+about:
+  home: https://github.com/pypy/pyrepl
+  license: ISC
+  license_family: OTHER
+  license_file: LICENSE
+  summary: 'A library for building flexible command line interfaces'
+
+  description: |
+    pyrepl is a Python library, inspired by readline, for building flexible
+    command line interfaces, featuring:
+
+     * sane multi-line editing
+     * history, with incremental search
+     * completion, including displaying of available options
+     * a fairly large subset of the readline emacs-mode keybindings
+     * a liberal, Python-style, license
+     * a new python top-level.
+  doc_url: https://github.com/pypy/pyrepl
+  dev_url: https://github.com/pypy/pyrepl
+
+extra:
+  recipe-maintainers:
+    - kynan

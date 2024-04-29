@@ -1,0 +1,44 @@
+{% set name = "injector" %}
+{% set version = "0.20.1" %}
+
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/injector-{{ version }}.tar.gz
+  sha256: 8661b49a2f8309ce61e3a6a82b7acb5e225c4bde8e17d1610c893a670dff223a
+
+build:
+  number: 0
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv
+
+requirements:
+  host:
+    - pip
+    - pypandoc
+    - python >=3.7
+  run:
+    - python >=3.7
+    - typing_extensions >=3.7.4
+
+test:
+  imports:
+    - injector
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/alecthomas/injector
+  summary: Injector - Python dependency injection framework, inspired by Guice
+  license: BSD-3-Clause
+  # License file manually packaged: See: https://github.com/alecthomas/injector/pull/160
+  license_file: COPYING
+
+extra:
+  recipe-maintainers:
+    - fuglede

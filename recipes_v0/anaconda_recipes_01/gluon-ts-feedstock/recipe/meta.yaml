@@ -1,0 +1,65 @@
+{% set name = "gluonts" %}
+{% set version = "0.14.3" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 955602c7853fc4b252451360848f58542df830fe89c10d38473c4d2000bd9993
+
+build:
+  number: 0
+  # skipping s390x because lightning is not available
+  skip: true  # [py<37 or s390x]
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation --ignore-installed --no-cache-dir -vv
+
+requirements:
+  host:
+    - python
+    - pip
+    - setuptools
+    - wheel
+  run:
+    - python
+    - numpy >=1.16,<2
+    - pandas >=1.0,<3
+    - pydantic >=1.7,<3
+    - tqdm >=4.23,<5
+    - toolz >=0.10,<1
+    - typing-extensions >=4.0,<5  # [py<38]
+    # Optional dependencies that are part of the "torch" extra, 
+    # but the gluonts package we have on defaults right now includes 
+    # the "torch" extra by default in the runtime requirements. So we
+    # can't remove that dependency without breaking all our users.
+    - pytorch >=1.9,<3
+    - lightning >=2.0,<2.2
+    # Capping `lightning` does not cap `pytorch_lightning`, so we cap manually
+    - pytorch-lightning >=2.0,<2.2
+    - scipy >=1.7.3,<1.8  # [py<38]
+    - scipy >=1.10,<1.11  # [py>37]
+
+test:
+  imports:
+    - gluonts
+  requires:
+    - pip
+  commands:
+    - pip check
+
+about:
+  home: https://ts.gluon.ai/stable/
+  license: Apache-2.0
+  license_family: Apache
+  license_file:
+    - NOTICE
+    - LICENSE
+  dev_url: https://github.com/awslabs/gluonts
+  doc_url: https://ts.gluon.ai/stable/index.html
+  summary: GluonTS is a Python toolkit for probabilistic time series modeling, built around Apache MXNet (incubating).
+  description: GluonTS is a Python package for probabilistic time series modeling, focusing on deep learning based models, based on PyTorch and MXNet.
+
+extra:
+  recipe-maintainers:
+    - dkomisar

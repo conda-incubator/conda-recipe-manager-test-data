@@ -1,0 +1,88 @@
+{% set name = "prompt-toolkit" %}
+{% set version = "3.0.43" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/p/prompt_toolkit/prompt_toolkit-{{ version }}.tar.gz
+  sha256: 3527b7af26106cbc65a040bcc84839a3566ec1b051bb0bfe953631e704b0ff7d
+
+build:
+  number: 0
+
+outputs:
+  - name: prompt-toolkit
+    build:
+      # Python 3.7 is suggested
+      # see https://github.com/prompt-toolkit/python-prompt-toolkit/blob/da05f669d00817655f76b82972272d4d5f4d4225/setup.py#L38
+      skip: true  # [py<37]
+    script: build_base.bat  # [win]
+    script: build_base.sh   # [not win]
+    requirements:
+      host:
+        - python
+        - pip
+        - setuptools
+        - wheel
+      run:
+        - python
+        - wcwidth
+      run_constrained:
+        - prompt_toolkit {{ version }}
+    test:
+      requires:
+        - pip
+      commands:
+        - pip check
+      imports:
+        - prompt_toolkit
+        - prompt_toolkit.application
+        - prompt_toolkit.clipboard
+        - prompt_toolkit.completion
+        - prompt_toolkit.contrib
+        - prompt_toolkit.contrib.completers
+        - prompt_toolkit.contrib.regular_languages
+        - prompt_toolkit.eventloop
+        - prompt_toolkit.filters
+        - prompt_toolkit.formatted_text
+        - prompt_toolkit.input
+        - prompt_toolkit.key_binding
+        - prompt_toolkit.key_binding.bindings
+        - prompt_toolkit.layout
+        - prompt_toolkit.lexers
+        - prompt_toolkit.outputs
+        - prompt_toolkit.shortcuts
+        - prompt_toolkit.styles
+        - prompt_toolkit.widgets
+
+  - name: prompt_toolkit
+    build:
+      noarch: generic
+    requirements:
+      run:
+        - {{ pin_subpackage('prompt-toolkit', max_pin="x.x.x") }}
+    test:
+      imports:
+        - prompt_toolkit
+
+about:
+  home: https://github.com/prompt-toolkit/python-prompt-toolkit
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: Library for building powerful interactive command lines in Python
+  description: |
+    prompt_toolkit is a library for building powerful interactive command
+    lines and terminal applications in Python. It can be a pure Python
+    replacement for GNU readline, but it can be much more than that.
+  doc_url: https://python-prompt-toolkit.readthedocs.io/
+  dev_url: https://github.com/prompt-toolkit/python-prompt-toolkit
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - ocefpaf
+    - scopatz
+    - asmeurer

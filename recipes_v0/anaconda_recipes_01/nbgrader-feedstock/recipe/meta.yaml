@@ -1,0 +1,85 @@
+{% set version = "0.9.1" %}
+
+package:
+  name: nbgrader
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/n/nbgrader/nbgrader-{{ version }}.tar.gz
+  sha256: 88e3718fb4e6f75dd0b90afea3c5ad0abf14fd23ead4ce7a5c2be5eb6fa327d2
+
+build:
+  skip: true # [py<38 or s390x]
+  number: 0
+  script:
+    - {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  entry_points:
+    - nbgrader = nbgrader.apps.nbgraderapp:main
+
+requirements:
+  host:
+    - hatch-jupyter-builder >=0.7
+    - hatchling >=1.10.0
+    - pip
+    - python
+  run:
+    - alembic >=1.7
+    - ipython >=8.10.0
+    - ipywidgets >=7.6
+    - jinja2 >=3
+    - jsonschema >=3
+    - jupyter_client <9
+    - jupyter_server >=2
+    - jupyterlab >=4.0.2,<5
+    - jupyterlab_server
+    - nbclient >=0.6.1
+    - nbconvert >=6
+    - notebook >=7.0.2,<8
+    - python
+    - python-dateutil >=2.8
+    - pyyaml >=6.0
+    - rapidfuzz >=1.8
+    - requests >=2.26
+    - sqlalchemy >=1.4,<3
+
+test:
+  requires:
+    - pip
+    - m2-grep  # [win]
+    - jupyterlab
+  imports:
+    - nbgrader
+  commands:
+    - pip check
+    - nbgrader -h
+    - jupyter lab --version
+    - jupyter labextension list
+    - jupyter server extension list
+    - jupyter labextension list 1>labextensions 2>&1
+    - jupyter server extension list 1>server_extensions 2>&1
+    {% for ext in ["assignment_list", "course_list", "formgrader", "validate_assignment"] %}
+    - grep -iE "nbgrader.server_extensions.{{ ext }}.*OK" server_extensions
+    - grep -iE "nbgrader.server_extensions.{{ ext }}.*enabled" server_extensions
+    {% endfor %}
+    - grep -iE "nbgrader.*OK.*nbgrader" labextensions
+
+about:
+  home: https://github.com/jupyter/nbgrader
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file:
+    - LICENSE
+    - nbgrader/labextension/static/third-party-licenses.json
+  summary: A system for assigning and grading Jupyter notebooks
+  doc_url: https://nbgrader.readthedocs.io
+  dev_url: https://github.com/jupyter/nbgrader
+
+extra:
+  recipe-maintainers:
+    - blink1073
+    - jhamrick
+    - lgpage
+    - ocefpaf
+    - BertR
+    - SylvainCorlay
+    - bollwyvl
